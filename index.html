@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studentenomgeving | Albeda TLC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blauw:#005AA7; --lichtblauw:#6FB3DF; --oranje:#F39200;
+  --inkt:#1C2B3A; --grijs:#5A6B7B; --lijn:#DCE6EF; --veld:#F4F8FC;
+  --wit:#FFFFFF; --achtergrond:#F7F9FC;
+  --radius:12px; --schaduw:0 2px 10px rgba(0,40,80,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Montserrat',system-ui,sans-serif;background:var(--achtergrond);color:var(--inkt);line-height:1.55;min-height:100vh}
+header{position:relative;background:var(--blauw);color:var(--wit);padding:30px 28px 26px 44px;overflow:hidden}
+header::before{content:"";position:absolute;left:0;top:0;bottom:0;width:14px;
+  background:linear-gradient(to bottom,var(--oranje) 0 33%,var(--lichtblauw) 33% 66%,var(--wit) 66% 100%)}
+header::after{content:"";position:absolute;top:0;right:0;border-style:solid;border-width:0 84px 84px 0;border-color:transparent var(--oranje) transparent transparent}
+header h1{font-size:1.7rem;font-weight:800}
+header h1 span{font-weight:400}
+header p{margin-top:4px;font-size:.85rem;color:#CFE4F5}
+main{max-width:960px;margin:0 auto;padding:34px 20px 80px}
+.intro{margin-bottom:26px}
+.intro h2{font-size:1.25rem;font-weight:800}
+.intro h2 strong{color:var(--blauw)}
+.intro p{font-size:.88rem;color:var(--grijs);max-width:640px;margin-top:4px}
+.tegel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+a.tegel,div.tegel{position:relative;display:block;background:var(--wit);border-radius:var(--radius);
+  box-shadow:var(--schaduw);padding:22px 22px 20px 30px;text-decoration:none;color:var(--inkt);
+  border-left:8px solid var(--blauw);transition:transform .15s, box-shadow .15s;overflow:hidden}
+a.tegel:nth-child(2){border-left-color:var(--oranje)}
+a.tegel:nth-child(3){border-left-color:var(--lichtblauw)}
+a.tegel:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,40,80,.13)}
+.tegel .t-eyebrow{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--oranje)}
+.tegel h3{font-size:1.05rem;font-weight:800;margin:3px 0 6px}
+.tegel p{font-size:.8rem;color:var(--grijs)}
+.tegel .t-knop{display:inline-block;margin-top:14px;font-size:.78rem;font-weight:700;color:var(--blauw)}
+div.tegel{border-left-color:var(--lijn);opacity:.75}
+div.tegel .t-eyebrow{color:var(--grijs)}
+div.tegel .binnenkort{display:inline-block;margin-top:14px;font-size:.72rem;font-weight:700;
+  background:var(--veld);color:var(--grijs);border-radius:12px;padding:4px 12px}
+.tip{margin-top:30px;background:var(--wit);border-radius:var(--radius);box-shadow:var(--schaduw);
+  border-left:8px solid var(--lichtblauw);padding:18px 22px;font-size:.83rem;color:var(--grijs)}
+.tip strong{color:var(--inkt)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Studenten<span>omgeving</span></h1>
+  <p>Albeda Travel &amp; Leisure College &middot; Cluster Hospitality</p>
+</header>
+
+<main>
+  <div class="intro">
+    <h2><strong>Kies</strong> jouw tool</h2>
+    <p>Hier vind je alle apps die je tijdens je opleiding gebruikt. Alles wat je invult wordt alleen op jouw eigen telefoon of laptop bewaard.</p>
+  </div>
+
+  <div class="tegel-grid">
+
+    <a class="tegel" href="module-monitor/">
+      <div class="t-eyebrow">SLB</div>
+      <h3>Module Monitor</h3>
+      <p>Jouw dashboard voor elke onderwijsperiode: planning, voortgang, doelen en de coachvraag van de week.</p>
+      <span class="t-knop">Openen &#8594;</span>
+    </a>
+
+    <a class="tegel" href="telefoon-oefenen/">
+      <div class="t-eyebrow">Hospitality</div>
+      <h3>Telefoon oefenen</h3>
+      <p>Oefen professionele telefoongesprekken voor de receptie en gastenservice.</p>
+      <span class="t-knop">Openen &#8594;</span>
+    </a>
+
+  </div>
+
+  <div class="tip">
+    <strong>Tip:</strong> zet de tool die je vaak gebruikt op je beginscherm. Android: menu &gt; App installeren. iPhone: deelknop &gt; Zet op beginscherm. Dan werkt hij als een echte app, ook zonder internet.
+  </div>
+</main>
+
+</body>
+</html>

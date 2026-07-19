@@ -1,0 +1,17 @@
+{
+  "name": "Module Monitor - Schooljaar 26 - 27",
+  "short_name": "Module Monitor",
+  "description": "Jouw persoonlijke dashboard voor planning, voortgang en coachgesprekken. Albeda Travel & Leisure College.",
+  "lang": "nl",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#005AA7",
+  "theme_color": "#005AA7",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
