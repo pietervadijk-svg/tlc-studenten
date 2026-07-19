@@ -2,7 +2,7 @@
    Verhoog het versienummer hieronder bij elke update van de app.
    Studenten krijgen de nieuwe versie dan automatisch bij de eerstvolgende
    keer dat ze de app openen met internet. */
-const CACHE = "module-monitor-v2";
+const CACHE = "module-monitor-v3";
 
 const BASIS = [
   "./",

@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Module Monitor">
+<meta name="apple-mobile-web-app-title" content="TLC Module Monitor">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
 <style>
@@ -136,7 +136,7 @@ section.paneel.actief{display:block;animation:fadein .25s ease}
 .periode-kaart:nth-child(4){border-left-color:var(--groen)}
 .periode-kaart:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,40,80,.13)}
 .periode-kaart .pk-eyebrow{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--grijs)}
-.periode-kaart .pk-titel{font-size:1.25rem;font-weight:800;margin:2px 0 8px}
+.periode-kaart .pk-titel{font-size:1.1rem;font-weight:800;margin:2px 0 8px;line-height:1.25;overflow-wrap:break-word}
 .periode-kaart .pk-info{font-size:.78rem;color:var(--grijs);line-height:1.7}
 .periode-kaart .pk-balk{height:8px;background:var(--veld);border-radius:4px;overflow:hidden;margin-top:12px}
 .periode-kaart .pk-balk div{height:100%;background:var(--oranje);border-radius:4px}
@@ -740,7 +740,7 @@ function tekenVoorblad(){
     kaart.dataset.periode = pNr;
     kaart.innerHTML = `
       <div class="pk-eyebrow">Schooljaar ${SCHOOLJAAR}</div>
-      <div class="pk-titel">Onderwijsperiode ${pNr}</div>
+      <div class="pk-titel">Onderwijs&shy;periode ${pNr}</div>
       <div class="pk-info">
         ${cfg.aantalWeken} weken<br>
         Checkpoint 1 in week ${cfg.cp1} &middot; Checkpoint 2 in week ${cfg.cp2}<br>
