@@ -419,7 +419,7 @@ td input,td select{padding:8px 10px}
   <div class="kaart">
     <div class="eyebrow">Deadlines</div>
     <h2><strong>Mijn</strong> planning</h2>
-    <p class="sub">Zet hier alle opdrachten, toetsen en examens met hun deadline. De lijst wordt automatisch op datum gesorteerd.</p>
+    <p class="sub">Zet hier alle opdrachten, toetsen en examens met hun deadline. Bij Module kies je uit de modules die je bij Mijn modules hebt ingevuld. De lijst wordt automatisch op datum gesorteerd.</p>
     <div style="overflow-x:auto">
     <table id="tabel-planning">
       <thead><tr>
@@ -889,6 +889,27 @@ function tekenModules(){
 
 /* ================= Planning-tabel ================= */
 const DEADLINE_STATUS = [["tedoen","Te doen"],["bezig","Bezig"],["klaar","Klaar"]];
+
+/* Bouwt de keuzelijst met de modules die bij Mijn modules zijn ingevuld.
+   Een eerder gekozen module die daar niet (meer) staat, blijft gewoon staan. */
+function veiligeTekst(t){
+  return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function moduleOpties(huidig){
+  const nu = (huidig||"").trim();
+  const namen = [];
+  pd().modules.forEach(m=>{
+    const n = (m.naam||"").trim();
+    if(n && !namen.includes(n)) namen.push(n);
+  });
+  if(nu && !namen.includes(nu)) namen.push(nu);
+  const leeg = namen.length
+    ? `<option value=""${nu===""?" selected":""}>Kies een module...</option>`
+    : `<option value=""${nu===""?" selected":""}>Vul eerst je modules in</option>`;
+  return leeg + namen.map(n=>
+    `<option value="${veiligeTekst(n)}"${n===nu?" selected":""}>${veiligeTekst(n)}</option>`
+  ).join("");
+}
 function tekenPlanning(){
   pd().deadlines.sort((a,b)=>(a.datum||"9999").localeCompare(b.datum||"9999"));
   const body = document.querySelector("#tabel-planning tbody");
@@ -897,14 +918,13 @@ function tekenPlanning(){
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td><input type="date" data-dl="${i}" data-dv="datum"></td>
-      <td><input type="text" data-dl="${i}" data-dv="module" placeholder="Module"></td>
+      <td><select data-dl="${i}" data-dv="module">${moduleOpties(d.module)}</select></td>
       <td><input type="text" data-dl="${i}" data-dv="wat" placeholder="Wat moet er gebeuren?"></td>
       <td><select data-dl="${i}" data-dv="status">
         ${DEADLINE_STATUS.map(s=>`<option value="${s[0]}"${(d.status||"tedoen")===s[0]?" selected":""}>${s[1]}</option>`).join("")}
       </select></td>
       <td><button class="verwijder" data-verwijder-dl="${i}" title="Deadline verwijderen">&#10005;</button></td>`;
     tr.querySelector('[data-dv="datum"]').value = d.datum||"";
-    tr.querySelector('[data-dv="module"]').value = d.module||"";
     tr.querySelector('[data-dv="wat"]').value = d.wat||"";
     body.appendChild(tr);
   });
@@ -994,6 +1014,7 @@ function koppelGebeurtenissen(){
     if(el.dataset.mod!==undefined && el.dataset.mv){
       pd().modules[+el.dataset.mod][el.dataset.mv] = el.value;
       if(el.dataset.mv==="status"){ el.className = "status-"+el.value; }
+      if(el.dataset.mv==="naam"){ tekenPlanning(); }
       bewaar();
     }
   });
@@ -1001,7 +1022,7 @@ function koppelGebeurtenissen(){
     const b = e.target.closest("[data-verwijder-mod]");
     if(b && confirm("Deze module verwijderen?")){
       pd().modules.splice(+b.dataset.verwijderMod,1);
-      tekenModules(); bewaar();
+      tekenModules(); tekenPlanning(); bewaar();
     }
   });
 
@@ -1018,7 +1039,12 @@ function koppelGebeurtenissen(){
     }
   });
   document.getElementById("paneel-planning").addEventListener("change",e=>{
-    if(e.target.dataset.dv==="datum"){ tekenPlanning(); }
+    const el = e.target;
+    if(el.dataset.dl!==undefined && el.dataset.dv){
+      pd().deadlines[+el.dataset.dl][el.dataset.dv] = el.value;
+      bewaar();
+    }
+    if(el.dataset.dv==="datum"){ tekenPlanning(); }
   });
   document.getElementById("paneel-planning").addEventListener("click",e=>{
     const b = e.target.closest("[data-verwijder-dl]");
