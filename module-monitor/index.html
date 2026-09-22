@@ -287,6 +287,7 @@ td input,td select{padding:8px 10px}
   .kaart{padding:18px 16px}
   main{padding:18px 12px 60px}
 }
+  input.datum-fout{border-color:#d62828 !important;background:#fdecec !important;color:#b00020;}
 </style>
 </head>
 <body class="op-voorblad">
@@ -910,6 +911,13 @@ function moduleOpties(huidig){
     `<option value="${veiligeTekst(n)}"${n===nu?" selected":""}>${veiligeTekst(n)}</option>`
   ).join("");
 }
+/* Kleurt een datum rood als die buiten schooljaar 26-27 valt (bijv. jaar 0002). */
+function markeerDatum(el){
+  const v = el.value;
+  const fout = v && (v < "2026-08-01" || v > "2027-07-31");
+  el.classList.toggle("datum-fout", !!fout);
+  el.title = fout ? "Deze datum valt buiten schooljaar 26-27. Controleer het jaartal." : "";
+}
 function tekenPlanning(){
   pd().deadlines.sort((a,b)=>(a.datum||"9999").localeCompare(b.datum||"9999"));
   const body = document.querySelector("#tabel-planning tbody");
@@ -917,7 +925,7 @@ function tekenPlanning(){
   pd().deadlines.forEach((d,i)=>{
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td><input type="date" data-dl="${i}" data-dv="datum"></td>
+      <td><input type="date" data-dl="${i}" data-dv="datum" min="2026-08-01" max="2027-07-31"></td>
       <td><select data-dl="${i}" data-dv="module">${moduleOpties(d.module)}</select></td>
       <td><input type="text" data-dl="${i}" data-dv="wat" placeholder="Wat moet er gebeuren?"></td>
       <td><select data-dl="${i}" data-dv="status">
@@ -925,6 +933,7 @@ function tekenPlanning(){
       </select></td>
       <td><button class="verwijder" data-verwijder-dl="${i}" title="Deadline verwijderen">&#10005;</button></td>`;
     tr.querySelector('[data-dv="datum"]').value = d.datum||"";
+    markeerDatum(tr.querySelector('[data-dv="datum"]'));
     tr.querySelector('[data-dv="wat"]').value = d.wat||"";
     body.appendChild(tr);
   });
@@ -1044,7 +1053,19 @@ function koppelGebeurtenissen(){
       pd().deadlines[+el.dataset.dl][el.dataset.dv] = el.value;
       bewaar();
     }
-    if(el.dataset.dv==="datum"){ tekenPlanning(); }
+    if(el.dataset.dv==="datum"){ markeerDatum(el); }
+  });
+  /* Pas opnieuw sorteren als de student het datumveld verlaat, zodat het
+     jaartal niet halverwege het typen wordt afgebroken. */
+  document.getElementById("paneel-planning").addEventListener("focusout",e=>{
+    const el = e.target;
+    if(el.dataset && el.dataset.dv==="datum"){
+      setTimeout(()=>{
+        const actief = document.activeElement;
+        if(actief && actief.dataset && actief.dataset.dv==="datum") return;
+        tekenPlanning();
+      },0);
+    }
   });
   document.getElementById("paneel-planning").addEventListener("click",e=>{
     const b = e.target.closest("[data-verwijder-dl]");
