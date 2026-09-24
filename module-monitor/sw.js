@@ -27,8 +27,7 @@ self.addEventListener("activate", (e) => {
   );
 });
 
-/* Strategie: eerst cache (snel en offline), daarna op de achtergrond verversen.
-   Werkt ook voor de Google Fonts-bestanden. */
+/* Strategie: eerst cache (snel en offline), daarna op de achtergrond verversen. */
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
   e.respondWith(

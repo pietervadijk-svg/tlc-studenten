@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="TLC Module Monitor">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --blauw:#005AA7;
@@ -25,6 +25,7 @@
   --wit:#FFFFFF;
   --achtergrond:#F7F9FC;
   --groen:#2E9E6B;
+  --rood:#C0392B;
   --radius:10px;
   --schaduw:0 2px 10px rgba(0,40,80,.07);
   font-size:16px;
@@ -101,6 +102,7 @@ main{max-width:960px;margin:0 auto;padding:28px 20px 80px}
 section.paneel{display:none}
 section.paneel.actief{display:block;animation:fadein .25s ease}
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){section.paneel.actief{animation:none}.balk div{transition:none}}
 .kaart{
   background:var(--wit);border-radius:var(--radius);
   box-shadow:var(--schaduw);
@@ -117,9 +119,7 @@ section.paneel.actief{display:block;animation:fadein .25s ease}
 .eyebrow{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--oranje);margin-bottom:4px}
 /* ---------- Voorblad ---------- */
 .voorblad-intro{text-align:center;margin:14px auto 30px;max-width:560px}
-.voorblad-intro .schooljaar{
-  font-size:2rem;font-weight:800;color:var(--blauw);letter-spacing:.5px;
-}
+.voorblad-intro .schooljaar{font-size:2rem;font-weight:800;color:var(--blauw);letter-spacing:.5px}
 .voorblad-intro .schooljaar em{font-style:normal;color:var(--oranje)}
 .voorblad-intro p{font-size:.9rem;color:var(--grijs);margin-top:8px}
 .periode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
@@ -135,6 +135,7 @@ section.paneel.actief{display:block;animation:fadein .25s ease}
 .periode-kaart:nth-child(3){border-left-color:var(--oranje)}
 .periode-kaart:nth-child(4){border-left-color:var(--groen)}
 .periode-kaart:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,40,80,.13)}
+.periode-kaart:focus-visible{outline:3px solid var(--lichtblauw);outline-offset:2px}
 .periode-kaart .pk-eyebrow{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--grijs)}
 .periode-kaart .pk-titel{font-size:1.1rem;font-weight:800;margin:2px 0 8px;line-height:1.25;overflow-wrap:break-word}
 .periode-kaart .pk-info{font-size:.78rem;color:var(--grijs);line-height:1.7}
@@ -162,7 +163,6 @@ section.paneel.actief{display:block;animation:fadein .25s ease}
 .app-knop small{display:block;font-size:.62rem;font-weight:600;opacity:.75;text-align:left}
 .app-knop span{text-align:left;line-height:1.25}
 body.als-app .installatie{display:none}
-/* ---------- Installatie-uitleg (venster) ---------- */
 #uitleg-achtergrond{
   display:none;position:fixed;inset:0;background:rgba(10,30,50,.55);z-index:60;
   align-items:center;justify-content:center;padding:20px;
@@ -186,25 +186,8 @@ input[type=text],input[type=date],select,textarea{
   transition:border-color .15s;
 }
 input:focus,select:focus,textarea:focus{outline:2px solid var(--lichtblauw);outline-offset:1px;border-color:var(--lichtblauw);background:var(--wit)}
-textarea{resize:vertical;min-height:84px}
+textarea{resize:vertical;min-height:64px}
 .rij{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
-/* ---------- Tabellen ---------- */
-table{width:100%;border-collapse:collapse;font-size:.87rem}
-th{
-  text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--grijs);padding:8px 8px;border-bottom:2px solid var(--lijn);
-}
-td{padding:8px 8px;border-bottom:1px solid var(--lijn);vertical-align:middle}
-td input,td select{padding:8px 10px}
-.status-nietgestart{color:var(--grijs)}
-.status-bezig{color:var(--blauw);font-weight:600}
-.status-bijnaklaar{color:var(--oranje);font-weight:600}
-.status-afgerond{color:var(--groen);font-weight:700}
-.verwijder{
-  border:none;background:none;color:var(--grijs);cursor:pointer;
-  font-size:1.05rem;line-height:1;padding:6px;border-radius:6px;
-}
-.verwijder:hover{color:#C0392B;background:#FBEDEB}
 .knop{
   font-family:inherit;font-weight:700;font-size:.85rem;
   background:var(--blauw);color:var(--wit);border:none;
@@ -217,7 +200,52 @@ td input,td select{padding:8px 10px}
 .knop.licht{background:var(--veld);color:var(--blauw);border:1.5px solid var(--lijn)}
 .knop.licht:hover{background:#e8f1f9}
 .knop.wit{background:var(--wit);color:var(--oranje)}
-.knop.wit:hover{background:#fff3e0}
+.verwijder{
+  border:none;background:none;color:var(--grijs);cursor:pointer;
+  font-size:1.05rem;line-height:1;padding:6px;border-radius:6px;
+}
+.verwijder:hover{color:var(--rood);background:#FBEDEB}
+/* ---------- Voortgangsmeter ---------- */
+.meter-kaart{
+  background:var(--wit);border-radius:var(--radius);box-shadow:var(--schaduw);
+  border-left:6px solid var(--oranje);padding:20px 24px;margin-bottom:20px;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.meter-pct{font-size:2.4rem;font-weight:800;color:var(--oranje);line-height:1;min-width:110px}
+.meter-rest{flex:1;min-width:220px}
+.meter-boodschap{font-size:.95rem;font-weight:700;margin-bottom:8px}
+.meter-detail{font-size:.78rem;color:var(--grijs);margin-top:6px}
+.meter-balk{height:14px;background:var(--veld);border-radius:7px;overflow:hidden}
+.meter-balk div{height:100%;width:0%;background:linear-gradient(to right,var(--oranje),#f7a733);border-radius:7px;transition:width .4s ease}
+/* ---------- Modules ---------- */
+.mod-kaart{
+  background:var(--wit);border-radius:var(--radius);box-shadow:var(--schaduw);
+  border-left:6px solid var(--lichtblauw);padding:18px 20px;margin-bottom:14px;
+}
+.mod-kop{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.mod-naam{font-size:1rem;font-weight:800}
+.mod-docent{font-size:.8rem;color:var(--grijs)}
+.mod-kop .verwijder{margin-left:auto}
+.momenten{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}
+.moment{background:var(--veld);border-radius:8px;padding:10px 12px}
+.moment .m-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--blauw);margin-bottom:6px}
+.moment input[type=date]{margin-bottom:8px;background:var(--wit)}
+.moment select{background:var(--wit)}
+.moment select.status-nietgestart{color:var(--grijs)}
+.moment select.status-bezig{color:var(--blauw);font-weight:700}
+.moment select.status-afgerond{color:var(--groen);font-weight:700}
+.moment.klaar{background:#EAF7F0}
+.toevoeg-rij{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}
+.zelf-rij{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;margin-top:10px}
+@media(max-width:600px){.toevoeg-rij,.zelf-rij{grid-template-columns:1fr}}
+.leeg-melding{font-size:.85rem;color:var(--grijs);background:var(--veld);border-radius:8px;padding:14px 16px}
+/* ---------- Deadlines ---------- */
+.deadlines{list-style:none;margin:6px 0}
+.deadlines li{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px dashed var(--lijn);font-size:.88rem}
+.deadlines li:last-child{border-bottom:none}
+.deadlines .d-datum{font-weight:700;color:var(--blauw);min-width:92px}
+.deadlines .d-wat{flex:1}
+.deadlines .d-laat{color:var(--rood);font-weight:700;font-size:.75rem}
 /* ---------- Weken ---------- */
 .week-kop{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
 .week-nummer{font-size:2.2rem;font-weight:800;color:var(--lichtblauw);line-height:1}
@@ -230,15 +258,6 @@ td input,td select{padding:8px 10px}
 .taken li:last-child{border-bottom:none}
 .taken input[type=checkbox]{width:19px;height:19px;accent-color:var(--blauw);margin-top:2px;flex-shrink:0;cursor:pointer}
 .taken li.gedaan span{color:var(--grijs);text-decoration:line-through}
-.coachvraag{
-  font-family:'Libre Baskerville',Georgia,serif;font-style:italic;
-  font-size:1.05rem;color:var(--blauw);
-  padding:16px 20px;margin:18px 0 10px;
-  border-left:4px solid var(--oranje);background:#FFF8EE;border-radius:0 8px 8px 0;
-}
-.hulp-toggle{font-size:.75rem;font-weight:700;color:var(--blauw);background:none;border:none;cursor:pointer;padding:4px 0;text-decoration:underline}
-.hulpzinnen{display:none;font-size:.8rem;color:var(--grijs);background:var(--veld);border-radius:8px;padding:10px 14px;margin:6px 0 10px}
-.hulpzinnen.open{display:block}
 .checkpoint{
   background:linear-gradient(135deg,var(--oranje),#f7a733);
   color:var(--wit);border-radius:var(--radius);
@@ -249,9 +268,7 @@ td input,td select{padding:8px 10px}
 .checkpoint ul{margin:8px 0 12px 18px;font-size:.87rem}
 .checkpoint label{display:flex;align-items:center;gap:10px;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:10px}
 .checkpoint input[type=checkbox]{width:20px;height:20px;accent-color:var(--wit)}
-.checkpoint .knop{margin-top:6px}
 .checkpoint.eind .knop.wit{color:var(--blauw)}
-.checkpoint.eind .knop.wit:hover{background:#e6f2fb}
 /* ---------- Doelen ---------- */
 .doel-kaart{border-left-color:var(--oranje)}
 .doel-status{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
@@ -266,7 +283,7 @@ td input,td select{padding:8px 10px}
 #print-kop{display:none}
 @media print{
   body{background:var(--wit)}
-  header,nav,.knop,.verwijder,.hulp-toggle,.hulpzinnen,#export-hulp{display:none !important}
+  header,nav,.knop,.verwijder,#export-hulp,.installatie,.toevoeg-rij,.zelf-rij{display:none !important}
   #print-kop{
     display:block;margin-bottom:18px;padding:14px 18px 14px 26px;
     border:2px solid var(--blauw);border-left:12px solid var(--oranje);border-radius:8px;
@@ -276,10 +293,9 @@ td input,td select{padding:8px 10px}
   section.paneel{display:none !important}
   section.paneel.print-aan{display:block !important;page-break-inside:avoid;margin-bottom:14px}
   #paneel-voorblad{display:none !important}
-  .kaart,.checkpoint{box-shadow:none;border:1px solid var(--lijn)}
+  .kaart,.checkpoint,.mod-kaart,.meter-kaart{box-shadow:none;border:1px solid var(--lijn)}
   .checkpoint{color:var(--inkt);background:#FFF3E0}
   .checkpoint.eind{background:#E8F1F9}
-  textarea{border:1px solid var(--lijn);background:var(--wit)}
   main{max-width:100%;padding:0}
 }
 @media(max-width:600px){
@@ -287,7 +303,6 @@ td input,td select{padding:8px 10px}
   .kaart{padding:18px 16px}
   main{padding:18px 12px 60px}
 }
-  input.datum-fout{border-color:#d62828 !important;background:#fdecec !important;color:#b00020;}
 </style>
 </head>
 <body class="op-voorblad">
@@ -310,7 +325,6 @@ td input,td select{padding:8px 10px}
   <span class="scheiding"></span>
   <button data-doel="start">Start</button>
   <button data-doel="modules">Mijn modules</button>
-  <button data-doel="planning">Mijn planning</button>
   <button data-doel="doelen">Mijn doelen</button>
   <span class="scheiding"></span>
   <span id="week-chips" style="display:contents"></span>
@@ -330,7 +344,7 @@ td input,td select{padding:8px 10px}
 <section class="paneel actief" id="paneel-voorblad">
   <div class="voorblad-intro">
     <div class="schooljaar">Schooljaar <em>26 - 27</em></div>
-    <p>Welkom bij jouw Module Monitor. Kies de onderwijsperiode waarin je nu zit. Elke periode heeft een eigen monitor met eigen weken, checkpoints en afronding.</p>
+    <p>Welkom bij jouw Module Monitor. Kies de onderwijsperiode waarin je nu zit. Elke periode heeft een eigen monitor met eigen weken en inlevermomenten.</p>
   </div>
   <div class="periode-grid" id="periode-grid"></div>
 
@@ -363,10 +377,12 @@ td input,td select{padding:8px 10px}
   <div class="kaart">
     <div class="eyebrow">Stap 1</div>
     <h2><strong>Wie</strong> ben jij?</h2>
-    <p class="sub">Vul je gegevens in. Deze gelden voor het hele schooljaar. Alles wat je invult wordt automatisch bewaard op dit apparaat.</p>
+    <p class="sub">Vul je gegevens in en kies je klas. Alles wat je invult wordt automatisch bewaard op dit apparaat.</p>
     <div class="rij">
       <div><label class="veldlabel" for="s-naam">Naam</label><input type="text" id="s-naam" data-pad="student.naam" placeholder="Voor- en achternaam"></div>
-      <div><label class="veldlabel" for="s-klas">Klas</label><input type="text" id="s-klas" data-pad="student.klas" placeholder="Bijv. HOSP2A"></div>
+      <div><label class="veldlabel" for="s-klas">Klas</label>
+        <select id="s-klas" data-pad="student.klas"><option value="">Kies je klas</option></select>
+      </div>
       <div><label class="veldlabel" for="s-niveau">Niveau</label>
         <select id="s-niveau" data-pad="student.niveau">
           <option value="">Kies je niveau</option>
@@ -383,10 +399,10 @@ td input,td select{padding:8px 10px}
     <h2><strong>Zo</strong> werkt de Module Monitor</h2>
     <p class="sub" id="werkwijze-intro"></p>
     <ul class="taken" style="border:none">
-      <li><span>&#10112;</span><span>Zet bij <strong>Mijn modules</strong> alle modules van deze periode.</span></li>
-      <li><span>&#10113;</span><span>Zet bij <strong>Mijn planning</strong> je deadlines en inlevermomenten.</span></li>
-      <li><span>&#10114;</span><span>Formuleer bij <strong>Mijn doelen</strong> twee persoonlijke doelen.</span></li>
-      <li><span>&#10115;</span><span>Vul elke week jouw <strong>weekpagina</strong> in: taken, coachvraag en korte reflectie.</span></li>
+      <li><span>&#10112;</span><span>Kies hierboven je <strong>klas</strong>.</span></li>
+      <li><span>&#10113;</span><span>Stel bij <strong>Mijn modules</strong> jouw lijst samen uit het aanbod van je klas.</span></li>
+      <li><span>&#10114;</span><span>Vul per module de <strong>deadlines</strong> in van Checkpoint 1, Checkpoint 2 en de afronding.</span></li>
+      <li><span>&#10115;</span><span>Werk elke week in de SLB-les de <strong>status</strong> van je checkpoints bij en zie je voortgang groeien.</span></li>
       <li><span>&#10116;</span><span id="werkwijze-checkpoints"></span></li>
     </ul>
   </div>
@@ -394,46 +410,33 @@ td input,td select{padding:8px 10px}
 
 <!-- ================= MODULES ================= -->
 <section class="paneel" id="paneel-modules">
+  <div class="meter-kaart">
+    <div class="meter-pct" id="meter-pct">0%</div>
+    <div class="meter-rest">
+      <div class="meter-boodschap" id="meter-boodschap"></div>
+      <div class="meter-balk"><div id="meter-balk"></div></div>
+      <div class="meter-detail" id="meter-detail"></div>
+    </div>
+  </div>
+
   <div class="kaart">
     <div class="eyebrow">Overzicht</div>
     <h2><strong>Mijn</strong> modules deze periode</h2>
-    <p class="sub">Zet alle modules van deze periode in de lijst en houd elke week je voortgang bij.</p>
-    <div style="overflow-x:auto">
-    <table id="tabel-modules">
-      <thead><tr>
-        <th style="width:26%">Module</th>
-        <th style="width:18%">Docent</th>
-        <th style="width:18%">Hoe sta ik ervoor?</th>
-        <th style="width:14%">Hulp nodig?</th>
-        <th>Wat staat er nog open?</th>
-        <th style="width:36px"></th>
-      </tr></thead>
-      <tbody></tbody>
-    </table>
+    <p class="sub">Kies uit het aanbod van jouw klas welke modules jij volgt. Vul per module de deadlines in en houd de status bij van Checkpoint 1, Checkpoint 2 en de afronding.</p>
+    <div id="module-lijst"></div>
+    <div class="toevoeg-rij">
+      <div>
+        <label class="veldlabel" for="module-kies">Module toevoegen</label>
+        <select id="module-kies"><option value="">Kies een module uit het aanbod...</option></select>
+      </div>
+      <button class="knop" id="knop-module">+ Toevoegen</button>
     </div>
-    <button class="knop" id="knop-module">+ Module toevoegen</button>
-  </div>
-</section>
-
-<!-- ================= PLANNING ================= -->
-<section class="paneel" id="paneel-planning">
-  <div class="kaart">
-    <div class="eyebrow">Deadlines</div>
-    <h2><strong>Mijn</strong> planning</h2>
-    <p class="sub">Zet hier alle opdrachten, toetsen en examens met hun deadline. Bij Module kies je uit de modules die je bij Mijn modules hebt ingevuld. De lijst wordt automatisch op datum gesorteerd.</p>
-    <div style="overflow-x:auto">
-    <table id="tabel-planning">
-      <thead><tr>
-        <th style="width:15%">Datum</th>
-        <th style="width:22%">Module</th>
-        <th>Wat lever ik in of doe ik?</th>
-        <th style="width:16%">Status</th>
-        <th style="width:36px"></th>
-      </tr></thead>
-      <tbody></tbody>
-    </table>
+    <div class="zelf-rij" id="zelf-rij" style="display:none">
+      <div><label class="veldlabel" for="zelf-naam">Naam van de module</label><input type="text" id="zelf-naam" placeholder="Typ de modulenaam"></div>
+      <div><label class="veldlabel" for="zelf-docent">Docent</label><input type="text" id="zelf-docent" placeholder="Bijv. PVDIJK"></div>
+      <button class="knop" id="knop-zelf">+ Toevoegen</button>
     </div>
-    <button class="knop" id="knop-deadline">+ Deadline toevoegen</button>
+    <p class="sub" id="aanbod-melding" style="margin-top:10px"></p>
   </div>
 </section>
 
@@ -476,7 +479,7 @@ td input,td select{padding:8px 10px}
   <div class="kaart">
     <h2><strong>Ben</strong> ik klaar met deze periode?</h2>
     <p class="sub">Je rondt deze periode af als dit allemaal klopt:</p>
-    <ul class="taken" id="moduleklaar-lijst"></ul>
+    <ul class="taken" id="periodeklaar-lijst"></ul>
   </div>
 </section>
 
@@ -484,6 +487,13 @@ td input,td select{padding:8px 10px}
 
 <script>
 "use strict";
+
+/* ============================================================
+   AANBOD PER KLAS (schooljaar 26 - 27)
+   Bijwerken? Vervang dit blok door een nieuwe versie op basis
+   van de klasoverzichten (CSV-export per klas).
+   ============================================================ */
+const KLASSEN = {"ZHPALL272A_K": {"naam": "Allround Hospitality 3/4 feb", "aanbod": {"1": [], "2": [], "3": [{"m": "Ik op school", "d": "NHOOGE"}, {"m": "Nederlands 1", "d": "MVDWA"}, {"m": "Engels 1", "d": "SYAKO"}, {"m": "Duits 1", "d": "MSCHI1"}, {"m": "Rekenen 1", "d": "BDONK"}, {"m": "Burgerschap 1", "d": "EVDHE"}, {"m": "LOB 1", "d": "NHOOGE"}, {"m": "Werkveldverkenning Travel", "d": "DPETE"}, {"m": "Travel Designer Basis (allround)", "d": "JGRAA"}, {"m": "Frans 1", "d": "IDERK"}, {"m": "Spaans 1", "d": "MVDWA"}, {"m": "Safety first", "d": "EVDHE"}, {"m": "Digital expert 1", "d": "FBREE"}, {"m": "Check-in Champ Basis (allround)", "d": "FBREE"}, {"m": "Ik op stage 1", "d": "CADRI"}], "4": [{"m": "Nederlands 2", "d": "MVDWA"}, {"m": "Engels 2", "d": "SYAKO"}, {"m": "Duits 2", "d": "MSCHI1"}, {"m": "Rekenen 2", "d": "BDONK"}, {"m": "Burgerschap 2", "d": "EVDHE"}, {"m": "LOB 2", "d": "FBREE"}, {"m": "Werkveldverkenning Leisure", "d": "MSCHI1"}, {"m": "Frans 2", "d": "IDERK"}, {"m": "Spaans 2", "d": "MVDWA"}, {"m": "The Entertainer basis", "d": "TMOER"}, {"m": "Sport en Spel basis", "d": "JFONT"}, {"m": "Check-in Champ 1", "d": "MBURG"}, {"m": "Ik op stage 2", "d": "MBURG"}, {"m": "Happiness Hero basis", "d": "BKLEI"}, {"m": "People manager 1", "d": "MBURG"}]}}, "ZHPALL3268A_K": {"naam": "Allround Hospitality 3", "aanbod": {"1": [{"m": "Engels 1", "d": "SYAKO"}, {"m": "Duits 1", "d": "MSCHI1"}, {"m": "Rekenen 1", "d": "BDONK"}, {"m": "Burgerschap 1", "d": "EVDHE"}, {"m": "LOB 1", "d": "IDERK"}, {"m": "Travel Designer Basis (allround)", "d": "DPETE"}, {"m": "Digital expert 1", "d": "PTOON"}, {"m": "Werkveldverkenning Travel", "d": "DPETE"}, {"m": "Ik op school", "d": "NHOOGE"}, {"m": "KZD INEV", "d": ""}, {"m": "Nederlands 1", "d": "IPOEL"}, {"m": "Safety first", "d": "EVDHE"}, {"m": "Check-in Champ Basis (allround)", "d": "JGRAA"}, {"m": "Duurzaam is de naam 1", "d": "JGRAA"}, {"m": "KZD Podcasting", "d": ""}, {"m": "KZD Sociale hygiëne", "d": ""}, {"m": "KZD Ondernemend handelen", "d": ""}], "2": [{"m": "Nederlands 2", "d": "IPOEL"}, {"m": "Engels 2", "d": "SYAKO"}, {"m": "Duits 2", "d": "MSCHI1"}, {"m": "Rekenen 2", "d": "BDONK"}, {"m": "Burgerschap 2", "d": "EVDHE"}, {"m": "LOB 2", "d": "NHOOGE"}, {"m": "Sport en Spel basis", "d": "JFONT"}, {"m": "The Entertainer basis", "d": "TMOER"}, {"m": "Digital expert 2", "d": "PTOON"}, {"m": "Werkveldverkenning Leisure", "d": "JFONT"}, {"m": "Ik op stage 1", "d": "CADRI"}, {"m": "KZD INEV", "d": ""}, {"m": "Check-in Champ 1", "d": "MBURG"}, {"m": "Happiness Hero basis", "d": "BKLEI"}, {"m": "KZD Podcasting", "d": ""}, {"m": "KZD Sociale hygiëne", "d": ""}, {"m": "KZD Bierkennis", "d": ""}], "3": [{"m": "Nederlands 3", "d": "IPOEL"}, {"m": "Engels 3", "d": "SYAKO"}, {"m": "Duits 3", "d": "MSCHI1"}, {"m": "Rekenen 3", "d": "BDONK"}, {"m": "Burgerschap 3", "d": "EVDHE"}, {"m": "LOB 3", "d": "IDERK"}, {"m": "Horeca - Keuken (allround)", "d": "MHANSS"}, {"m": "Horeca - Bediening (allround)", "d": "JSEES"}, {"m": "Ik op stage 2", "d": "MBURG"}, {"m": "Check-in Champ 2", "d": "FBREE"}, {"m": "Sales ninja 1", "d": "DPETE"}], "4": []}}, "ZHPALL4268A_K": {"naam": "Allround Hospitality 4a", "aanbod": {"1": [{"m": "Ik op school", "d": "NHOOGE"}, {"m": "Nederlands 1", "d": "EDSNO"}, {"m": "Engels 1", "d": "SYAKO"}, {"m": "Duits 1", "d": "MSCHI1"}, {"m": "Rekenen 1", "d": "BDONK"}, {"m": "Burgerschap 1", "d": "EVDHE"}, {"m": "LOB 1", "d": "BDONK"}, {"m": "Werkveldverkenning Travel", "d": "CADRI"}, {"m": "Travel Designer Basis (allround)", "d": "CADRI"}, {"m": "Frans 1", "d": "IDERK"}, {"m": "Spaans 1", "d": "MVDWA"}, {"m": "Digital expert 1", "d": "PTOON"}, {"m": "Duurzaam is de naam 1", "d": "MSCHI1"}, {"m": "Check-in Champ Basis (allround)", "d": "MBURG"}, {"m": "KD Sociale Hygiene", "d": "TMOER"}, {"m": "KZD INEV", "d": ""}, {"m": "KZD Podcasting", "d": ""}, {"m": "KZD Ondernemend handelen", "d": ""}, {"m": "KZD Sociale hygiëne", "d": ""}], "2": [{"m": "Nederlands 2", "d": "EDSNO"}, {"m": "Engels 2", "d": "SYAKO"}, {"m": "Duits 2", "d": "MSCHI1"}, {"m": "Rekenen 2", "d": "BDONK"}, {"m": "Burgerschap 2", "d": "EVDHE"}, {"m": "LOB 2", "d": "NHOOGE"}, {"m": "Werkveldverkenning Leisure", "d": "JFONT"}, {"m": "Frans 2", "d": "IDERK"}, {"m": "Spaans 2", "d": "MVDWA"}, {"m": "The Entertainer basis", "d": "TMOER"}, {"m": "Sport en Spel basis", "d": "JFONT"}, {"m": "KZD INEV", "d": ""}, {"m": "Ik op stage 1", "d": "CADRI"}, {"m": "Check-in Champ 1", "d": "MBURG"}, {"m": "Happiness Hero basis", "d": "BKLEI"}, {"m": "KZD Podcasting", "d": ""}, {"m": "KZD Sociale hygiëne", "d": ""}, {"m": "KZD Bierkennis", "d": ""}], "3": [{"m": "Nederlands 3", "d": "EDSNO"}, {"m": "Engels 3", "d": "SYAKO"}, {"m": "Duits 3", "d": "MSCHI1"}, {"m": "Rekenen 3", "d": "BDONK"}, {"m": "Burgerschap 3", "d": "EVDHE"}, {"m": "LOB 3", "d": "BDONK"}, {"m": "Safety first", "d": "EVDHE"}, {"m": "Frans 3", "d": "IDERK"}, {"m": "Spaans 3", "d": "MVDWA"}, {"m": "Luchtvaart - Passage (allround)", "d": ""}, {"m": "Luchtvaart - Cabine (allround)", "d": ""}, {"m": "Facilitair - basis (allround)", "d": ""}, {"m": "Check-in Champ 2", "d": "FBREE"}, {"m": "Sales ninja 1", "d": "DPETE"}], "4": [{"m": "Nederlands 4", "d": "EDSNO"}, {"m": "Engels 4", "d": "SYAKO"}, {"m": "Duits 4", "d": "MSCHI1"}, {"m": "Rekenen 4", "d": "BDONK"}, {"m": "Burgerschap 4", "d": "EVDHE"}, {"m": "LOB 4", "d": "NHOOGE"}, {"m": "Digital expert 2", "d": "PTOON"}, {"m": "Ik op stage 2", "d": "MSCHI1"}, {"m": "Horeca - Keuken (allround)", "d": "MHANSS"}, {"m": "Horeca - Bediening (allround)", "d": "JSEES"}, {"m": "Content creator", "d": "BDONK"}, {"m": "People manager 1", "d": "MBURG"}]}}, "ZHPALL4268B_K": {"naam": "Allround Hospitality 4b", "aanbod": {"1": [{"m": "Ik op school", "d": "NHOOGE"}, {"m": "Nederlands 1", "d": "NWERL"}, {"m": "Engels 1", "d": "SYAKO"}, {"m": "Duits 1", "d": "MSCHI1"}, {"m": "Rekenen 1", "d": "BDONK"}, {"m": "Burgerschap 1", "d": "EVDHE"}, {"m": "LOB 1", "d": "JGRAA"}, {"m": "Werkveldverkenning Travel", "d": "JGRAA"}, {"m": "Travel Designer Basis (allround)", "d": "JGRAA"}, {"m": "Frans 1", "d": "IDERK"}, {"m": "Spaans 1", "d": "MVDWA"}, {"m": "KZD INEV", "d": ""}, {"m": "Digital expert 1", "d": "YLEUN"}, {"m": "Duurzaam is de naam 1", "d": "MSCHI1"}, {"m": "Check-in Champ Basis (allround)", "d": "JGRAA"}, {"m": "KZD Podcasting", "d": ""}, {"m": "KZD Sociale hygiëne", "d": ""}, {"m": "KZD Ondernemend handelen", "d": ""}], "2": [{"m": "Nederlands 2", "d": "NWERL"}, {"m": "Engels 2", "d": "SYAKO"}, {"m": "Duits 2", "d": "MSCHI1"}, {"m": "Rekenen 2", "d": "BDONK"}, {"m": "Burgerschap 2", "d": "EVDHE"}, {"m": "LOB 2", "d": "JSEES"}, {"m": "Frans 2", "d": "IDERK"}, {"m": "Spaans 2", "d": "MVDWA"}, {"m": "KZD INEV", "d": ""}, {"m": "Ik op stage 1", "d": "CADRI"}, {"m": "Luchtvaart - Passage (allround)", "d": ""}, {"m": "Luchtvaart - Cabine (allround)", "d": ""}, {"m": "Facilitair - basis (allround)", "d": ""}, {"m": "Check-in Champ 1", "d": "MBURG"}, {"m": "KZD Podcasting", "d": ""}, {"m": "KZD Sociale hygiëne", "d": ""}, {"m": "KZD Bierkennis", "d": ""}], "3": [{"m": "Nederlands 3", "d": "NWERL"}, {"m": "Engels 3", "d": "SYAKO"}, {"m": "Duits 3", "d": "MSCHI1"}, {"m": "Rekenen 3", "d": "BDONK"}, {"m": "Burgerschap 3", "d": "EVDHE"}, {"m": "LOB 3", "d": "JGRAA"}, {"m": "Werkveldverkenning Leisure", "d": "JFONT"}, {"m": "The Entertainer basis", "d": "TMOER"}, {"m": "Sport en Spel basis", "d": "JFONT"}, {"m": "Frans 3", "d": "IDERK"}, {"m": "Spaans 3", "d": "MVDWA"}, {"m": "Check-in Champ 2", "d": "FBREE"}, {"m": "Happiness Hero basis", "d": "BKLEI"}, {"m": "Sales ninja 1", "d": "DPETE"}], "4": [{"m": "Nederlands 4", "d": "NWERL"}, {"m": "Engels 4", "d": "SYAKO"}, {"m": "Duits 4", "d": "MSCHI1"}, {"m": "Rekenen 4", "d": "BDONK"}, {"m": "Burgerschap 4", "d": "EVDHE"}, {"m": "LOB 4", "d": "JSEES"}, {"m": "Safety first", "d": "EVDHE"}, {"m": "Digital expert 2", "d": "YLEUN"}, {"m": "Ik op stage 2", "d": "MSCHI1"}, {"m": "Horeca - Keuken (allround)", "d": "MHANSS"}, {"m": "Horeca - Bediening (allround)", "d": "JSEES"}, {"m": "Content creator", "d": "BDONK"}, {"m": "People manager 1", "d": "MBURG"}]}}, "ZHPDIE268ABOL_K": {"naam": "DVL", "aanbod": {"1": [{"m": "Nederlands 1", "d": "NWERL"}, {"m": "Rekenen 1", "d": "BDONK"}, {"m": "LOB 1", "d": "AALEM"}, {"m": "Ik op stage 1", "d": "AALEM"}, {"m": "Ik op school", "d": "NHOOGE"}, {"m": "Weerbaarheid 1", "d": "JSEES"}, {"m": "Werkveldverkenning DVL", "d": "NHOOGE"}, {"m": "Safety first", "d": "NHOOGE"}, {"m": "Burgerschap 1", "d": "AALEM"}, {"m": "Duurzaam is de naam 1", "d": "JGRAA"}, {"m": "KD Ondernemend handelen", "d": "AALEM"}, {"m": "KZD Ondernemend handelen", "d": ""}, {"m": "KZD Sociale hygiëne", "d": ""}, {"m": "KZD Podcasting", "d": ""}], "2": [{"m": "Nederlands 2", "d": "NWERL"}, {"m": "Rekenen 2", "d": "BDONK"}, {"m": "LOB 2", "d": "MVDWA"}, {"m": "Ik op stage 2", "d": "AALEM"}, {"m": "Weerbaarheid 2", "d": "IDERK"}, {"m": "Sport en Recreatie 1", "d": "JFONT"}, {"m": "Digital expert 1", "d": "MHANSS"}, {"m": "Burgerschap 2", "d": "AALEM"}, {"m": "KZD Bierkennis", "d": ""}, {"m": "KZD Podcasting", "d": ""}, {"m": "KZD Sociale hygiëne", "d": ""}, {"m": "KZD Ondernemend handelen", "d": ""}], "3": [{"m": "Nederlands 3", "d": "NWERL"}, {"m": "Rekenen 3", "d": "BDONK"}, {"m": "LOB 3", "d": "AALEM"}, {"m": "Ik op stage 3", "d": "AALEM"}, {"m": "Weerbaarheid 3", "d": "JSEES"}, {"m": "Sport en Recreatie 2", "d": "JFONT"}, {"m": "Omgaan met doekoe", "d": "YLEUN"}, {"m": "Feyenoord", "d": "AALEM"}, {"m": "Burgerschap 3", "d": "AALEM"}, {"m": "Sport specialisatie", "d": "JFONT"}, {"m": "KZD Sportspecialisatie", "d": ""}], "4": [{"m": "Nederlands 4", "d": "NWERL"}, {"m": "Rekenen 4", "d": "BDONK"}, {"m": "LOB 4", "d": "MVDWA"}, {"m": "Weerbaarheid 4", "d": "IDERK"}, {"m": "Sport en Recreatie 3", "d": "JFONT"}, {"m": "Feyenoord", "d": "AALEM"}, {"m": "Digital expert 2", "d": "YLEUN"}, {"m": "Content creator", "d": "BDONK"}, {"m": "Burgerschap 4", "d": "AALEM"}, {"m": "Ik op stage 4", "d": "AALEM"}]}}, "ZHPTRA4268_K": {"naam": "Leidingg Tourism", "aanbod": {"1": [{"m": "Engels 1", "d": "SYAKO"}, {"m": "Duits 1", "d": "MSCHI1"}, {"m": "Rekenen 1", "d": "PTOON"}, {"m": "Burgerschap 1", "d": "EVDHE"}, {"m": "LOB 1", "d": "DPETE"}, {"m": "Ik op school", "d": "NHOOGE, EVDHE"}, {"m": "KZD INEV", "d": "PTOON"}, {"m": "Nederlands 1", "d": "EDSNO"}, {"m": "Check-in Champ Basis (allround)", "d": "MBURG"}, {"m": "Travel Designer Basis (allround)", "d": "DPETE"}, {"m": "Spaans 1", "d": "MVDWA"}, {"m": "Frans 1", "d": "IDERK"}, {"m": "Duurzaam is de naam 1", "d": "IDERK"}, {"m": "Werkveldverkenning Travel", "d": "DPETE"}, {"m": "People manager 1", "d": "MBURG"}, {"m": "KZD Podcasting", "d": ""}, {"m": "KZD Sociale hygiëne", "d": ""}, {"m": "KZD Ondernemend handelen", "d": ""}], "2": [{"m": "Nederlands 2", "d": "EDSNO"}, {"m": "Engels 2", "d": "SYAKO"}, {"m": "Duits 2", "d": "MSCHI1"}, {"m": "Rekenen 2", "d": "PTOON"}, {"m": "Burgerschap 2", "d": "EVDHE"}, {"m": "LOB 2", "d": "PTOON"}, {"m": "Digital expert 1", "d": "MHANSS"}, {"m": "Ik op stage 1", "d": "CADRI"}, {"m": "KZD INEV", "d": "PTOON"}, {"m": "Check-in Champ 1", "d": "MBURG"}, {"m": "Travel Designer 1", "d": "JGRAA"}, {"m": "Spaans 2", "d": "MVDWA"}, {"m": "Frans 2", "d": "IDERK"}, {"m": "KZD Podcasting", "d": ""}, {"m": "KZD Sociale hygiëne", "d": ""}, {"m": "KZD Bierkennis", "d": ""}], "3": [{"m": "Nederlands 3", "d": "EDSNO"}, {"m": "Engels 3", "d": "SYAKO"}, {"m": "Duits 3", "d": "MSCHI1"}, {"m": "Rekenen 3", "d": "PTOON"}, {"m": "Burgerschap 3", "d": "EVDHE"}, {"m": "LOB 3", "d": "DPETE"}, {"m": "Digital expert 2", "d": "MHANSS"}, {"m": "Ik op stage 2", "d": "MSCHI1"}, {"m": "Safety first", "d": "EVDHE"}, {"m": "Check-in Champ 2", "d": "MBURG"}, {"m": "Travel Designer 2", "d": "DPETE"}, {"m": "Spaans 3", "d": "MVDWA"}, {"m": "Frans 3", "d": "IDERK"}], "4": []}}};
 
 /* ================= Periode-indeling schooljaar 26 - 27 ================= */
 const SCHOOLJAAR = "26 - 27";
@@ -494,103 +504,61 @@ const PERIODES = {
   4:{aantalWeken:9, cp1:3, cp2:7}
 };
 
-/* Weekinhoud per periodelengte (checkpoints/afronding worden apart toegevoegd) */
-const WEEK_INHOUD = {
- 9:[
-  {titel:"Start van mijn periode",focus:"Overzicht maken van de nieuwe onderwijsperiode.",
-   taken:["Open de Module Monitor en vul je gegevens in bij Start","Zet alle modules van deze periode bij Mijn modules","Zet belangrijke deadlines bij Mijn planning","Formuleer twee persoonlijke doelen bij Mijn doelen"],
-   vraag:"Waar wil ik aan het einde van deze periode trots op zijn?"},
-  {titel:"Houd ik overzicht?",focus:"Grip houden op je studievoortgang.",
-   taken:["Werk je planning bij","Controleer per module hoe je ervoor staat","Noteer welke opdrachten af zijn"],
-   vraag:"Waar ben ik deze week tevreden over?"},
-  {titel:"Ligt mijn planning nog op schema?",focus:"Plannen en bijsturen.",
-   taken:["Werk de voortgang van al je modules bij","Controleer of je planning nog haalbaar is","Pas je planning aan waar dat nodig is"],
-   vraag:"Welke gewoonte helpt mij het meeste tijdens mijn opleiding?"},
-  {titel:"Mijn ontwikkeling",focus:"Bewust worden van je persoonlijke ontwikkeling.",
-   taken:["Werk je planning bij","Werk je voortgang bij","Kijk terug op je persoonlijke doelen: hoe gaat het ermee?"],
-   vraag:"Waar ben ik de afgelopen weken in gegroeid?"},
-  {titel:"Hulp vragen",focus:"Zelfstandig werken en weten wanneer je hulp nodig hebt.",
-   taken:["Werk je Module Monitor bij","Geef per module aan of je extra hulp nodig hebt"],
-   vraag:"Waar heb ik op dit moment hulp bij nodig?"},
-  {titel:"Mijn verantwoordelijkheid",focus:"Eigenaarschap nemen over je eigen studie.",
-   taken:["Werk je planning bij","Controleer je voortgang","Kijk eerlijk naar je eigen inzet"],
-   vraag:"Welke afspraak met mezelf ben ik goed nagekomen?"},
-  {titel:"Klaar voor de afronding",focus:"Vooruitkijken naar het einde van de periode.",
-   taken:["Werk je planning bij","Controleer welke modules nog aandacht vragen","Maak een planning voor de laatste weken"],
-   vraag:"Wat moet ik de komende twee weken echt nog afronden?"},
-  {titel:"Klaar voor de afronding",focus:"Voorbereiden op de afronding van de onderwijsperiode.",
-   taken:["Werk je Module Monitor volledig bij","Controleer per module wat er nog openstaat","Maak je planning voor de laatste week","Controleer of je alle inlevermomenten kent"],
-   vraag:"Wat moet ik volgende week afronden om deze periode goed af te sluiten?"},
-  {titel:"Afronding en vooruitkijken",focus:"De periode afronden en vooruitkijken naar de volgende periode.",
-   taken:["Werk je Module Monitor definitief bij","Controleer of al je modules zijn afgerond","Evalueer je doelen uit week 1 (bij Mijn doelen)","Formuleer twee nieuwe doelen voor de volgende periode","Lever je Module Monitor in"],
-   vraag:"Waar ben ik deze periode het meest trots op en wat neem ik mee naar de volgende periode?"}
- ],
- 7:[
-  {titel:"Start van mijn periode",focus:"Overzicht maken van de nieuwe onderwijsperiode.",
-   taken:["Open de Module Monitor en vul je gegevens in bij Start","Zet alle modules van deze periode bij Mijn modules","Zet belangrijke deadlines bij Mijn planning","Formuleer twee persoonlijke doelen bij Mijn doelen"],
-   vraag:"Waar wil ik aan het einde van deze periode trots op zijn?"},
-  {titel:"Houd ik overzicht?",focus:"Grip houden op je studievoortgang en je planning bijsturen.",
-   taken:["Werk je planning bij","Controleer per module hoe je ervoor staat","Pas je planning aan waar dat nodig is"],
-   vraag:"Waar ben ik deze week tevreden over?"},
-  {titel:"Mijn ontwikkeling",focus:"Bewust worden van je persoonlijke ontwikkeling.",
-   taken:["Werk je planning bij","Werk je voortgang bij","Kijk terug op je persoonlijke doelen: hoe gaat het ermee?"],
-   vraag:"Waar ben ik de afgelopen weken in gegroeid?"},
-  {titel:"Hulp vragen",focus:"Zelfstandig werken en weten wanneer je hulp nodig hebt.",
-   taken:["Werk je Module Monitor bij","Geef per module aan of je extra hulp nodig hebt"],
-   vraag:"Waar heb ik op dit moment hulp bij nodig?"},
-  {titel:"Klaar voor de afronding",focus:"Vooruitkijken naar het einde van de periode.",
-   taken:["Werk je planning bij","Controleer welke modules nog aandacht vragen","Maak een planning voor de laatste weken"],
-   vraag:"Wat moet ik de komende twee weken echt nog afronden?"},
-  {titel:"Klaar voor de afronding",focus:"Voorbereiden op de afronding van de onderwijsperiode.",
-   taken:["Werk je Module Monitor volledig bij","Controleer per module wat er nog openstaat","Maak je planning voor de laatste week","Controleer of je alle inlevermomenten kent"],
-   vraag:"Wat moet ik volgende week afronden om deze periode goed af te sluiten?"},
-  {titel:"Afronding en vooruitkijken",focus:"De periode afronden en vooruitkijken naar de volgende periode.",
-   taken:["Werk je Module Monitor definitief bij","Controleer of al je modules zijn afgerond","Evalueer je doelen uit week 1 (bij Mijn doelen)","Formuleer twee nieuwe doelen voor de volgende periode","Lever je Module Monitor in"],
-   vraag:"Waar ben ik deze periode het meest trots op en wat neem ik mee naar de volgende periode?"}
- ]
+const WEEK_TITELS = {
+  7:["Start van mijn periode","Op koers komen","Doorpakken","Halverwege","Vooruitkijken","Klaar voor de afronding","Afronding en vooruitkijken"],
+  9:["Start van mijn periode","Op koers komen","Doorpakken","Mijn ontwikkeling","Halverwege","Doorzetten","Vooruitkijken","Klaar voor de afronding","Afronding en vooruitkijken"]
 };
 
-const HULPZINNEN = "Weet je niet hoe je moet beginnen? Gebruik een van deze zinnen:<br>&bull; Deze week ging goed dat ik...<br>&bull; Ik vond het lastig om...<br>&bull; Volgende week ga ik...";
-
-/* Bouw de weekdefinitie voor een periode: inhoud + checkpoints + afronding */
 function wekenVoorPeriode(pNr){
   const cfg = PERIODES[pNr];
-  const inhoud = WEEK_INHOUD[cfg.aantalWeken];
-  return inhoud.map((w,idx)=>{
+  const titels = WEEK_TITELS[cfg.aantalWeken];
+  return titels.map((titel,idx)=>{
     const nr = idx+1;
-    const week = Object.assign({nr:nr}, w);
-    if(nr===cfg.cp1){
-      week.checkpoint = {nr:1, van:1, tm:cfg.cp1};
-    }else if(nr===cfg.cp2){
-      week.checkpoint = {nr:2, van:cfg.cp1+1, tm:cfg.cp2};
-    }else if(nr===cfg.aantalWeken){
-      week.afronding = true;
-    }
+    const week = {nr:nr, titel:titel, taken:takenVoorWeek(nr,cfg.aantalWeken)};
+    if(nr===cfg.cp1){ week.checkpoint = {nr:1}; }
+    else if(nr===cfg.cp2){ week.checkpoint = {nr:2}; }
+    else if(nr===cfg.aantalWeken){ week.afronding = true; }
     return week;
   });
 }
-function checkpointProducten(cp){
-  const bereik = cp.van===cp.tm ? "week "+cp.tm : "week "+cp.van+" t/m "+cp.tm;
+function takenVoorWeek(nr,totaal){
+  if(nr===1) return [
+    "Vul je gegevens in en kies je klas bij Start",
+    "Stel bij Mijn modules jouw modulelijst samen",
+    "Vul per module de deadlines in die je al weet",
+    "Formuleer twee persoonlijke doelen bij Mijn doelen"
+  ];
+  if(nr===totaal) return [
+    "Werk de status van al je checkpoints definitief bij",
+    "Controleer of al je modules zijn afgerond",
+    "Evalueer je doelen (bij Mijn doelen)",
+    "Formuleer twee nieuwe doelen voor de volgende periode",
+    "Lever je Module Monitor in"
+  ];
   return [
-    "Je bijgewerkte Module Monitor van "+bereik,
-    "Je actuele planning",
-    "De voortgang van al je modules",
-    "Je antwoorden op de coachvragen van "+bereik,
-    "Je korte reflecties van "+bereik
+    "Werk per module de status van je checkpoints bij",
+    "Controleer of je deadlines nog kloppen en vul nieuwe in",
+    "Kijk kort naar je doelen: lig je op koers?"
   ];
 }
+const CHECKPOINT_PRODUCTEN = [
+  "Je bijgewerkte Module Monitor",
+  "De status en deadlines van al je modules",
+  "Je twee persoonlijke doelen"
+];
 
 /* ================= Status en opslag ================= */
-const OPSLAG_SLEUTEL = "albeda-module-monitor-2627-v2";
+const OPSLAG_SLEUTEL = "albeda-module-monitor-2627-v3";
+const MOMENTEN = [["c1","Checkpoint 1"],["c2","Checkpoint 2"],["af","Afronding"]];
 
+function leegMoment(){ return {datum:"", status:"nietgestart"}; }
 function legePeriode(pNr){
   const weken = wekenVoorPeriode(pNr);
   return {
     modules:[],
-    deadlines:[],
     doelen:[{tekst:"",status:"",evaluatie:""},{tekst:"",status:"",evaluatie:""}],
     nieuweDoelen:["",""],
-    weken:weken.reduce((a,w)=>{a[w.nr]={taken:w.taken.map(()=>false),coach:"",reflectie:""};return a;},{}),
+    weken:weken.reduce((a,w)=>{a[w.nr]={taken:w.taken.map(()=>false)};return a;},{}),
     checkpoints:{1:false,2:false,eind:false}
   };
 }
@@ -601,7 +569,7 @@ function leegModel(){
   };
 }
 let model = leegModel();
-let actievePeriode = null;   /* 1..4 of null (voorblad) */
+let actievePeriode = null;
 let geheugenOpslag = null;
 
 function pd(){ return model.periodes[actievePeriode]; }
@@ -620,25 +588,29 @@ async function laadModel(){
   if(geheugenOpslag){ model = herstel(geheugenOpslag); }
 }
 function herstel(data){
-  const basis = leegModel();
-  const m = basis;
-  if(data && data.student) m.student = Object.assign(basis.student, data.student);
+  const m = leegModel();
+  if(data && data.student) m.student = Object.assign(m.student, data.student);
   for(const p of [1,2,3,4]){
     const d = data && data.periodes && data.periodes[p];
     if(!d) continue;
-    const bp = basis.periodes[p];
-    bp.modules = Array.isArray(d.modules)?d.modules:[];
-    bp.deadlines = Array.isArray(d.deadlines)?d.deadlines:[];
+    const bp = m.periodes[p];
+    if(Array.isArray(d.modules)){
+      bp.modules = d.modules.map(mod=>({
+        naam: mod.naam||"",
+        docent: mod.docent||"",
+        mom: {
+          c1: Object.assign(leegMoment(), (mod.mom&&mod.mom.c1)||{}),
+          c2: Object.assign(leegMoment(), (mod.mom&&mod.mom.c2)||{}),
+          af: Object.assign(leegMoment(), (mod.mom&&mod.mom.af)||{})
+        }
+      }));
+    }
     if(Array.isArray(d.doelen)&&d.doelen.length===2) bp.doelen = d.doelen;
     if(Array.isArray(d.nieuweDoelen)) bp.nieuweDoelen = d.nieuweDoelen;
     if(d.weken){
       for(const nr in bp.weken){
-        if(d.weken[nr]){
-          bp.weken[nr].coach = d.weken[nr].coach||"";
-          bp.weken[nr].reflectie = d.weken[nr].reflectie||"";
-          if(Array.isArray(d.weken[nr].taken)){
-            bp.weken[nr].taken = bp.weken[nr].taken.map((_,i)=>!!d.weken[nr].taken[i]);
-          }
+        if(d.weken[nr] && Array.isArray(d.weken[nr].taken)){
+          bp.weken[nr].taken = bp.weken[nr].taken.map((_,i)=>!!d.weken[nr].taken[i]);
         }
       }
     }
@@ -667,19 +639,41 @@ function toonStatus(tekst, ok){
   el.classList.toggle("ok", !!ok);
 }
 
-/* Pad-helpers: student.* is globaal, andere paden binnen de actieve periode */
-function padObj(pad){
-  return pad.startsWith("student.") ? model : pd();
-}
+/* Pad-helpers: student.* globaal, andere paden binnen de actieve periode */
+function padObj(pad){ return pad.startsWith("student.") ? model : pd(); }
 function padLees(pad){
-  const sleutels = pad.split(".");
-  return sleutels.reduce((o,k)=>o?o[k]:undefined, padObj(pad));
+  return pad.split(".").reduce((o,k)=>o?o[k]:undefined, padObj(pad));
 }
 function padSchrijf(pad,waarde){
   const delen = pad.split(".");
   let o = padObj(pad);
   for(let i=0;i<delen.length-1;i++){ o = o[delen[i]]; }
   o[delen[delen.length-1]] = waarde;
+}
+
+/* ================= Voortgangsmeter ================= */
+function meterVoorPeriode(pNr){
+  const per = model.periodes[pNr];
+  const totaal = per.modules.length * 3;
+  let punten = 0, af = 0;
+  per.modules.forEach(mod=>{
+    for(const [sleutel] of MOMENTEN){
+      const st = mod.mom[sleutel].status;
+      if(st==="afgerond"){ punten += 1; af += 1; }
+      else if(st==="bezig"){ punten += 0.5; }
+    }
+  });
+  const pct = totaal ? Math.round(punten/totaal*100) : 0;
+  return {pct, af, totaal};
+}
+function meterBoodschap(m, aantalModules){
+  if(aantalModules===0) return "Voeg je modules toe, dan gaat de meter lopen!";
+  if(m.pct===0) return "Zet je eerste checkpoint op 'ik ben bezig' en je bent onderweg!";
+  if(m.pct<25) return "Goed begonnen, ga zo door!";
+  if(m.pct<50) return "Lekker bezig, je bent op weg!";
+  if(m.pct<75) return "Meer dan de helft, sterk!";
+  if(m.pct<100) return "Bijna klaar, de laatste loodjes!";
+  return "\uD83C\uDF89 Alles afgerond, wat een topper!";
 }
 
 /* ================= Navigatie ================= */
@@ -706,36 +700,23 @@ function openPeriode(pNr){
   document.getElementById("header-context").textContent =
     "Schooljaar "+SCHOOLJAAR+" \u00B7 Onderwijsperiode "+pNr+" \u00B7 "+cfg.aantalWeken+" weken";
   document.getElementById("werkwijze-intro").textContent =
-    "Onderwijsperiode "+pNr+" duurt "+cfg.aantalWeken+" weken. Elke week werk je in de SLB-les ongeveer 45 minuten aan je Module Monitor. Zo houd je overzicht en ben je altijd voorbereid op je coachgesprek.";
+    "Onderwijsperiode "+pNr+" duurt "+cfg.aantalWeken+" weken. Elke week werk je in de SLB-les kort je Module Monitor bij. Zo houd je overzicht en zie je jezelf vooruitgaan.";
   document.getElementById("werkwijze-checkpoints").innerHTML =
-    "In <strong>week "+cfg.cp1+"</strong> en <strong>week "+cfg.cp2+"</strong> lever je in bij een <strong>checkpoint</strong>. In <strong>week "+cfg.aantalWeken+"</strong> is de afronding.";
+    "In <strong>week "+cfg.cp1+"</strong> en <strong>week "+cfg.cp2+"</strong> lever je jouw monitor in als PDF. In <strong>week "+cfg.aantalWeken+"</strong> is de afronding.";
   document.getElementById("nieuwedoelen-eyebrow").textContent = "Week "+cfg.aantalWeken;
   bouwWeken(pNr);
   vulAlles();
-  updateVoortgang();
-  toonPaneel("start");
+  updateAlles();
+  toonPaneel(model.student.klas ? "modules" : "start");
 }
 
 /* ================= Voorblad ================= */
-function periodeVoortgang(pNr){
-  const per = model.periodes[pNr];
-  const weken = wekenVoorPeriode(pNr);
-  let punten = 0, totaal = 0;
-  weken.forEach(w=>{
-    const d = per.weken[w.nr];
-    totaal += w.taken.length + 2;
-    punten += d.taken.filter(Boolean).length + (d.coach.trim()?1:0) + (d.reflectie.trim()?1:0);
-  });
-  totaal += 3;
-  punten += (per.checkpoints[1]?1:0)+(per.checkpoints[2]?1:0)+(per.checkpoints.eind?1:0);
-  return totaal?Math.round(punten/totaal*100):0;
-}
 function tekenVoorblad(){
   const grid = document.getElementById("periode-grid");
   grid.innerHTML = "";
   for(const pNr of [1,2,3,4]){
     const cfg = PERIODES[pNr];
-    const pct = periodeVoortgang(pNr);
+    const m = meterVoorPeriode(pNr);
     const kaart = document.createElement("button");
     kaart.className = "periode-kaart";
     kaart.dataset.periode = pNr;
@@ -744,16 +725,16 @@ function tekenVoorblad(){
       <div class="pk-titel">Onderwijs&shy;periode ${pNr}</div>
       <div class="pk-info">
         ${cfg.aantalWeken} weken<br>
-        Checkpoint 1 in week ${cfg.cp1} &middot; Checkpoint 2 in week ${cfg.cp2}<br>
+        Monitor inleveren in week ${cfg.cp1} en ${cfg.cp2}<br>
         Afronding in week ${cfg.aantalWeken}
       </div>
-      <div class="pk-balk"><div style="width:${pct}%"></div></div>
-      <div class="pk-pct">${pct}% ingevuld</div>`;
+      <div class="pk-balk"><div style="width:${m.pct}%"></div></div>
+      <div class="pk-pct">${m.totaal?m.pct+"% van je checkpoints afgerond":"Nog geen modules gekozen"}</div>`;
     grid.appendChild(kaart);
   }
 }
 
-/* ================= Weekpanelen bouwen (per periode) ================= */
+/* ================= Weekpanelen bouwen ================= */
 function bouwWeken(pNr){
   const chips = document.getElementById("week-chips");
   const houder = document.getElementById("week-panelen");
@@ -774,13 +755,12 @@ function bouwWeken(pNr){
 
     let bannerHtml = "";
     if(w.checkpoint){
-      const cp = w.checkpoint;
       bannerHtml = `
       <div class="checkpoint">
-        <h3>Checkpoint ${cp.nr} &mdash; deze week inleveren</h3>
+        <h3>Checkpoint ${w.checkpoint.nr} van de SLB-module &mdash; deze week inleveren</h3>
         <p style="font-size:.87rem">Dit lever je in via Its Learning:</p>
-        <ul>${checkpointProducten(cp).map(p=>`<li>${p}</li>`).join("")}</ul>
-        <label><input type="checkbox" data-checkpoint="${cp.nr}"> Ik heb Checkpoint ${cp.nr} ingeleverd</label>
+        <ul>${CHECKPOINT_PRODUCTEN.map(p=>`<li>${p}</li>`).join("")}</ul>
+        <label><input type="checkbox" data-checkpoint="${w.checkpoint.nr}"> Ik heb dit ingeleverd</label>
       </div>`;
     }else if(w.afronding){
       bannerHtml = `
@@ -793,9 +773,9 @@ function bouwWeken(pNr){
 
     let printKnopHtml = "";
     if(w.checkpoint){
-      printKnopHtml = `<button class="knop oranje" data-print-cp="${w.checkpoint.nr}">Maak PDF voor Checkpoint ${w.checkpoint.nr} (week ${w.checkpoint.van} t/m ${w.checkpoint.tm})</button>`;
+      printKnopHtml = `<button class="knop oranje" data-print-week="1">Maak PDF voor Checkpoint ${w.checkpoint.nr} om in te leveren</button>`;
     }else if(w.afronding){
-      printKnopHtml = `<button class="knop oranje" data-print-eind="1">Maak PDF van de hele periode om in te leveren</button>`;
+      printKnopHtml = `<button class="knop oranje" data-print-week="1">Maak PDF van de hele periode om in te leveren</button>`;
     }
 
     sec.innerHTML = `
@@ -808,7 +788,9 @@ function bouwWeken(pNr){
             <h2>${w.titel}</h2>
           </div>
         </div>
-        <div class="focus-blok"><strong>Focus deze week:</strong> ${w.focus}</div>
+
+        <h3>Dit komt eraan</h3>
+        <ul class="deadlines" data-deadlines="${w.nr}"></ul>
 
         <h3>Mijn taken deze week</h3>
         <ul class="taken">
@@ -816,126 +798,104 @@ function bouwWeken(pNr){
             <li><input type="checkbox" data-week="${w.nr}" data-taak="${i}" id="w${w.nr}t${i}">
             <span><label for="w${w.nr}t${i}" style="cursor:pointer">${t}</label></span></li>`).join("")}
         </ul>
-
-        <h3>Coachvraag van de week</h3>
-        <div class="coachvraag">&ldquo;${w.vraag}&rdquo;</div>
-        <textarea data-week="${w.nr}" data-veld="coach" placeholder="Schrijf hier jouw eerlijke antwoord..."></textarea>
-
-        <h3>Korte reflectie</h3>
-        <button type="button" class="hulp-toggle" data-hulp="${w.nr}">Hulp nodig bij het schrijven?</button>
-        <div class="hulpzinnen" id="hulp-${w.nr}">${HULPZINNEN}</div>
-        <textarea data-week="${w.nr}" data-veld="reflectie" placeholder="Hoe ging deze week? Wat ging goed en wat ga je volgende week anders doen?"></textarea>
         ${printKnopHtml}
       </div>`;
     houder.appendChild(sec);
   });
 }
 
-/* ================= Afdrukken (PDF) ================= */
-function drukAf(weekVan, weekTm, titel){
-  /* vul de printkop */
-  const s = model.student;
-  document.getElementById("print-titel").textContent = titel;
-  document.getElementById("print-gegevens").textContent =
-    [s.naam?("Naam: "+s.naam):null,
-     s.klas?("Klas: "+s.klas):null,
-     s.niveau?("Niveau "+s.niveau):null,
-     s.slb?("SLB'er: "+s.slb):null,
-     "Schooljaar "+SCHOOLJAAR,
-     "Onderwijsperiode "+actievePeriode
-    ].filter(Boolean).join("  \u00B7  ");
-
-  /* selecteer de panelen die meegaan in de PDF */
-  document.querySelectorAll("section.paneel").forEach(p=>p.classList.remove("print-aan"));
-  ["paneel-modules","paneel-planning","paneel-doelen"].forEach(id=>{
-    document.getElementById(id).classList.add("print-aan");
+/* ================= Deadlines ("Dit komt eraan") ================= */
+function datumTekst(iso){
+  const d = new Date(iso+"T12:00:00");
+  if(isNaN(d)) return iso;
+  const dagen = ["zo","ma","di","wo","do","vr","za"];
+  const maanden = ["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
+  return dagen[d.getDay()]+" "+d.getDate()+" "+maanden[d.getMonth()];
+}
+function tekenDeadlines(){
+  const vandaag = new Date(); vandaag.setHours(0,0,0,0);
+  const items = [];
+  pd().modules.forEach(mod=>{
+    MOMENTEN.forEach(([sleutel,label])=>{
+      const mm = mod.mom[sleutel];
+      if(mm.datum && mm.status!=="afgerond"){
+        items.push({datum:mm.datum, tekst:mod.naam+" \u00B7 "+label,
+          teLaat: new Date(mm.datum+"T12:00:00") < vandaag});
+      }
+    });
   });
-  for(let n=weekVan;n<=weekTm;n++){
-    const p = document.getElementById("paneel-week"+n);
-    if(p) p.classList.add("print-aan");
+  items.sort((a,b)=>a.datum.localeCompare(b.datum));
+  const top = items.slice(0,6);
+  let html;
+  if(pd().modules.length===0){
+    html = `<li><span class="d-wat" style="color:var(--grijs)">Stel eerst je modules samen bij Mijn modules.</span></li>`;
+  }else if(top.length===0){
+    html = `<li><span class="d-wat" style="color:var(--grijs)">Geen openstaande deadlines. Vul je deadlines in bij Mijn modules, of geniet ervan dat alles af is!</span></li>`;
+  }else{
+    html = top.map(i=>`
+      <li><span class="d-datum">${datumTekst(i.datum)}</span>
+      <span class="d-wat">${i.tekst}</span>
+      ${i.teLaat?'<span class="d-laat">nog niet afgerond</span>':''}</li>`).join("");
   }
-  window.print();
+  document.querySelectorAll("[data-deadlines]").forEach(ul=>{ ul.innerHTML = html; });
 }
 
-/* ================= Modules-tabel ================= */
-const MODULE_STATUS = [
-  ["nietgestart","Nog niet gestart"],
+/* ================= Modules ================= */
+const STATUS_OPTIES = [
+  ["nietgestart","Ik ben nog niet gestart"],
   ["bezig","Ik ben bezig"],
-  ["bijnaklaar","Bijna klaar"],
   ["afgerond","Afgerond"]
 ];
+function aanbodVoorNu(){
+  const klas = KLASSEN[model.student.klas];
+  if(!klas || !actievePeriode) return [];
+  return klas.aanbod[actievePeriode] || [];
+}
+function vulModuleKeuze(){
+  const sel = document.getElementById("module-kies");
+  const aanbod = aanbodVoorNu();
+  const gekozen = new Set(pd().modules.map(m=>m.naam));
+  sel.innerHTML = `<option value="">Kies een module uit het aanbod...</option>` +
+    aanbod.map((a,i)=>`<option value="${i}"${gekozen.has(a.m)?" disabled":""}>${a.m}${a.d?" \u2014 "+a.d:""}</option>`).join("") +
+    `<option value="__zelf__">Staat je module er niet bij? Typ hem zelf...</option>`;
+  const melding = document.getElementById("aanbod-melding");
+  if(!model.student.klas){
+    melding.textContent = "Kies eerst je klas bij Start, dan verschijnt hier het aanbod van jouw klas.";
+  }else if(aanbod.length===0){
+    melding.textContent = "Voor deze periode is er geen moduleaanbod bekend voor jouw klas (bijvoorbeeld een BPV-periode). Typ je module zelf als dat nodig is.";
+  }else{
+    melding.textContent = "";
+  }
+}
 function tekenModules(){
-  const body = document.querySelector("#tabel-modules tbody");
-  body.innerHTML = "";
+  const houder = document.getElementById("module-lijst");
+  houder.innerHTML = "";
+  if(pd().modules.length===0){
+    houder.innerHTML = `<div class="leeg-melding">Nog geen modules gekozen. Voeg hieronder je eerste module toe uit het aanbod van jouw klas.</div>`;
+  }
   pd().modules.forEach((mod,i)=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><input type="text" data-mod="${i}" data-mv="naam" placeholder="Naam module"></td>
-      <td><input type="text" data-mod="${i}" data-mv="docent" placeholder="Docent"></td>
-      <td><select data-mod="${i}" data-mv="status" class="status-${mod.status||'nietgestart'}">
-        ${MODULE_STATUS.map(s=>`<option value="${s[0]}"${(mod.status||"nietgestart")===s[0]?" selected":""}>${s[1]}</option>`).join("")}
-      </select></td>
-      <td><select data-mod="${i}" data-mv="hulp">
-        <option value="nee"${mod.hulp!=="ja"?" selected":""}>Nee</option>
-        <option value="ja"${mod.hulp==="ja"?" selected":""}>Ja</option>
-      </select></td>
-      <td><input type="text" data-mod="${i}" data-mv="open" placeholder="Bijv. opdracht 2, toets"></td>
-      <td><button class="verwijder" data-verwijder-mod="${i}" title="Module verwijderen">&#10005;</button></td>`;
-    tr.querySelector('[data-mv="naam"]').value = mod.naam||"";
-    tr.querySelector('[data-mv="docent"]').value = mod.docent||"";
-    tr.querySelector('[data-mv="open"]').value = mod.open||"";
-    body.appendChild(tr);
-  });
-}
-
-/* ================= Planning-tabel ================= */
-const DEADLINE_STATUS = [["tedoen","Te doen"],["bezig","Bezig"],["klaar","Klaar"]];
-
-/* Bouwt de keuzelijst met de modules die bij Mijn modules zijn ingevuld.
-   Een eerder gekozen module die daar niet (meer) staat, blijft gewoon staan. */
-function veiligeTekst(t){
-  return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-}
-function moduleOpties(huidig){
-  const nu = (huidig||"").trim();
-  const namen = [];
-  pd().modules.forEach(m=>{
-    const n = (m.naam||"").trim();
-    if(n && !namen.includes(n)) namen.push(n);
-  });
-  if(nu && !namen.includes(nu)) namen.push(nu);
-  const leeg = namen.length
-    ? `<option value=""${nu===""?" selected":""}>Kies een module...</option>`
-    : `<option value=""${nu===""?" selected":""}>Vul eerst je modules in</option>`;
-  return leeg + namen.map(n=>
-    `<option value="${veiligeTekst(n)}"${n===nu?" selected":""}>${veiligeTekst(n)}</option>`
-  ).join("");
-}
-/* Kleurt een datum rood als die buiten schooljaar 26-27 valt (bijv. jaar 0002). */
-function markeerDatum(el){
-  const v = el.value;
-  const fout = v && (v < "2026-08-01" || v > "2027-07-31");
-  el.classList.toggle("datum-fout", !!fout);
-  el.title = fout ? "Deze datum valt buiten schooljaar 26-27. Controleer het jaartal." : "";
-}
-function tekenPlanning(){
-  pd().deadlines.sort((a,b)=>(a.datum||"9999").localeCompare(b.datum||"9999"));
-  const body = document.querySelector("#tabel-planning tbody");
-  body.innerHTML = "";
-  pd().deadlines.forEach((d,i)=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><input type="date" data-dl="${i}" data-dv="datum" min="2026-08-01" max="2027-07-31"></td>
-      <td><select data-dl="${i}" data-dv="module">${moduleOpties(d.module)}</select></td>
-      <td><input type="text" data-dl="${i}" data-dv="wat" placeholder="Wat moet er gebeuren?"></td>
-      <td><select data-dl="${i}" data-dv="status">
-        ${DEADLINE_STATUS.map(s=>`<option value="${s[0]}"${(d.status||"tedoen")===s[0]?" selected":""}>${s[1]}</option>`).join("")}
-      </select></td>
-      <td><button class="verwijder" data-verwijder-dl="${i}" title="Deadline verwijderen">&#10005;</button></td>`;
-    tr.querySelector('[data-dv="datum"]').value = d.datum||"";
-    markeerDatum(tr.querySelector('[data-dv="datum"]'));
-    tr.querySelector('[data-dv="wat"]').value = d.wat||"";
-    body.appendChild(tr);
+    const div = document.createElement("div");
+    div.className = "mod-kaart";
+    div.innerHTML = `
+      <div class="mod-kop">
+        <span class="mod-naam">${mod.naam}</span>
+        <span class="mod-docent">${mod.docent||""}</span>
+        <button class="verwijder" data-verwijder-mod="${i}" title="Module verwijderen" aria-label="Module ${mod.naam} verwijderen">&#10005;</button>
+      </div>
+      <div class="momenten">
+        ${MOMENTEN.map(([sleutel,label])=>{
+          const mm = mod.mom[sleutel];
+          return `
+          <div class="moment${mm.status==="afgerond"?" klaar":""}">
+            <div class="m-label">${label}</div>
+            <input type="date" value="${mm.datum}" data-mod="${i}" data-mom="${sleutel}" data-veld="datum" aria-label="Deadline ${label} van ${mod.naam}">
+            <select data-mod="${i}" data-mom="${sleutel}" data-veld="status" class="status-${mm.status}" aria-label="Status ${label} van ${mod.naam}">
+              ${STATUS_OPTIES.map(s=>`<option value="${s[0]}"${mm.status===s[0]?" selected":""}>${s[1]}</option>`).join("")}
+            </select>
+          </div>`;
+        }).join("")}
+      </div>`;
+    houder.appendChild(div);
   });
 }
 
@@ -954,124 +914,144 @@ function tekenDoelen(){
         ${DOEL_STATUS.map(s=>`<label><input type="radio" name="doelstatus${i}" value="${s[0]}"${d.status===s[0]?" checked":""}> ${s[1]}</label>`).join("")}
       </div>
       <label class="veldlabel">Evaluatie in de laatste week: is het gelukt? Hoe komt dat?</label>
-      <textarea data-doelnr="${i}" data-dvld="evaluatie" style="min-height:64px" placeholder="Vul dit in aan het einde van de periode."></textarea>`;
+      <textarea data-doelnr="${i}" data-dvld="evaluatie" placeholder="Vul dit in aan het einde van de periode."></textarea>`;
     div.querySelector('[data-dvld="tekst"]').value = d.tekst||"";
     div.querySelector('[data-dvld="evaluatie"]').value = d.evaluatie||"";
     houder.appendChild(div);
   });
 }
 
-/* ================= Voortgang & periodeklaar ================= */
+/* ================= Alles bijwerken ================= */
 function isWeekKlaar(nr){
   const w = pd().weken[nr];
-  if(!w) return false;
-  return w.taken.every(Boolean) && w.coach.trim().length>0 && w.reflectie.trim().length>0;
+  return w ? w.taken.every(Boolean) : false;
 }
-function updateVoortgang(){
+function updateAlles(){
   if(!actievePeriode) return;
-  const pct = periodeVoortgang(actievePeriode);
-  document.getElementById("voortgang-pct").textContent = pct+"%";
-  document.getElementById("voortgang-balk").style.width = pct+"%";
+  const m = meterVoorPeriode(actievePeriode);
+  const boodschap = meterBoodschap(m, pd().modules.length);
+  document.getElementById("voortgang-pct").textContent = m.pct+"%";
+  document.getElementById("voortgang-balk").style.width = m.pct+"%";
+  document.getElementById("meter-pct").textContent = m.pct+"%";
+  document.getElementById("meter-balk").style.width = m.pct+"%";
+  document.getElementById("meter-boodschap").textContent = boodschap;
+  document.getElementById("meter-detail").textContent =
+    m.totaal ? m.af+" van de "+m.totaal+" checkpoints afgerond" : "";
   document.querySelectorAll(".week-chip").forEach(chip=>{
     const nr = parseInt(chip.dataset.doel.replace("week",""),10);
     chip.classList.toggle("klaar", isWeekKlaar(nr));
   });
+  tekenDeadlines();
   tekenPeriodeklaar();
 }
 function tekenPeriodeklaar(){
   const per = pd();
   const weken = wekenVoorPeriode(actievePeriode);
+  const m = meterVoorPeriode(actievePeriode);
+  const cfg = PERIODES[actievePeriode];
   const items = [
-    ["Alle "+weken.length+" weekpagina's zijn ingevuld", weken.every(w=>isWeekKlaar(w.nr))],
-    ["Checkpoint 1 is ingeleverd (week "+PERIODES[actievePeriode].cp1+")", !!per.checkpoints[1]],
-    ["Checkpoint 2 is ingeleverd (week "+PERIODES[actievePeriode].cp2+")", !!per.checkpoints[2]],
-    ["Mijn Module Monitor is ingeleverd bij de afronding", !!per.checkpoints.eind],
-    ["Mijn twee doelen zijn ingevuld en geevalueerd", per.doelen.every(d=>d.tekst.trim()&&d.evaluatie.trim())],
-    ["Ik heb twee nieuwe doelen voor de volgende periode", per.nieuweDoelen.every(d=>(d||"").trim())]
+    ["Al je modules staan in de monitor", per.modules.length>0],
+    ["Alle checkpoints van je modules zijn afgerond ("+m.af+" van "+m.totaal+")", m.totaal>0 && m.af===m.totaal],
+    ["Monitor ingeleverd bij Checkpoint 1 (week "+cfg.cp1+")", !!per.checkpoints[1]],
+    ["Monitor ingeleverd bij Checkpoint 2 (week "+cfg.cp2+")", !!per.checkpoints[2]],
+    ["Monitor ingeleverd bij de afronding", !!per.checkpoints.eind],
+    ["Je twee doelen zijn ingevuld en geevalueerd", per.doelen.every(d=>d.tekst.trim()&&d.evaluatie.trim())],
+    ["Je hebt twee nieuwe doelen voor de volgende periode", per.nieuweDoelen.every(d=>(d||"").trim())]
   ];
-  const ul = document.getElementById("moduleklaar-lijst");
+  const ul = document.getElementById("periodeklaar-lijst");
   ul.innerHTML = items.map(([tekst,ok])=>`
     <li class="${ok?'gedaan':''}"><span style="font-size:1.1rem;color:${ok?'var(--groen)':'var(--grijs)'}">${ok?'\u2713':'\u25CB'}</span><span>${tekst}</span></li>`).join("");
 }
 
+/* ================= Afdrukken (PDF) ================= */
+function drukAf(titel){
+  const s = model.student;
+  const klas = KLASSEN[s.klas];
+  document.getElementById("print-titel").textContent = titel;
+  document.getElementById("print-gegevens").textContent =
+    [s.naam?("Naam: "+s.naam):null,
+     s.klas?("Klas: "+(klas?klas.naam:s.klas)):null,
+     s.niveau?("Niveau "+s.niveau):null,
+     s.slb?("SLB'er: "+s.slb):null,
+     "Schooljaar "+SCHOOLJAAR,
+     "Onderwijsperiode "+actievePeriode
+    ].filter(Boolean).join("  \u00B7  ");
+  document.querySelectorAll("section.paneel").forEach(p=>p.classList.remove("print-aan"));
+  ["paneel-modules","paneel-doelen"].forEach(id=>{
+    document.getElementById(id).classList.add("print-aan");
+  });
+  window.print();
+}
+
 /* ================= Gebeurtenissen ================= */
 function koppelGebeurtenissen(){
-  /* voorblad: periode kiezen */
   document.getElementById("periode-grid").addEventListener("click",e=>{
     const k = e.target.closest(".periode-kaart");
     if(k) openPeriode(+k.dataset.periode);
   });
 
-  /* navigatie */
   document.getElementById("hoofdnav").addEventListener("click",e=>{
     const b = e.target.closest("button[data-doel]");
     if(b) toonPaneel(b.dataset.doel);
   });
 
-  /* algemene data-pad velden */
   document.querySelectorAll("[data-pad]").forEach(el=>{
-    el.addEventListener("input",()=>{ padSchrijf(el.dataset.pad, el.value); bewaar(); updateVoortgang(); });
+    el.addEventListener("input",()=>{
+      padSchrijf(el.dataset.pad, el.value);
+      if(el.dataset.pad==="student.klas"){ vulModuleKeuze(); }
+      bewaar(); updateAlles();
+    });
   });
 
-  /* modules */
-  document.getElementById("knop-module").addEventListener("click",()=>{
-    pd().modules.push({naam:"",docent:"",status:"nietgestart",hulp:"nee",open:""});
-    tekenModules(); bewaar();
+  /* module toevoegen uit aanbod */
+  const kies = document.getElementById("module-kies");
+  kies.addEventListener("change",()=>{
+    document.getElementById("zelf-rij").style.display = kies.value==="__zelf__" ? "grid" : "none";
   });
+  document.getElementById("knop-module").addEventListener("click",()=>{
+    const waarde = kies.value;
+    if(waarde==="" ) return;
+    if(waarde==="__zelf__"){
+      document.getElementById("zelf-rij").style.display = "grid";
+      document.getElementById("zelf-naam").focus();
+      return;
+    }
+    const a = aanbodVoorNu()[+waarde];
+    if(!a) return;
+    pd().modules.push({naam:a.m, docent:a.d||"", mom:{c1:leegMoment(),c2:leegMoment(),af:leegMoment()}});
+    kies.value = "";
+    tekenModules(); vulModuleKeuze(); bewaar(); updateAlles();
+  });
+  document.getElementById("knop-zelf").addEventListener("click",()=>{
+    const naam = document.getElementById("zelf-naam").value.trim();
+    if(!naam) return;
+    const docent = document.getElementById("zelf-docent").value.trim();
+    pd().modules.push({naam:naam, docent:docent, mom:{c1:leegMoment(),c2:leegMoment(),af:leegMoment()}});
+    document.getElementById("zelf-naam").value = "";
+    document.getElementById("zelf-docent").value = "";
+    document.getElementById("zelf-rij").style.display = "none";
+    document.getElementById("module-kies").value = "";
+    tekenModules(); vulModuleKeuze(); bewaar(); updateAlles();
+  });
+
+  /* module-momenten en verwijderen */
   document.getElementById("paneel-modules").addEventListener("input",e=>{
     const el = e.target;
-    if(el.dataset.mod!==undefined && el.dataset.mv){
-      pd().modules[+el.dataset.mod][el.dataset.mv] = el.value;
-      if(el.dataset.mv==="status"){ el.className = "status-"+el.value; }
-      if(el.dataset.mv==="naam"){ tekenPlanning(); }
-      bewaar();
+    if(el.dataset.mod!==undefined && el.dataset.mom && el.dataset.veld){
+      const mm = pd().modules[+el.dataset.mod].mom[el.dataset.mom];
+      mm[el.dataset.veld] = el.value;
+      if(el.dataset.veld==="status"){
+        el.className = "status-"+el.value;
+        el.closest(".moment").classList.toggle("klaar", el.value==="afgerond");
+      }
+      bewaar(); updateAlles();
     }
   });
   document.getElementById("paneel-modules").addEventListener("click",e=>{
     const b = e.target.closest("[data-verwijder-mod]");
-    if(b && confirm("Deze module verwijderen?")){
+    if(b && confirm("Deze module verwijderen? De deadlines en statussen gaan dan ook weg.")){
       pd().modules.splice(+b.dataset.verwijderMod,1);
-      tekenModules(); tekenPlanning(); bewaar();
-    }
-  });
-
-  /* planning */
-  document.getElementById("knop-deadline").addEventListener("click",()=>{
-    pd().deadlines.push({datum:"",module:"",wat:"",status:"tedoen"});
-    tekenPlanning(); bewaar();
-  });
-  document.getElementById("paneel-planning").addEventListener("input",e=>{
-    const el = e.target;
-    if(el.dataset.dl!==undefined && el.dataset.dv){
-      pd().deadlines[+el.dataset.dl][el.dataset.dv] = el.value;
-      bewaar();
-    }
-  });
-  document.getElementById("paneel-planning").addEventListener("change",e=>{
-    const el = e.target;
-    if(el.dataset.dl!==undefined && el.dataset.dv){
-      pd().deadlines[+el.dataset.dl][el.dataset.dv] = el.value;
-      bewaar();
-    }
-    if(el.dataset.dv==="datum"){ markeerDatum(el); }
-  });
-  /* Pas opnieuw sorteren als de student het datumveld verlaat, zodat het
-     jaartal niet halverwege het typen wordt afgebroken. */
-  document.getElementById("paneel-planning").addEventListener("focusout",e=>{
-    const el = e.target;
-    if(el.dataset && el.dataset.dv==="datum"){
-      setTimeout(()=>{
-        const actief = document.activeElement;
-        if(actief && actief.dataset && actief.dataset.dv==="datum") return;
-        tekenPlanning();
-      },0);
-    }
-  });
-  document.getElementById("paneel-planning").addEventListener("click",e=>{
-    const b = e.target.closest("[data-verwijder-dl]");
-    if(b && confirm("Deze deadline verwijderen?")){
-      pd().deadlines.splice(+b.dataset.verwijderDl,1);
-      tekenPlanning(); bewaar();
+      tekenModules(); vulModuleKeuze(); bewaar(); updateAlles();
     }
   });
 
@@ -1080,7 +1060,7 @@ function koppelGebeurtenissen(){
     const el = e.target;
     if(el.dataset.doelnr!==undefined && el.dataset.dvld){
       pd().doelen[+el.dataset.doelnr][el.dataset.dvld] = el.value;
-      bewaar(); updateVoortgang();
+      bewaar(); updateAlles();
     }
     if(el.name && el.name.startsWith("doelstatus")){
       pd().doelen[+el.name.replace("doelstatus","")].status = el.value;
@@ -1094,36 +1074,23 @@ function koppelGebeurtenissen(){
     if(el.dataset.week && el.dataset.taak!==undefined){
       pd().weken[el.dataset.week].taken[+el.dataset.taak] = el.checked;
       el.closest("li").classList.toggle("gedaan", el.checked);
-      bewaar(); updateVoortgang();
-    }else if(el.dataset.week && el.dataset.veld){
-      pd().weken[el.dataset.week][el.dataset.veld] = el.value;
-      bewaar(); updateVoortgang();
+      bewaar(); updateAlles();
     }else if(el.dataset.checkpoint){
       pd().checkpoints[el.dataset.checkpoint] = el.checked;
-      bewaar(); updateVoortgang();
+      bewaar(); updateAlles();
     }
   });
   document.getElementById("week-panelen").addEventListener("click",e=>{
-    const hulp = e.target.closest("[data-hulp]");
-    if(hulp){ document.getElementById("hulp-"+hulp.dataset.hulp).classList.toggle("open"); return; }
-    const printCp = e.target.closest("[data-print-cp]");
-    if(printCp){
-      const cfg = PERIODES[actievePeriode];
-      const cpNr = +printCp.dataset.printCp;
-      const van = cpNr===1 ? 1 : cfg.cp1+1;
-      const tm = cpNr===1 ? cfg.cp1 : cfg.cp2;
-      drukAf(van, tm, "Module Monitor \u2013 Checkpoint "+cpNr+" (week "+van+" t/m "+tm+")");
-      return;
-    }
-    const printEind = e.target.closest("[data-print-eind]");
-    if(printEind){
-      drukAf(1, PERIODES[actievePeriode].aantalWeken, "Module Monitor \u2013 Afronding onderwijsperiode "+actievePeriode);
+    const b = e.target.closest("[data-print-week]");
+    if(b){
+      const banner = b.closest("section").querySelector(".checkpoint h3");
+      drukAf("Module Monitor \u2013 "+(banner?banner.textContent.split("\u2014")[0].trim():"Onderwijsperiode "+actievePeriode));
     }
   });
 
   /* inleveren */
   document.getElementById("knop-print").addEventListener("click",()=>{
-    drukAf(1, PERIODES[actievePeriode].aantalWeken, "Module Monitor \u2013 Onderwijsperiode "+actievePeriode);
+    drukAf("Module Monitor \u2013 Onderwijsperiode "+actievePeriode);
   });
   document.getElementById("knop-export").addEventListener("click",()=>{
     const blob = new Blob([JSON.stringify(model,null,2)],{type:"application/json"});
@@ -1142,7 +1109,7 @@ function koppelGebeurtenissen(){
     lezer.onload = ()=>{
       try{
         model = herstel(JSON.parse(lezer.result));
-        if(actievePeriode){ vulAlles(); updateVoortgang(); } else { tekenVoorblad(); }
+        if(actievePeriode){ vulAlles(); updateAlles(); } else { tekenVoorblad(); }
         bewaar();
         alert("Je gegevens zijn geladen.");
       }catch(err){ alert("Dit bestand kon niet worden gelezen. Kies een eerder opgeslagen Module Monitor-bestand."); }
@@ -1152,13 +1119,19 @@ function koppelGebeurtenissen(){
 }
 
 /* ================= Alles vullen vanuit het model ================= */
+function vulKlasKeuze(){
+  const sel = document.getElementById("s-klas");
+  sel.innerHTML = `<option value="">Kies je klas</option>` +
+    Object.keys(KLASSEN).sort().map(code=>
+      `<option value="${code}">${KLASSEN[code].naam}</option>`).join("");
+}
 function vulAlles(){
   document.querySelectorAll("[data-pad]").forEach(el=>{
     const v = padLees(el.dataset.pad);
     el.value = v||"";
   });
   tekenModules();
-  tekenPlanning();
+  vulModuleKeuze();
   tekenDoelen();
   const weken = wekenVoorPeriode(actievePeriode);
   weken.forEach(w=>{
@@ -1167,31 +1140,23 @@ function vulAlles(){
       const cb = document.getElementById("w"+w.nr+"t"+i);
       if(cb){ cb.checked = !!d.taken[i]; cb.closest("li").classList.toggle("gedaan",!!d.taken[i]); }
     });
-    const coach = document.querySelector(`textarea[data-week="${w.nr}"][data-veld="coach"]`);
-    const refl = document.querySelector(`textarea[data-week="${w.nr}"][data-veld="reflectie"]`);
-    if(coach) coach.value = d.coach||"";
-    if(refl) refl.value = d.reflectie||"";
   });
   document.querySelectorAll("[data-checkpoint]").forEach(cb=>{
     cb.checked = !!pd().checkpoints[cb.dataset.checkpoint];
   });
 }
 
-/* ================= App-installatie (voorblad) ================= */
+/* ================= App-installatie ================= */
 let installPrompt = null;
 window.addEventListener("beforeinstallprompt", (e)=>{ e.preventDefault(); installPrompt = e; });
-
 function toonUitleg(titel, stappen){
   document.getElementById("uitleg-titel").textContent = titel;
   document.getElementById("uitleg-stappen").innerHTML = stappen.map(s=>`<li>${s}</li>`).join("");
   document.getElementById("uitleg-achtergrond").classList.add("open");
 }
 function koppelInstallatie(){
-  /* al als app geopend? Dan de knoppen verbergen */
   const alsApp = (typeof window.matchMedia==="function" && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone===true;
-  if(alsApp){
-    document.body.classList.add("als-app");
-  }
+  if(alsApp){ document.body.classList.add("als-app"); }
   document.getElementById("app-android").addEventListener("click", async ()=>{
     if(installPrompt){
       installPrompt.prompt();
@@ -1224,12 +1189,12 @@ function koppelInstallatie(){
 
 /* ================= Start ================= */
 (async function init(){
+  vulKlasKeuze();
   koppelGebeurtenissen();
   koppelInstallatie();
   await laadModel();
   tekenVoorblad();
   toonStatus("");
-  /* PWA: service worker registreren voor offline gebruik (alleen via https of localhost) */
   if("serviceWorker" in navigator && (location.protocol==="https:" || location.hostname==="localhost")){
     navigator.serviceWorker.register("sw.js").catch(()=>{});
   }
