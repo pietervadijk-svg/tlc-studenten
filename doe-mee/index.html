@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Doe mee met TLC</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎟️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blauw:#005AA7; --lichtblauw:#6FB3DF; --oranje:#F39200;
+    --inkt:#14233A; --grijs:#5B6B80; --lijn:#D9E6F2; --wolk:#F2F8FD; --wit:#fff;
+    --rood:#C0392B; --groen:#1E8449;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *,*::before,*::after{box-sizing:inherit}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{margin:0;font-family:Montserrat,"Segoe UI",Arial,sans-serif;color:var(--inkt);background:var(--wolk);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--blauw)}
+  button,input{font:inherit}
+  :focus-visible{outline:3px solid var(--oranje);outline-offset:2px}
+
+  /* Kop: gestapelde kleurblokken op de linkerrand */
+  header{position:relative;background:var(--blauw);color:#fff;padding:36px 20px 44px 36px;overflow:hidden}
+  header::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:linear-gradient(var(--oranje) 0 34%,var(--lichtblauw) 34% 67%,#fff 67%)}
+  header::after{content:"";position:absolute;right:0;top:0;border-style:solid;border-width:0 72px 72px 0;border-color:transparent var(--oranje) transparent transparent}
+  .kop-inhoud{max-width:760px;margin:0 auto}
+  header .school{font-size:.85rem;font-weight:600;color:var(--lichtblauw);margin:0 0 6px}
+  header h1{font-size:clamp(2rem,7vw,3.1rem);line-height:1.05;font-weight:500;margin:0 0 14px;letter-spacing:-.01em}
+  header h1 b{font-weight:800}
+  header p.intro{max-width:36em;margin:0;font-size:1rem;color:#E4F0FA}
+  .uren-balk{display:flex;align-items:center;gap:12px;margin-top:22px;font-size:.9rem;font-weight:600}
+  .uren-balk .blok{display:flex;gap:4px}
+  .uren-balk .blok span{width:22px;height:22px;border-radius:4px;background:var(--oranje)}
+
+  main{max-width:760px;margin:-22px auto 0;padding:0 16px 60px;position:relative}
+  .status{background:#fff;border-radius:10px;padding:22px;color:var(--grijs);border-left:6px solid var(--lichtblauw)}
+  .status.fout{border-left-color:var(--rood);color:var(--inkt)}
+
+  /* Opdracht als toegangskaartje: datumstrook links, scheurlijn, inhoud rechts */
+  .kaartje{display:grid;grid-template-columns:92px 1fr;background:#fff;border-radius:12px;margin-bottom:16px;overflow:hidden;box-shadow:0 1px 0 var(--lijn),0 6px 18px -12px rgba(0,50,100,.35);position:relative}
+  .strook{background:var(--blauw);color:#fff;text-align:center;padding:18px 6px;display:flex;flex-direction:column;justify-content:center;position:relative}
+  .strook::after{content:"";position:absolute;right:-1px;top:10px;bottom:10px;border-right:3px dotted var(--wolk)}
+  .strook .dag{font-size:.8rem;font-weight:600;color:var(--lichtblauw)}
+  .strook .nr{font-size:2.2rem;font-weight:800;line-height:1}
+  .strook .mnd{font-size:.85rem;font-weight:700}
+  .kaartje.vol .strook{background:#7C8A9C}
+  .kaart-inhoud{padding:16px 18px 18px;min-width:0}
+  .kaart-foto{width:100%;aspect-ratio:16/7;object-fit:cover;border-radius:8px;display:block;margin-bottom:12px;background:var(--wolk)}
+  .kaartje h2{font-size:1.15rem;font-weight:700;margin:0 0 6px;line-height:1.25}
+  .feiten{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.88rem;color:var(--grijs);margin-bottom:12px}
+  .feiten span{white-space:nowrap}
+  .onder{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .plekken{font-size:.85rem;font-weight:600;flex:1;min-width:140px}
+  .meter{height:6px;background:var(--lijn);border-radius:3px;margin-top:5px;overflow:hidden}
+  .meter i{display:block;height:100%;background:var(--lichtblauw)}
+  .meter i.bijna{background:var(--oranje)}
+  .knop{border:0;border-radius:8px;padding:11px 20px;font-weight:700;cursor:pointer;background:var(--oranje);color:#fff;font-size:.95rem}
+  .knop:hover{filter:brightness(.95)}
+  .knop:disabled{background:#B8C2CE;cursor:not-allowed}
+  .knop.tweede{background:#fff;color:var(--blauw);box-shadow:inset 0 0 0 2px var(--blauw)}
+
+  /* Aanmeldvenster */
+  dialog{border:0;padding:0;border-radius:14px;width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);color:var(--inkt)}
+  dialog::backdrop{background:rgba(10,30,60,.55)}
+  .dlg-kop{background:var(--blauw);color:#fff;padding:20px 22px 18px;position:relative}
+  .dlg-kop::after{content:"";position:absolute;right:0;top:0;border-style:solid;border-width:0 38px 38px 0;border-color:transparent var(--oranje) transparent transparent}
+  .dlg-kop h3{margin:0 44px 4px 0;font-size:1.2rem;line-height:1.25}
+  .dlg-kop p{margin:0;color:#E4F0FA;font-size:.9rem}
+  .sluit{position:absolute;right:10px;top:40px;background:none;border:0;color:#fff;font-size:1.6rem;line-height:1;cursor:pointer;padding:4px 8px}
+  .dlg-body{padding:18px 22px 22px}
+  .omschrijving{white-space:pre-line;font-size:.93rem;margin:0 0 18px;padding-bottom:16px;border-bottom:1px solid var(--lijn)}
+  .contact{font-size:.85rem;color:var(--grijs);margin:-8px 0 16px}
+  label{display:block;font-weight:600;font-size:.88rem;margin:0 0 4px}
+  .veld{margin-bottom:14px}
+  input[type=text],input[type=email],input[type=tel]{width:100%;padding:11px 12px;border:2px solid var(--lijn);border-radius:8px;font-size:1rem;background:#fff}
+  input:focus{border-color:var(--blauw);outline:none}
+  .bevestig{display:flex;gap:12px;align-items:flex-start;background:#FFF4E3;border-radius:8px;padding:14px;margin:6px 0 16px;font-size:.92rem;cursor:pointer}
+  .bevestig input{width:22px;height:22px;margin:1px 0 0;flex:none;accent-color:var(--oranje)}
+  .melding{border-radius:8px;padding:10px 12px;font-size:.9rem;margin-bottom:14px;background:#FBE9E7;color:var(--rood);font-weight:600}
+  .verborgen{position:absolute;left:-9999px}
+  .gelukt{text-align:center;padding:10px 0 4px}
+  .vinkje{width:64px;height:64px;border-radius:50%;background:var(--groen);color:#fff;font-size:2rem;line-height:64px;margin:0 auto 12px}
+  .gelukt h4{font-size:1.2rem;margin:0 0 6px}
+  .gelukt p{margin:0 0 16px;color:var(--grijs);font-size:.93rem}
+  .knoppen{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+  footer{text-align:center;font-size:.8rem;color:var(--grijs);padding:0 16px 30px}
+  @media (max-width:480px){
+    header{padding:28px 18px 40px 28px}
+    .kaartje{grid-template-columns:70px 1fr}
+    .strook .nr{font-size:1.8rem}
+    .knop{width:100%}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    dialog[open]{animation:op .18s ease-out}
+    @keyframes op{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="kop-inhoud">
+    <p class="school">Albeda Travel &amp; Leisure College</p>
+    <h1><b>Doe mee</b> met TLC</h1>
+    <p class="intro">In leerjaar 1 werk je minimaal 5 uur mee aan een evenement van school. Kies hieronder een opdracht en meld je aan. Je plek is pas zeker als je aanmelding gelukt is.</p>
+    <div class="uren-balk" aria-hidden="true"><div class="blok"><span></span><span></span><span></span><span></span><span></span></div>5 uur meewerken</div>
+  </div>
+</header>
+
+<main id="lijst" aria-live="polite">
+  <div class="status">Opdrachten laden...</div>
+</main>
+<footer>Vragen over een opdracht? Mail de docent die bij de opdracht staat.</footer>
+
+<dialog id="dlg" aria-labelledby="dlg-titel">
+  <div class="dlg-kop">
+    <h3 id="dlg-titel"></h3>
+    <p id="dlg-wanneer"></p>
+    <button class="sluit" type="button" aria-label="Sluiten" onclick="sluit()">×</button>
+  </div>
+  <div class="dlg-body" id="dlg-body"></div>
+</dialog>
+
+<script>
+const API = 'https://doemee-api.tlctools.nl/api';
+let opdrachten = [];
+let huidige = null;
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const datumObj = d => { const [j,m,dg] = d.split('-').map(Number); return new Date(j, m-1, dg); };
+const dagKort = d => datumObj(d).toLocaleDateString('nl-NL',{weekday:'short'}).replace('.','');
+const mndKort = d => datumObj(d).toLocaleDateString('nl-NL',{month:'short'}).replace('.','');
+const datumLang = d => datumObj(d).toLocaleDateString('nl-NL',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const tijd = o => o.starttijd ? (o.starttijd + (o.eindtijd ? ' tot ' + o.eindtijd : '')) : '';
+const urenTekst = u => (Number(u) % 1 ? String(u).replace('.',',') : Number(u)) + ' uur';
+
+async function laad(){
+  const el = document.getElementById('lijst');
+  try{
+    const r = await fetch(API + '/opdrachten');
+    if(!r.ok) throw new Error();
+    opdrachten = await r.json();
+  }catch(e){
+    el.innerHTML = '<div class="status fout">De opdrachten konden niet geladen worden. Controleer je internetverbinding en ververs de pagina.</div>';
+    return;
+  }
+  if(!opdrachten.length){
+    el.innerHTML = '<div class="status">Er staan nu geen opdrachten open. Kijk over een paar dagen opnieuw: docenten zetten hier regelmatig nieuwe evenementen neer.</div>';
+    return;
+  }
+  el.innerHTML = opdrachten.map(kaart).join('');
+}
+
+function kaart(o){
+  const vrij = Math.max(0, o.max_plekken - o.aangemeld);
+  const vol = vrij === 0;
+  const dicht = o.status === 'gesloten';
+  const pct = Math.min(100, Math.round(o.aangemeld / o.max_plekken * 100));
+  const plekTekst = dicht ? 'Aanmelden gesloten' : vol ? 'Vol' : vrij === 1 ? 'Nog 1 plek vrij' : `Nog ${vrij} plekken vrij`;
+  return `<article class="kaartje ${vol||dicht?'vol':''}">
+    <div class="strook" aria-hidden="true"><span class="dag">${esc(dagKort(o.datum))}</span><span class="nr">${datumObj(o.datum).getDate()}</span><span class="mnd">${esc(mndKort(o.datum))}</span></div>
+    <div class="kaart-inhoud">
+      ${o.heeft_foto ? `<img class="kaart-foto" src="${API}/foto/${o.id}" alt="" loading="lazy">` : ''}
+      <h2>${esc(o.titel)}</h2>
+      <div class="feiten">
+        <span>📅 ${esc(datumLang(o.datum))}</span>
+        ${o.starttijd ? `<span>🕘 ${esc(tijd(o))}</span>` : ''}
+        ${o.locatie ? `<span>📍 ${esc(o.locatie)}</span>` : ''}
+        <span>⏱️ ${esc(urenTekst(o.uren))}</span>
+      </div>
+      <div class="onder">
+        <div class="plekken">${plekTekst}<div class="meter"><i class="${pct>=80?'bijna':''}" style="width:${pct}%"></i></div></div>
+        <button class="knop" type="button" onclick="open_(${o.id})" ${vol||dicht?'disabled':''}>${vol||dicht?plekTekst:'Bekijk en meld je aan'}</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function open_(id){
+  huidige = opdrachten.find(o => o.id === id);
+  if(!huidige) return;
+  document.getElementById('dlg-titel').textContent = huidige.titel;
+  document.getElementById('dlg-wanneer').textContent = datumLang(huidige.datum) + (huidige.starttijd ? ', ' + tijd(huidige) : '') + (huidige.locatie ? ', ' + huidige.locatie : '');
+  const contact = huidige.verantwoordelijke || huidige.contact_email
+    ? `<p class="contact">Verantwoordelijk: ${esc(huidige.verantwoordelijke || '')}${huidige.contact_email ? ` (<a href="mailto:${esc(huidige.contact_email)}">${esc(huidige.contact_email)}</a>)` : ''}</p>` : '';
+  document.getElementById('dlg-body').innerHTML = `
+    ${huidige.omschrijving ? `<p class="omschrijving">${esc(huidige.omschrijving)}</p>` : ''}
+    ${contact}
+    <form id="form" novalidate>
+      <div id="melding"></div>
+      <div class="veld"><label for="f-nr">Studentnummer</label><input id="f-nr" type="text" inputmode="numeric" autocomplete="off" required></div>
+      <div class="veld"><label for="f-naam">Voor- en achternaam</label><input id="f-naam" type="text" autocomplete="name" required></div>
+      <div class="veld"><label for="f-mail">E-mailadres</label><input id="f-mail" type="email" autocomplete="email" required></div>
+      <div class="veld"><label for="f-tel">Telefoonnummer</label><input id="f-tel" type="tel" autocomplete="tel" required></div>
+      <input class="verborgen" id="f-web" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="bevestig"><input id="f-ok" type="checkbox"><span>Hierbij bevestig ik dat ik aanwezig ben op <b>${esc(datumLang(huidige.datum))}</b>${huidige.starttijd ? ` van <b>${esc(tijd(huidige))}</b>` : ''}.</span></label>
+      <button class="knop" type="submit" id="f-knop" style="width:100%">Aanmelden</button>
+    </form>`;
+  document.getElementById('form').addEventListener('submit', verstuur);
+  document.getElementById('dlg').showModal();
+  document.getElementById('f-nr').focus();
+}
+
+function sluit(){ document.getElementById('dlg').close(); }
+
+async function verstuur(e){
+  e.preventDefault();
+  const m = document.getElementById('melding');
+  const knop = document.getElementById('f-knop');
+  const toon = t => { m.innerHTML = `<div class="melding" role="alert">${esc(t)}</div>`; };
+  const data = {
+    opdracht_id: huidige.id,
+    studentnummer: document.getElementById('f-nr').value.trim(),
+    naam: document.getElementById('f-naam').value.trim(),
+    email: document.getElementById('f-mail').value.trim(),
+    telefoon: document.getElementById('f-tel').value.trim(),
+    bevestigd: document.getElementById('f-ok').checked,
+    website: document.getElementById('f-web').value,
+  };
+  if(!/^\d{5,9}$/.test(data.studentnummer.replace(/\s/g,''))) return toon('Vul je studentnummer in (alleen cijfers).');
+  if(data.naam.length < 2) return toon('Vul je naam in.');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return toon('Vul een geldig e-mailadres in.');
+  if(data.telefoon.replace(/[\s\-()]/g,'').length < 9) return toon('Vul een geldig telefoonnummer in.');
+  if(!data.bevestigd) return toon('Vink aan dat je aanwezig bent op deze datum en dit tijdstip.');
+  knop.disabled = true; knop.textContent = 'Bezig met aanmelden...';
+  try{
+    const r = await fetch(API + '/aanmelden', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+    const res = await r.json().catch(() => ({}));
+    if(!r.ok) throw new Error(res.fout || 'Aanmelden is niet gelukt. Probeer het opnieuw.');
+    gelukt();
+    laad();
+  }catch(err){
+    toon(err.message === 'Failed to fetch' ? 'Geen verbinding met de server. Controleer je internet en probeer het opnieuw.' : err.message);
+    knop.disabled = false; knop.textContent = 'Aanmelden';
+  }
+}
+
+function gelukt(){
+  document.getElementById('dlg-body').innerHTML = `
+    <div class="gelukt">
+      <div class="vinkje" aria-hidden="true">✓</div>
+      <h4>Je bent aangemeld</h4>
+      <p>We verwachten je op ${esc(datumLang(huidige.datum))}${huidige.starttijd ? ` van ${esc(tijd(huidige))}` : ''}${huidige.locatie ? ` op ${esc(huidige.locatie)}` : ''}. Kun je toch niet? Mail dan zo snel mogelijk ${huidige.contact_email ? `<a href="mailto:${esc(huidige.contact_email)}">${esc(huidige.verantwoordelijke || huidige.contact_email)}</a>` : 'de verantwoordelijke docent'}.</p>
+      <div class="knoppen">
+        <button class="knop tweede" type="button" onclick="agenda()">Zet in mijn agenda</button>
+        <button class="knop" type="button" onclick="sluit()">Klaar</button>
+      </div>
+    </div>`;
+}
+
+function agenda(){
+  const o = huidige;
+  const d = o.datum.replace(/-/g,'');
+  const t = s => s ? s.replace(':','') + '00' : null;
+  const regel = s => String(s||'').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/[,;]/g, m => '\\' + m);
+  const start = o.starttijd ? `DTSTART;TZID=Europe/Amsterdam:${d}T${t(o.starttijd)}` : `DTSTART;VALUE=DATE:${d}`;
+  const eind = o.starttijd && o.eindtijd ? `DTEND;TZID=Europe/Amsterdam:${d}T${t(o.eindtijd)}` : '';
+  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//TLC//Doe mee met TLC//NL','BEGIN:VEVENT',
+    `UID:doemee-${o.id}-${Date.now()}@tlctools.nl`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').slice(0,15)}Z`,
+    start, eind, `SUMMARY:${regel('Doe mee met TLC: ' + o.titel)}`, `LOCATION:${regel(o.locatie)}`,
+    `DESCRIPTION:${regel(o.omschrijving)}`, 'END:VEVENT','END:VCALENDAR'].filter(Boolean).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
+  a.download = 'doe-mee-met-tlc.ics';
+  a.click();
+}
+
+laad();
+</script>
+</body>
+</html>
