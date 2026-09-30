@@ -468,12 +468,13 @@ textarea{resize:vertical;min-height:64px}
   <div class="kaart oranje-rand">
     <div class="eyebrow">Afronden</div>
     <h2><strong>Inleveren</strong> en bewaren</h2>
-    <p class="sub">Maak hier een PDF van je complete Module Monitor van deze periode, of bewaar je gegevens als bestand zodat je op een ander apparaat verder kunt. In de checkpointweken en de afrondingsweek vind je ook een PDF-knop voor precies dat inlevermoment.</p>
+    <p class="sub">Download hier je complete Module Monitor van deze periode als PDF-bestand om in te leveren, of print hem als PDF via het printvenster. Dezelfde knoppen vind je in de checkpointweken en de afrondingsweek.</p>
     <div id="export-hulp">
-      <button class="knop oranje" id="knop-print">Maak PDF van de hele periode</button>
-      <button class="knop" id="knop-download">Download als bestand</button>
-      <button class="knop licht" id="knop-export">Gegevens opslaan als bestand</button>
-      <button class="knop licht" id="knop-import">Gegevens laden uit bestand</button>
+      <button class="knop oranje" id="knop-download">Download als bestand</button>
+      <button class="knop" id="knop-print">Print als PDF</button>
+      <p style="margin-top:16px;font-size:.75rem;color:var(--grijs)">Nieuwe telefoon of ander apparaat?
+        <a href="#" id="link-export" style="color:var(--grijs)">Reservekopie opslaan</a> &middot;
+        <a href="#" id="link-import" style="color:var(--grijs)">reservekopie terugzetten</a></p>
       <input type="file" id="import-bestand" accept="application/json" style="display:none">
     </div>
   </div>
@@ -486,6 +487,7 @@ textarea{resize:vertical;min-height:64px}
 
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 "use strict";
 
@@ -774,9 +776,9 @@ function bouwWeken(pNr){
 
     let printKnopHtml = "";
     if(w.checkpoint){
-      printKnopHtml = `<button class="knop oranje" data-print-week="1">Maak PDF voor Checkpoint ${w.checkpoint.nr}</button> <button class="knop" data-download-week="1">Download als bestand</button>`;
+      printKnopHtml = `<button class="knop oranje" data-download-week="1">Download als bestand</button> <button class="knop" data-print-week="1">Print als PDF</button>`;
     }else if(w.afronding){
-      printKnopHtml = `<button class="knop oranje" data-print-week="1">Maak PDF van de hele periode</button> <button class="knop" data-download-week="1">Download als bestand</button>`;
+      printKnopHtml = `<button class="knop oranje" data-download-week="1">Download als bestand</button> <button class="knop" data-print-week="1">Print als PDF</button>`;
     }
 
     sec.innerHTML = `
@@ -988,7 +990,107 @@ function drukAf(titel){
 function statusTekst(s){
   return {nietgestart:"Nog niet gestart", bezig:"Ik ben bezig", afgerond:"Afgerond"}[s]||s;
 }
+function bestandsNaam(ext){
+  const naam = (model.student.naam||"student").toLowerCase().replace(/[^a-z0-9]+/g,"-");
+  return "module-monitor-"+naam+"-op"+actievePeriode+"."+ext;
+}
 function downloadVerslag(){
+  if(window.jspdf && window.jspdf.jsPDF){
+    try{ maakPdfBestand(); return; }catch(e){}
+  }
+  maakHtmlBestand();
+}
+function maakPdfBestand(){
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF({unit:"mm",format:"a4"});
+  const s = model.student;
+  const klas = KLASSEN[s.klas];
+  const per = pd();
+  const m = meterVoorPeriode(actievePeriode);
+  const BLAUW=[0,90,167], ORANJE=[243,146,0], INKT=[28,43,58], GRIJS=[90,107,123], GROEN=[46,158,107], LIJN=[220,230,239];
+  const statusKleur = st => st==="afgerond"?GROEN:(st==="bezig"?BLAUW:GRIJS);
+  let y = 14;
+  function paginaCheck(nodig){
+    if(y+nodig > 278){ doc.addPage(); y = 16; }
+  }
+  // kop
+  doc.setFillColor(...ORANJE); doc.rect(14,y,3.5,24,"F");
+  doc.setFont("helvetica","bold"); doc.setFontSize(17); doc.setTextColor(...BLAUW);
+  doc.text("Module Monitor", 21, y+7);
+  doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(...INKT);
+  const meta = [s.naam?("Naam: "+s.naam):null, s.klas?("Klas: "+(klas?klas.naam:s.klas)):null,
+    s.niveau?("Niveau "+s.niveau):null, s.slb?("SLB'er: "+s.slb):null].filter(Boolean).join("   \u00B7   ");
+  doc.text(meta||"", 21, y+13);
+  doc.text("Schooljaar "+SCHOOLJAAR+"   \u00B7   Onderwijsperiode "+actievePeriode, 21, y+18);
+  doc.setFont("helvetica","bold"); doc.setTextColor(...ORANJE);
+  doc.text("Voortgang: "+m.pct+"%  ("+m.af+" van de "+m.totaal+" checkpoints afgerond)", 21, y+23.5);
+  y += 32;
+  // modules
+  doc.setFontSize(12); doc.setTextColor(...BLAUW); doc.text("Mijn modules", 14, y); y += 6;
+  const kol = [{x:14,b:62},{x:80,b:36},{x:118,b:36},{x:156,b:40}];
+  doc.setFontSize(8); doc.setTextColor(...BLAUW);
+  ["MODULE","CHECKPOINT 1","CHECKPOINT 2","AFRONDING"].forEach((t,i)=>doc.text(t,kol[i].x,y));
+  doc.setDrawColor(...BLAUW); doc.setLineWidth(.4); doc.line(14,y+1.5,196,y+1.5);
+  y += 6;
+  doc.setLineWidth(.2);
+  const rijen = per.modules.length? per.modules : null;
+  if(!rijen){
+    doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(...GRIJS);
+    doc.text("Nog geen modules gekozen.", 14, y); y += 8;
+  }else{
+    for(const mod of rijen){
+      doc.setFont("helvetica","bold"); doc.setFontSize(9);
+      const naamRegels = doc.splitTextToSize(mod.naam, kol[0].b);
+      const rijHoogte = Math.max(naamRegels.length*4 + (mod.docent?4:0), 9);
+      paginaCheck(rijHoogte+3);
+      doc.setTextColor(...INKT); doc.text(naamRegels, kol[0].x, y);
+      if(mod.docent){
+        doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(...GRIJS);
+        doc.text(mod.docent, kol[0].x, y + naamRegels.length*4);
+      }
+      MOMENTEN.forEach(([sleutel],i)=>{
+        const mm = mod.mom[sleutel];
+        const k = kol[i+1];
+        doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(...INKT);
+        doc.text(mm.datum? datumTekst(mm.datum) : "-", k.x, y);
+        doc.setFont("helvetica","bold"); doc.setTextColor(...statusKleur(mm.status));
+        doc.text(statusTekst(mm.status), k.x, y+4.5);
+      });
+      y += rijHoogte;
+      doc.setDrawColor(...LIJN); doc.line(14,y,196,y);
+      y += 5;
+    }
+  }
+  // doelen
+  paginaCheck(30);
+  y += 3;
+  doc.setFont("helvetica","bold"); doc.setFontSize(12); doc.setTextColor(...BLAUW);
+  doc.text("Mijn doelen", 14, y); y += 6;
+  per.doelen.forEach((d,i)=>{
+    const doelRegels = doc.splitTextToSize("Doel "+(i+1)+": "+(d.tekst||"-"), 176);
+    const evalRegels = doc.splitTextToSize("Evaluatie: "+(d.evaluatie||"-"), 176);
+    paginaCheck(doelRegels.length*4.5 + evalRegels.length*4 + 6);
+    doc.setFont("helvetica","bold"); doc.setFontSize(9.5); doc.setTextColor(...INKT);
+    doc.text(doelRegels, 14, y); y += doelRegels.length*4.5;
+    doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(...GRIJS);
+    doc.text(evalRegels, 14, y); y += evalRegels.length*4 + 4;
+  });
+  // nieuwe doelen
+  paginaCheck(24);
+  doc.setFont("helvetica","bold"); doc.setFontSize(12); doc.setTextColor(...BLAUW);
+  doc.text("Nieuwe doelen voor de volgende periode", 14, y); y += 6;
+  per.nieuweDoelen.forEach((d,i)=>{
+    const regels = doc.splitTextToSize("Nieuw doel "+(i+1)+": "+(d||"-"), 176);
+    paginaCheck(regels.length*4.5+2);
+    doc.setFont("helvetica","normal"); doc.setFontSize(9.5); doc.setTextColor(...INKT);
+    doc.text(regels, 14, y); y += regels.length*4.5 + 2;
+  });
+  // voet
+  doc.setFont("helvetica","normal"); doc.setFontSize(7.5); doc.setTextColor(...GRIJS);
+  doc.text("Gemaakt met de TLC Module Monitor  \u00B7  studenten.tlctools.nl  \u00B7  "+new Date().toLocaleDateString("nl-NL"), 14, 288);
+  doc.save(bestandsNaam("pdf"));
+}
+function maakHtmlBestand(){
   const s = model.student;
   const klas = KLASSEN[s.klas];
   const per = pd();
@@ -1027,8 +1129,7 @@ ${modRijen}</table>
   const blob = new Blob([inhoud],{type:"text/html"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  const naam = (s.naam||"student").toLowerCase().replace(/[^a-z0-9]+/g,"-");
-  a.download = "module-monitor-"+naam+"-op"+actievePeriode+".html";
+  a.download = bestandsNaam("html");
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -1145,16 +1246,19 @@ function koppelGebeurtenissen(){
     drukAf("Module Monitor \u2013 Onderwijsperiode "+actievePeriode);
   });
   document.getElementById("knop-download").addEventListener("click",downloadVerslag);
-  document.getElementById("knop-export").addEventListener("click",()=>{
+  document.getElementById("link-export").addEventListener("click",e=>{
+    e.preventDefault();
     const blob = new Blob([JSON.stringify(model,null,2)],{type:"application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    const naam = (model.student.naam||"student").toLowerCase().replace(/[^a-z0-9]+/g,"-");
-    a.download = "module-monitor-"+naam+".json";
+    a.download = "reservekopie-module-monitor.json";
     a.click();
     URL.revokeObjectURL(a.href);
   });
-  document.getElementById("knop-import").addEventListener("click",()=>document.getElementById("import-bestand").click());
+  document.getElementById("link-import").addEventListener("click",e=>{
+    e.preventDefault();
+    document.getElementById("import-bestand").click();
+  });
   document.getElementById("import-bestand").addEventListener("change",e=>{
     const f = e.target.files[0];
     if(!f) return;
@@ -1164,8 +1268,8 @@ function koppelGebeurtenissen(){
         model = herstel(JSON.parse(lezer.result));
         if(actievePeriode){ vulAlles(); updateAlles(); } else { tekenVoorblad(); }
         bewaar();
-        alert("Je gegevens zijn geladen.");
-      }catch(err){ alert("Dit bestand kon niet worden gelezen. Kies een eerder opgeslagen Module Monitor-bestand."); }
+        alert("Je reservekopie is teruggezet.");
+      }catch(err){ alert("Dit bestand kon niet worden gelezen. Kies een eerder opgeslagen reservekopie (.json).", ); }
     };
     lezer.readAsText(f);
   });

@@ -2,7 +2,7 @@
    Verhoog het versienummer hieronder bij elke update van de app.
    Studenten krijgen de nieuwe versie dan automatisch bij de eerstvolgende
    keer dat ze de app openen met internet. */
-const CACHE = "module-monitor-v7";
+const CACHE = "module-monitor-v8";
 
 const BASIS = [
   "./",
@@ -11,7 +11,8 @@ const BASIS = [
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/icon-maskable-512.png",
-  "./icons/apple-touch-icon.png"
+  "./icons/apple-touch-icon.png",
+  "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
 ];
 
 self.addEventListener("install", (e) => {
