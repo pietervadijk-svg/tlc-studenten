@@ -55,7 +55,7 @@ div.tegel .binnenkort{display:inline-block;margin-top:14px;font-size:.72rem;font
 <main>
   <div class="intro">
     <h2><strong>Kies</strong> jouw tool</h2>
-    <p>Hier vind je alle apps die je tijdens je opleiding gebruikt. Bij de meeste apps wordt wat je invult alleen op jouw eigen telefoon of laptop bewaard. Bij Doe mee met TLC gaat je aanmelding naar de docent van het evenement.</p>
+    <p>Hier vind je alle apps die je tijdens je opleiding gebruikt. Bij de meeste apps wordt wat je invult alleen op jouw eigen telefoon of laptop bewaard. Bij Doe mee met TLC, de keuzedelen en de reizen gaat je aanmelding naar de docent.</p>
   </div>
 
   <div class="tegel-grid">
@@ -74,6 +74,20 @@ div.tegel .binnenkort{display:inline-block;margin-top:14px;font-size:.72rem;font
       <span class="t-knop">Openen &#8594;</span>
     </a>
 
+    <a class="tegel" href="keuzedelen/" data-status="https://keuzedelen-api.tlctools.nl/api/status">
+      <div class="t-eyebrow">Keuzedelen</div>
+      <h3>Kies je keuzedeel</h3>
+      <p>Bekijk de keuzedelen voor keuzedelenweek 1 en 2 en kies er per week één.</p>
+      <span class="t-knop">Openen &#8594;</span>
+    </a>
+
+    <a class="tegel" href="reizen/" data-status="https://reizen-api.tlctools.nl/api/status">
+      <div class="t-eyebrow">Ga mee</div>
+      <h3>Reizen en activiteiten</h3>
+      <p>Studiereizen en dagjes uit: bekijk wat eraan komt, schrijf je in en download je deelnameformulier.</p>
+      <span class="t-knop">Openen &#8594;</span>
+    </a>
+
     <div class="tegel">
       <div class="t-eyebrow">Hospitality</div>
       <h3>Oefen het telefoongesprek aan de balie</h3>
@@ -88,5 +102,26 @@ div.tegel .binnenkort{display:inline-block;margin-top:14px;font-size:.72rem;font
   </div>
 </main>
 
+<script>
+// Tegels die "Binnenkort beschikbaar" kunnen staan (in te stellen in het docentenportaal)
+document.querySelectorAll('a.tegel[data-status]').forEach(async a => {
+  try{
+    const r = await fetch(a.dataset.status, {cache:'no-store'});
+    if(!r.ok) return;
+    const s = await r.json();
+    if(!s.binnenkort) return;
+    const d = document.createElement('div');
+    d.className = 'tegel';
+    d.innerHTML = a.innerHTML;
+    const knop = d.querySelector('.t-knop');
+    const label = document.createElement('span');
+    label.className = 'binnenkort';
+    label.textContent = 'Binnenkort beschikbaar';
+    knop ? knop.replaceWith(label) : d.appendChild(label);
+    if(s.binnenkort_tekst){ const p = document.createElement('p'); p.style.marginTop = '8px'; p.textContent = s.binnenkort_tekst; d.appendChild(p); }
+    a.replaceWith(d);
+  }catch(e){}
+});
+</script>
 </body>
 </html>
