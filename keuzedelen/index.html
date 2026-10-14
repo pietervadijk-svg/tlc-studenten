@@ -61,6 +61,18 @@
   .knop:disabled{background:#B8C2CE;cursor:not-allowed}
   .knop.tweede{background:#fff;color:var(--blauw);box-shadow:inset 0 0 0 2px var(--blauw)}
   .label{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:12px;background:#E3F4EA;color:var(--groen);margin-left:6px;vertical-align:middle}
+  .label.wacht{background:#FFF4E3;color:#9A5B00}
+  .kd-foto .prijs{position:absolute;right:0;top:0;background:var(--oranje);color:#fff;font-weight:800;font-size:.85rem;padding:6px 12px 6px 14px;border-bottom-left-radius:12px;z-index:1}
+  .kd-foto.met-prijs::after{display:none}
+  .chip{display:inline-flex;align-items:center;gap:4px;font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:12px;background:#FFF4E3;color:#7A4A00;margin:0 0 10px;align-self:flex-start}
+  .let-op{border-radius:8px;padding:12px 14px;font-size:.9rem;margin:0 0 14px;background:#FFF4E3;border-left:5px solid var(--oranje)}
+  .let-op b{display:block;margin-bottom:2px}
+  .melding.info{background:#FFF4E3;color:#7A4A00}
+  .controle{background:var(--wolk);border-radius:12px;padding:16px;margin-bottom:6px;border-top:5px solid var(--oranje)}
+  .controle h4{margin:0 0 10px;font-size:1.05rem}
+  .controle .let-op{background:#fff}
+  .knoppen{display:grid;gap:8px}
+  .vinkje.wacht{background:var(--oranje)}
 
   dialog{border:0;padding:0;border-radius:14px;width:min(620px,calc(100% - 24px));max-height:calc(100% - 24px);color:var(--inkt)}
   dialog::backdrop{background:rgba(10,30,60,.55)}
@@ -142,6 +154,11 @@ function periode(w){
 }
 const mijn = () => { try { return JSON.parse(localStorage.getItem('kd-mijn') || '{}'); } catch(e){ return {}; } };
 const bewaarMijn = (week, id) => { try { const m = mijn(); m[week] = id; localStorage.setItem('kd-mijn', JSON.stringify(m)); } catch(e){} };
+// Wachtlijsten op dit apparaat: { keuzedeel_id: true }
+const wacht = () => { try { return JSON.parse(localStorage.getItem('kd-wacht') || '{}'); } catch(e){ return {}; } };
+const bewaarWacht = (id) => { try { const m = wacht(); m[id] = true; localStorage.setItem('kd-wacht', JSON.stringify(m)); } catch(e){} };
+const fPrijs = p => Number(p) > 0 ? '€ ' + Number(p).toFixed(2).replace('.', ',') : 'Gratis';
+const heeftVoorwaarde = k => !!(k.voorwaarde || '').trim();
 
 
 function toonBinnenkort(bericht){
@@ -208,18 +225,26 @@ function toonLijst(){
 function kaart(k, w, gekozen){
   const vrij = Math.max(0, k.plekken - k.aangemeld);
   const dicht = k.status === 'gesloten' || !w.aanmelden_open;
+  const opWacht = !gekozen && wacht()[k.id];
+  const wachtOpen = !dicht && vrij === 0 && k.wachtlijst;
   const pct = Math.min(100, Math.round(k.aangemeld / k.plekken * 100));
-  const tekst = dicht ? (k.status === 'gesloten' ? 'Inschrijving gesloten' : dichtTekst(w)) : vrij === 0 ? 'Vol' : vrij === 1 ? 'Nog 1 plek vrij' : `Nog ${vrij} plekken vrij`;
+  const tekst = dicht ? (k.status === 'gesloten' ? 'Inschrijving gesloten' : dichtTekst(w))
+    : vrij === 0 ? (k.wachtlijst ? 'Vol, de wachtlijst is open' : 'Vol')
+    : vrij === 1 ? 'Nog 1 plek vrij' : `Nog ${vrij} plekken vrij`;
+  const kan = !dicht && (vrij > 0 || k.wachtlijst);
+  const knop = gekozen || opWacht ? 'Bekijk jouw keuze' : dicht || !kan ? 'Bekijk informatie' : vrij === 0 ? 'Bekijk en kom op de wachtlijst' : 'Ontdek en kies';
   return `<article class="kd">
-    <div class="kd-foto">
+    <div class="kd-foto ${Number(k.prijs) > 0 ? 'met-prijs' : ''}">
       ${k.heeft_foto ? `<img src="${API}/foto/${k.id}" alt="" loading="lazy">` : `<div class="leeg" aria-hidden="true">${esc((k.titel||'?').slice(0,1))}</div>`}
       ${k.code ? `<span class="code">${esc(k.code)}</span>` : ''}
+      ${Number(k.prijs) > 0 ? `<span class="prijs">${esc(fPrijs(k.prijs))}</span>` : ''}
     </div>
     <div class="kd-in">
-      <h2>${esc(k.titel)}${gekozen ? '<span class="label">Jouw keuze</span>' : ''}</h2>
+      <h2>${esc(k.titel)}${gekozen ? '<span class="label">Jouw keuze</span>' : opWacht ? '<span class="label wacht">Wachtlijst</span>' : ''}</h2>
       <div class="meta">${esc([k.docent, k.locatie, k.studielast ? k.studielast + ' uur studielast' : ''].filter(Boolean).join(' · '))}</div>
+      ${heeftVoorwaarde(k) ? '<span class="chip">⚠️ Let op: voorwaarde</span>' : ''}
       <div class="plekken">${tekst}<div class="meter"><i class="${pct>=80?'bijna':''}" style="width:${pct}%"></i></div></div>
-      <button class="knop ${vrij===0||dicht?'tweede':''}" type="button" onclick="open_(${k.id})">${vrij===0||dicht ? 'Bekijk informatie' : 'Ontdek en kies'}</button>
+      <button class="knop ${kan && !gekozen && !opWacht ? '' : 'tweede'}" type="button" onclick="open_(${k.id})">${knop}</button>
     </div>
   </article>`;
 }
@@ -229,26 +254,38 @@ function open_(id){
   if(!huidig) return;
   const w = weken.find(x => x.week === huidig.week);
   const vrij = huidig.plekken - huidig.aangemeld;
-  const kan = vrij > 0 && huidig.status !== 'gesloten' && w.aanmelden_open;
+  const open = huidig.status !== 'gesloten' && w.aanmelden_open;
+  const gekozen = mijn()[huidig.week] === huidig.id;
+  const opWacht = !gekozen && wacht()[huidig.id];
   $('dlg-titel').textContent = huidig.titel;
   $('dlg-sub').textContent = `${w.naam}, ${periode(w)}`;
+  let onder;
+  if(gekozen) onder = `<div class="melding" style="background:#E3F4EA;color:var(--groen)">Dit is jouw keuze voor ${esc(w.naam)}. Toch iets anders? Mail de docent.</div>`;
+  else if(opWacht) onder = `<div class="melding info">Je staat op de wachtlijst voor dit keuzedeel. Komt er een plek vrij, dan schuif je door en krijg je bericht van de docent.</div>`;
+  else if(open && vrij > 0) onder = formulier(w, false);
+  else if(open && huidig.wachtlijst) onder = `<div class="melding info">Dit keuzedeel zit al vol. Wil je het toch graag doen? Zet jezelf op de wachtlijst. Valt er een plek vrij, dan schuif je door.</div>` + formulier(w, true);
+  else onder = `<div class="melding" style="background:var(--wolk);color:var(--grijs)">${vrij <= 0 && open ? 'Dit keuzedeel zit al vol. Kijk snel welk keuzedeel nog plek heeft!' : (w.aanmelden_open ? 'Inschrijving gesloten' : dichtTekst(w)) + '. Vragen? Mail de docent.'}</div>`;
   $('dlg-body').innerHTML = `
     <div class="feiten">
       ${huidig.code ? `<span>Code: <b>${esc(huidig.code)}</b></span>` : ''}
       ${huidig.studielast ? `<span>Studielast: <b>${esc(huidig.studielast)} uur</b></span>` : ''}
       ${huidig.certificaat ? '<span><b>Met certificaat</b></span>' : ''}
+      <span>Kosten: <b>${esc(fPrijs(huidig.prijs))}</b>${huidig.prijs_info ? ` (${esc(huidig.prijs_info)})` : ''}</span>
       ${huidig.locatie ? `<span>Locatie: <b>${esc(huidig.locatie)}</b></span>` : ''}
       ${huidig.docent ? `<span>Docent: <b>${esc(huidig.docent)}</b></span>` : ''}
     </div>
+    ${heeftVoorwaarde(huidig) ? `<div class="let-op"><b>⚠️ Let op, voorwaarde</b>${esc(huidig.voorwaarde)}</div>` : ''}
     ${huidig.omschrijving ? `<h4 style="margin:0 0 6px;font-size:1rem">Wat ga je doen?</h4><p class="omschr">${esc(huidig.omschrijving)}</p>` : ''}
     ${huidig.heeft_pdf ? `<a class="download" href="${API}/pdf/${huidig.id}" target="_blank" rel="noopener">📄 Lees alles over dit keuzedeel (pdf)</a>` : ''}
     <hr class="scheid">
-    ${kan ? formulier(w) : `<div class="melding" style="background:var(--wolk);color:var(--grijs)">${vrij <= 0 ? 'Dit keuzedeel zit al vol. Kijk snel welk keuzedeel nog plek heeft!' : (w.aanmelden_open ? 'Inschrijving gesloten' : dichtTekst(w)) + '. Vragen? Mail de docent.'}</div>`}`;
-  if(kan) $('form').addEventListener('submit', verstuur);
+    <div id="onder">${onder}</div>`;
+  koppelForm();
   $('dlg').showModal();
 }
 
-function formulier(w){
+let wachtModus = false;
+function formulier(w, wachtlijst){
+  wachtModus = wachtlijst;
   return `<form id="form" novalidate>
     <div id="melding"></div>
     <div class="rij">
@@ -258,48 +295,120 @@ function formulier(w){
     <div class="veld"><label for="f-naam">Voor- en achternaam</label><input id="f-naam" type="text" autocomplete="name"></div>
     <div class="veld"><label for="f-mail">E-mailadres</label><input id="f-mail" type="email" autocomplete="email"></div>
     <input class="verborgen" id="f-web" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <label class="bevestig"><input id="f-ok" type="checkbox"><span>Ik kies dit keuzedeel voor <b>${esc(w.naam)}</b> en ik ben er de hele week bij. Ik weet dat ik per week één keuzedeel kies.</span></label>
-    <button class="knop" type="submit" id="f-knop">Ja, dit kies ik!</button>
-  </form>`;
+    <label class="bevestig"><input id="f-ok" type="checkbox"><span>${wachtlijst
+      ? `Ik wil op de wachtlijst voor <b>${esc(w.naam)}</b>. Komt er een plek vrij, dan doe ik mee en ben ik er de hele week bij.`
+      : `Ik kies dit keuzedeel voor <b>${esc(w.naam)}</b> en ik ben er de hele week bij. Ik weet dat ik per week één keuzedeel kies.`}</span></label>
+    <button class="knop" type="submit" id="f-knop">${wachtlijst ? 'Zet me op de wachtlijst' : 'Ja, dit kies ik!'}</button>
+  </form>
+  <div id="controle" hidden></div>`;
 }
 
-function sluit(){ $('dlg').close(); }
+function koppelForm(){
+  const f = $('form');
+  if(f) f.addEventListener('submit', e => { e.preventDefault(); controleer(); });
+}
 
-async function verstuur(e){
-  e.preventDefault();
-  const toon = t => { $('melding').innerHTML = `<div class="melding" role="alert">${esc(t)}</div>`; };
-  const d = {
+function leesForm(){
+  return {
     keuzedeel_id: huidig.id,
     studentnummer: $('f-nr').value.trim(), klas: $('f-klas').value.trim(),
     naam: $('f-naam').value.trim(), email: $('f-mail').value.trim(),
-    bevestigd: $('f-ok').checked, website: $('f-web').value,
+    bevestigd: $('f-ok').checked, website: $('f-web').value, wachtlijst: wachtModus,
   };
+}
+
+// Stap 1: velden controleren. Heeft het keuzedeel een voorwaarde of kosten? Dan eerst nog een keer laten zien.
+function controleer(){
+  const toon = t => { $('melding').innerHTML = `<div class="melding" role="alert">${esc(t)}</div>`; };
+  const d = leesForm();
   if(!/^\d{5,9}$/.test(d.studentnummer.replace(/\s/g,''))) return toon('Vul je studentnummer in (alleen cijfers).');
   if(d.klas.length < 2) return toon('Vul je klas in.');
   if(d.naam.length < 2) return toon('Vul je naam in.');
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) return toon('Vul een geldig e-mailadres in.');
-  if(!d.bevestigd) return toon('Vink aan dat je dit keuzedeel kiest en de hele week aanwezig bent.');
-  const knop = $('f-knop'); knop.disabled = true; knop.textContent = 'Bezig met aanmelden...';
+  if(!d.bevestigd) return toon(wachtModus ? 'Vink aan dat je op de wachtlijst wilt.' : 'Vink aan dat je dit keuzedeel kiest en de hele week aanwezig bent.');
+  $('melding').innerHTML = '';
+  const vw = heeftVoorwaarde(huidig), kost = Number(huidig.prijs) > 0;
+  if(!vw && !kost) return verstuur(d);
+  $('form').hidden = true;
+  const c = $('controle'); c.hidden = false;
+  c.innerHTML = `<div class="controle" role="dialog" aria-labelledby="c-kop">
+    <h4 id="c-kop">Nog even checken voordat je akkoord geeft</h4>
+    <div id="c-melding"></div>
+    ${vw ? `<div class="let-op"><b>⚠️ Voorwaarde</b>${esc(huidig.voorwaarde)}</div>
+      <label class="bevestig"><input id="c-vw" type="checkbox"><span>Ik voldoe aan deze voorwaarde.</span></label>` : ''}
+    ${kost ? `<div class="let-op"><b>💶 Kosten: ${esc(fPrijs(huidig.prijs))}</b>${huidig.prijs_info ? esc(huidig.prijs_info) : 'Dit keuzedeel kost geld.'}</div>
+      <label class="bevestig"><input id="c-kost" type="checkbox"><span>Ik weet dat dit keuzedeel <b>${esc(fPrijs(huidig.prijs))}</b> kost.</span></label>` : ''}
+    <div class="knoppen">
+      <button class="knop" type="button" id="c-ok">${wachtModus ? 'Akkoord, zet me op de wachtlijst' : 'Akkoord, meld me aan!'}</button>
+      <button class="knop tweede" type="button" id="c-terug">Terug</button>
+    </div>
+  </div>`;
+  $('c-terug').onclick = () => { c.hidden = true; $('form').hidden = false; };
+  $('c-ok').onclick = () => {
+    if(vw && !$('c-vw').checked) return $('c-melding').innerHTML = '<div class="melding" role="alert">Vink aan dat je aan de voorwaarde voldoet. Voldoe je er niet aan? Kies dan een ander keuzedeel.</div>';
+    if(kost && !$('c-kost').checked) return $('c-melding').innerHTML = '<div class="melding" role="alert">Vink aan dat je weet wat dit keuzedeel kost.</div>';
+    verstuur({ ...d, voorwaarde_ok: vw ? true : undefined });
+  };
+}
+
+// Stap 2: echt aanmelden
+async function verstuur(d){
+  const c = $('controle');
+  const knop = !c.hidden ? $('c-ok') : $('f-knop');
+  const tekst = knop.textContent; knop.disabled = true; knop.textContent = 'Bezig met aanmelden...';
+  const fout = t => {
+    c.hidden = true; $('form').hidden = false;
+    $('melding').innerHTML = `<div class="melding" role="alert">${esc(t)}</div>`;
+    knop.disabled = false; knop.textContent = tekst;
+  };
   try{
     const r = await fetch(API + '/aanmelden', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d)});
     const res = await r.json().catch(() => ({}));
-    if(!r.ok) throw new Error(res.fout || 'Aanmelden is niet gelukt. Probeer het opnieuw.');
-    bewaarMijn(huidig.week, huidig.id);
-    const w = weken.find(x => x.week === huidig.week);
-    const ander = weken.find(x => x.week !== huidig.week && x.aanmelden_open && !mijn()[x.week]);
-    $('dlg-body').innerHTML = `<div class="gelukt">
-      <div class="vinkje" aria-hidden="true">✓</div>
-      <h4>Top, je bent aangemeld!</h4>
-      <p>In ${esc(w.naam)} (${esc(periode(w))}) volg je <b>${esc(huidig.titel)}</b>. Zet het alvast in je agenda. Toch iets anders kiezen? Mail dan ${huidig.contact_email ? `<a href="mailto:${esc(huidig.contact_email)}">${esc(huidig.docent || huidig.contact_email)}</a>` : 'de docent'}.</p>
-      ${ander ? `<button class="knop" type="button" style="margin-bottom:8px" onclick="sluit();kiesWeek(${ander.week})">Kies nu ook voor ${esc(ander.naam)}</button>` : ''}
-      <button class="knop tweede" type="button" onclick="sluit()">Klaar</button>
-    </div>`;
+    if(r.status === 409 && res.code === 'vol_wachtlijst'){
+      // Net vol geraakt: zelfde gegevens, nu met de keuze voor de wachtlijst
+      const w = weken.find(x => x.week === huidig.week);
+      $('onder').innerHTML = `<div class="melding info">${esc(res.fout)}</div>` + formulier(w, true);
+      $('f-nr').value = d.studentnummer; $('f-klas').value = d.klas; $('f-naam').value = d.naam; $('f-mail').value = d.email;
+      koppelForm(); laad();
+      return;
+    }
+    if(r.status === 409 && res.al_ingeschreven){
+      if(res.wachtlijst) bewaarWacht(huidig.id); else bewaarMijn(huidig.week, huidig.id);
+      laad();
+      $('onder').innerHTML = `<div class="melding info">${esc(res.fout)}</div>`;
+      return;
+    }
+    if(!r.ok) return fout(res.fout || 'Aanmelden is niet gelukt. Probeer het opnieuw.');
+    if(res.wachtlijst) bewaarWacht(huidig.id); else bewaarMijn(huidig.week, huidig.id);
+    gelukt(res);
     laad();
   }catch(err){
-    toon(err.message === 'Failed to fetch' ? 'Geen verbinding met de server. Controleer je internet en probeer het opnieuw.' : err.message);
-    knop.disabled = false; knop.textContent = 'Ja, dit kies ik!';
+    fout(err.message === 'Failed to fetch' ? 'Geen verbinding met de server. Controleer je internet en probeer het opnieuw.' : err.message);
   }
 }
+
+function gelukt(res){
+  const w = weken.find(x => x.week === huidig.week);
+  const ander = !res.wachtlijst && weken.find(x => x.week !== huidig.week && x.aanmelden_open && !mijn()[x.week]);
+  const elders = (res.ook_elders || []).map(x => `<b>${esc(x.titel)}</b> (${x.wachtlijst ? 'wachtlijst' : 'aangemeld'})`);
+  const signaal = elders.length ? `<div class="let-op" style="text-align:left"><b>Goed om te weten</b>Je staat in ${esc(w.naam)} ook ingeschreven voor ${elders.join(' en ')}. Je doet per week maar met één keuzedeel mee. Schuif je door van een wachtlijst, dan neemt de docent contact met je op en kies je.</div>` : '';
+  const mailDocent = huidig.contact_email ? `<a href="mailto:${esc(huidig.contact_email)}">${esc(huidig.docent || huidig.contact_email)}</a>` : 'de docent';
+  $('dlg-body').innerHTML = `<div class="gelukt">
+      <div class="vinkje ${res.wachtlijst ? 'wacht' : ''}" aria-hidden="true">${res.wachtlijst ? '⏳' : '✓'}</div>
+      <h4>${res.wachtlijst ? 'Je staat op de wachtlijst!' : 'Top, je bent aangemeld!'}</h4>
+      <p>${res.wachtlijst
+        ? `Je bent nummer <b>${esc(res.positie)}</b> op de wachtlijst voor <b>${esc(huidig.titel)}</b>. Valt er een plek vrij, dan schuif je automatisch door en krijg je bericht van ${mailDocent}. Kies voor de zekerheid ook een keuzedeel dat nog plek heeft.`
+        : `In ${esc(w.naam)} (${esc(periode(w))}) volg je <b>${esc(huidig.titel)}</b>. Zet het alvast in je agenda.${Number(huidig.prijs) > 0 ? ` Dit keuzedeel kost <b>${esc(fPrijs(huidig.prijs))}</b>.` : ''} Toch iets anders kiezen? Mail dan ${mailDocent}.`}</p>
+    </div>
+    ${signaal}
+    <div class="knoppen">
+      ${res.wachtlijst ? `<button class="knop" type="button" onclick="sluit()">Kies een keuzedeel met plek</button>` : ''}
+      ${ander ? `<button class="knop" type="button" onclick="sluit();kiesWeek(${ander.week})">Kies nu ook voor ${esc(ander.naam)}</button>` : ''}
+      <button class="knop tweede" type="button" onclick="sluit()">Klaar</button>
+    </div>`;
+}
+
+function sluit(){ $('dlg').close(); }
 
 laad();
 </script>
