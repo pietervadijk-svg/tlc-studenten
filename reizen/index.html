@@ -120,6 +120,17 @@
     @keyframes op{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
   }
 
+  .info{background:#fff;border-radius:14px;padding:18px 20px 16px;margin:0 0 20px;border-left:8px solid var(--oranje);box-shadow:0 1px 0 var(--lijn),0 8px 22px -16px rgba(0,50,100,.45)}
+  .info h2{margin:0 0 6px;font-size:1.2rem;color:var(--blauw)}
+  .info p{margin:0 0 8px;font-size:.93rem}
+  .info ul{margin:4px 0 6px;padding-left:20px;font-size:.92rem}
+  .info li{margin-bottom:4px}
+  .info li::marker{color:var(--oranje)}
+  .minimum{font-size:.78rem;color:var(--grijs);margin:-8px 0 12px}
+  .stap ol{margin:0 0 12px;padding-left:20px;font-size:.9rem}
+  .stap ol li{margin-bottom:4px}
+  .stap .knoppen{display:grid;gap:8px}
+  .stap + .stap{margin-top:12px}
   .binnenkort{background:#fff;border-radius:16px;padding:36px 24px;text-align:center;box-shadow:0 1px 0 var(--lijn),0 8px 22px -14px rgba(0,50,100,.45);border-top:6px solid var(--oranje);max-width:620px;margin:10px auto}
   .binnenkort .ico{font-size:2.8rem;line-height:1;margin-bottom:10px}
   .binnenkort h2{margin:0 0 8px;font-size:1.5rem;color:var(--blauw)}
@@ -142,6 +153,7 @@
     <button aria-pressed="false" data-f="reis">Studiereizen</button>
     <button aria-pressed="false" data-f="activiteit">Activiteiten</button>
   </div>
+  <div id="info"></div>
   <div id="mijn"></div>
   <div id="lijst" aria-live="polite"><div class="status">Laden...</div></div>
 </main>
@@ -392,6 +404,7 @@ async function laad(){
     if(!r.ok) throw new Error();
     items = await r.json();
     const status = st && st.ok ? await st.json() : {};
+    toonInfo(status.binnenkort ? {} : status);
     if(status.binnenkort){
       document.querySelector('.filters').style.display = 'none'; $('mijn').innerHTML = '';
       return toonBinnenkort(status.binnenkort_tekst);
@@ -406,12 +419,37 @@ async function laad(){
   if(id && !laatst){ laatst = id; if(items.find(x => x.id === id)) open_(id); }
 }
 
+// Informatieblok dat docenten in beheer invullen. Regels die met - of • beginnen worden een lijstje.
+function toonInfo(st){
+  const titel = (st.info_titel || '').trim(), tekst = (st.info_tekst || '').trim();
+  if(!titel && !tekst){ $('info').innerHTML = ''; return; }
+  let html = '', lijst = [];
+  const sluitLijst = () => { if(lijst.length){ html += '<ul>' + lijst.map(l => `<li>${esc(l)}</li>`).join('') + '</ul>'; lijst = []; } };
+  for(const regel of tekst.split(/\r?\n/)){
+    const r = regel.trim();
+    if(!r){ sluitLijst(); continue; }
+    const m = r.match(/^[-•*]\s*(.+)$/);
+    if(m) lijst.push(m[1]); else { sluitLijst(); html += `<p>${esc(r)}</p>`; }
+  }
+  sluitLijst();
+  $('info').innerHTML = `<section class="info">${titel ? `<h2>${esc(titel)}</h2>` : ''}${html}</section>`;
+}
+
+// Bij studiereizen (of als er een minimum is) is inschrijven nog geen zekere plek: na de sluitingsdatum hoor je of de reis doorgaat.
+const onzeker = a => a.soort === 'reis' || a.min_deelnemers > 0;
+const okLabel = a => onzeker(a) ? 'Ingeschreven' : 'Je gaat mee';
+
 function toonMijn(){
   const m = mijnLijst();
   const rijen = items.filter(a => m[a.id]);
   $('mijn').innerHTML = rijen.length ? `<div class="mijn"><h2>Jouw inschrijvingen</h2><ul>${rijen.map(a => `
-    <li><span><b>${esc(a.titel)}</b> ${m[a.id].wachtlijst ? '<span class="lbl wacht">Wachtlijst</span>' : '<span class="lbl ok">Je gaat mee</span>'}</span>
-    <button class="lnk" onclick="open_(${a.id}, true)">Formulier downloaden</button></li>`).join('')}</ul></div>` : '';
+    <li><span><b>${esc(a.titel)}</b> ${m[a.id].wachtlijst ? '<span class="lbl wacht">Wachtlijst</span>' : `<span class="lbl ok">${okLabel(a)}</span>`}</span>
+    <button class="lnk" onclick="open_(${a.id}, true)">${a.heeft_overeenkomst ? 'Overeenkomst en formulier' : 'Formulier downloaden'}</button></li>`).join('')}</ul></div>` : '';
+}
+
+function minTekst(a){
+  if(!(a.min_deelnemers > 0)) return '';
+  return a.deelnemers >= a.min_deelnemers ? `Gaat door vanaf ${a.min_deelnemers} deelnemers: dat zijn er genoeg!` : `Gaat door vanaf ${a.min_deelnemers} deelnemers (nu ${a.deelnemers})`;
 }
 
 function standTekst(a){
@@ -445,12 +483,13 @@ function toonLijst(){
         <span class="soort">${a.soort === 'reis' ? 'Studiereis' : 'Activiteit'}</span>
       </div>
       <div class="inhoud">
-        <h3>${esc(a.titel)} ${m[a.id] ? (m[a.id].wachtlijst ? '<span class="lbl wacht">Wachtlijst</span>' : '<span class="lbl ok">Je gaat mee</span>') : ''}</h3>
+        <h3>${esc(a.titel)} ${m[a.id] ? (m[a.id].wachtlijst ? '<span class="lbl wacht">Wachtlijst</span>' : `<span class="lbl ok">${okLabel(a)}</span>`) : ''}</h3>
         <div class="wanneer">${esc(wanneerKort(a))}</div>
         <div class="waar">${esc([a.bestemming, a.doelgroep].filter(Boolean).join(' · '))}</div>
         <div class="onder">
           <div class="stand">${esc(standTekst(a))}</div>
           ${a.status === 'open' || a.status === 'wachtlijst' || a.status === 'vol' ? `<div class="meter"><i class="${pct>=80?'bijna':''}" style="width:${pct}%"></i></div>` : ''}
+          ${minTekst(a) ? `<div class="minimum">${esc(minTekst(a))}</div>` : ''}
           <button class="knop ${kanIn || m[a.id] ? '' : 'tweede'}" type="button" onclick="open_(${a.id})">${knop}</button>
         </div>
       </div>
@@ -473,6 +512,7 @@ function open_(id, naarFormulier){
     a.terugtijd ? ['Terug', a.terugtijd + ' uur'] : null,
     a.bestemming ? ['Waar naartoe', a.bestemming] : null,
     ['Kosten', fPrijs(a.prijs)],
+    a.min_deelnemers > 0 ? ['Gaat door bij', `minimaal ${a.min_deelnemers} deelnemers (nu ${a.deelnemers})`] : null,
     a.doelgroep ? ['Voor wie', a.doelgroep] : null,
     a.aanmelden_tot ? ['Inschrijven kan tot', fDatum(a.aanmelden_tot)] : null,
     a.docent ? ['Docent', a.docent] : null,
@@ -484,8 +524,8 @@ function open_(id, naarFormulier){
     <hr>
     <div id="inschrijf"></div>`;
   if(mijn){
-    $('inschrijf').innerHTML = `<div class="melding ok">${mijn.wachtlijst ? 'Je staat op de wachtlijst voor deze ' + (a.soort === 'reis' ? 'reis' : 'activiteit') + '.' : 'Je bent ingeschreven. Leuk dat je meegaat!'}</div>
-      <button class="knop blauw" type="button" onclick="toonFormulierStap(mijnLijst()[huidig.id])">Download je deelnameformulier</button>`;
+    $('inschrijf').innerHTML = `<div class="melding ok">${mijn.wachtlijst ? 'Je staat op de wachtlijst voor deze ' + (a.soort === 'reis' ? 'reis' : 'activiteit') + '.' : onzeker(a) ? 'Je bent ingeschreven!' : 'Je bent ingeschreven. Leuk dat je meegaat!'}</div>
+      <button class="knop blauw" type="button" onclick="toonFormulierStap(mijnLijst()[huidig.id])">${a.heeft_overeenkomst ? 'Naar je overeenkomst en formulier' : 'Download je deelnameformulier'}</button>`;
   } else if(a.status === 'open' || a.status === 'wachtlijst'){
     toonInschrijven(a.status === 'wachtlijst');
   } else {
@@ -564,10 +604,12 @@ function gelukt(res, mijn){
   $('dlg-body').innerHTML = `
     <div class="gelukt">
       <div class="vinkje ${res.wachtlijst ? 'wacht' : ''}" aria-hidden="true">${res.wachtlijst ? '⏳' : '✓'}</div>
-      <h4>${res.wachtlijst ? 'Je staat op de wachtlijst' : 'Top, je gaat mee!'}</h4>
+      <h4>${res.wachtlijst ? 'Je staat op de wachtlijst' : onzeker(a) ? 'Gefeliciteerd, je bent ingeschreven!' : 'Top, je gaat mee!'}</h4>
       <p>${res.wachtlijst
         ? `Je bent nummer <b>${res.positie}</b> op de wachtlijst. Komt er plek vrij, dan krijg je bericht van de docent.`
-        : `Zet ${esc(fWanneer(a))} alvast in je agenda${a.vertrektijd ? `. Vertrek om <b>${esc(a.vertrektijd)} uur</b>` : ''}.`}</p>
+        : onzeker(a)
+          ? `Zet ${esc(fWanneer(a))} alvast in je agenda. ${a.aanmelden_tot ? `Na <b>${esc(fDatum(a.aanmelden_tot))}</b>` : 'Na de inschrijving'} hoor je of de ${a.soort === 'reis' ? 'reis' : 'activiteit'} doorgaat en of je bent ingedeeld.`
+          : `Zet ${esc(fWanneer(a))} alvast in je agenda${a.vertrektijd ? `. Vertrek om <b>${esc(a.vertrektijd)} uur</b>` : ''}.`}</p>
     </div>
     ${signaal}
     <div id="stap2"></div>`;
@@ -578,10 +620,29 @@ function toonFormulierStap(mijn, alsStap){
   const a = huidig;
   const doel = alsStap ? $('stap2') : $('dlg-body');
   const velden = formVelden(a);
-  doel.innerHTML = `
+  const toonForm = a.toon_formulier !== 0;
+  let nr = 2;
+  const overeenkomst = a.heeft_overeenkomst ? (() => {
+    const onderwerp = `Overeenkomst ${a.titel} - ${mijn.naam || ''} ${mijn.klas || ''}`.trim();
+    const mail = a.inlever_email || 'travelreizen@albeda.nl';
+    return `<div class="stap">
+      <h4><span>${nr++}</span>${mijn.wachtlijst ? 'Overeenkomst alvast downloaden' : 'Download en onderteken je overeenkomst'}</h4>
+      <ol>
+        <li>Download de overeenkomst en vul je gegevens in.</li>
+        <li>Print hem en zet je handtekening. Ben je jonger dan 18? Dan tekent ook je ouder of verzorger.</li>
+        <li>Maak een scan of duidelijke foto en mail die naar <b>${esc(mail)}</b>${a.aanmelden_tot ? `, uiterlijk <b>${esc(fDatum(a.aanmelden_tot))}</b>` : ''}.${a.inleveren ? ` Op papier inleveren mag ook: ${esc(a.inleveren)}.` : ''}</li>
+      </ol>
+      <div class="knoppen">
+        <a class="knop blauw" style="text-align:center;text-decoration:none" href="${API}/overeenkomst/${a.id}" download>Download de overeenkomst</a>
+        <a class="knop tweede" style="text-align:center;text-decoration:none" href="mailto:${esc(mail)}?subject=${encodeURIComponent(onderwerp)}">Mail je getekende overeenkomst</a>
+      </div>
+      <p class="privacy">Zonder getekende overeenkomst kun je niet mee. Lever hem dus op tijd in!</p>
+    </div>`;
+  })() : '';
+  const formulier = toonForm ? `
     <div class="stap">
-      <h4><span>2</span>${mijn.wachtlijst ? 'Formulier alvast downloaden' : 'Download je deelnameformulier'}</h4>
-      <p style="margin:0 0 12px;font-size:.9rem">Vul je gegevens in, download het formulier, print het en zet je handtekening.${a.inleveren ? ` Lever het in <b>${esc(a.inleveren)}</b>.` : ''}</p>
+      <h4><span>${nr++}</span>${mijn.wachtlijst ? 'Deelnameformulier alvast downloaden' : 'Download je deelnameformulier'}</h4>
+      <p style="margin:0 0 12px;font-size:.9rem">Vul je gegevens in, download het formulier, print het en zet je handtekening.${a.inleveren && !a.heeft_overeenkomst ? ` Lever het in <b>${esc(a.inleveren)}</b>.` : ''}</p>
       <form id="pdfform" novalidate>
         <div class="rij">
           ${velden.map(([k, label, type]) => {
@@ -594,8 +655,9 @@ function toonFormulierStap(mijn, alsStap){
         <button class="knop blauw" type="submit">Download formulier (pdf)</button>
       </form>
       <p class="klein">Liever met de hand invullen? <button type="button" onclick="downloadPdf(true)">Download een leeg formulier</button></p>
-    </div>`;
-  $('pdfform').addEventListener('submit', e => { e.preventDefault(); downloadPdf(false); });
+    </div>` : '';
+  doel.innerHTML = overeenkomst + formulier || '<div class="melding info">Je hoeft verder niets in te leveren. Tot dan!</div>';
+  if($('pdfform')) $('pdfform').addEventListener('submit', e => { e.preventDefault(); downloadPdf(false); });
   window.__mijn = mijn;
   if(!$('dlg').open) $('dlg').showModal();
 }
