@@ -122,8 +122,10 @@
 
   .info{background:#fff;border-radius:14px;padding:18px 20px 16px;margin:0 0 20px;border-left:8px solid var(--oranje);box-shadow:0 1px 0 var(--lijn),0 8px 22px -16px rgba(0,50,100,.45)}
   .info h2{margin:0 0 6px;font-size:1.2rem;color:var(--blauw)}
-  .info p{margin:0 0 8px;font-size:.93rem}
-  .info ul{margin:4px 0 6px;padding-left:20px;font-size:.92rem}
+  .info p{margin:0 0 16px;font-size:.93rem}
+  .info ul{margin:0 0 16px;padding-left:20px;font-size:.92rem}
+  .info p + ul{margin-top:-10px}
+  .info > :last-child{margin-bottom:0}
   .info li{margin-bottom:4px}
   .info li::marker{color:var(--oranje)}
   .minimum{font-size:.78rem;color:var(--grijs);margin:-8px 0 12px}
@@ -423,15 +425,20 @@ async function laad(){
 function toonInfo(st){
   const titel = (st.info_titel || '').trim(), tekst = (st.info_tekst || '').trim();
   if(!titel && !tekst){ $('info').innerHTML = ''; return; }
-  let html = '', lijst = [];
-  const sluitLijst = () => { if(lijst.length){ html += '<ul>' + lijst.map(l => `<li>${esc(l)}</li>`).join('') + '</ul>'; lijst = []; } };
-  for(const regel of tekst.split(/\r?\n/)){
-    const r = regel.trim();
-    if(!r){ sluitLijst(); continue; }
-    const m = r.match(/^[-•*]\s*(.+)$/);
-    if(m) lijst.push(m[1]); else { sluitLijst(); html += `<p>${esc(r)}</p>`; }
+  // Een lege regel = nieuwe alinea. Regels direct onder elkaar blijven bij elkaar (met een regeleinde).
+  // Regels die met - of • beginnen worden een lijstje.
+  let html = '';
+  for(const blok of tekst.split(/\r?\n\s*\r?\n/)){
+    let regels = [], lijst = [];
+    const sluitRegels = () => { if(regels.length){ html += `<p>${regels.map(esc).join('<br>')}</p>`; regels = []; } };
+    const sluitLijst = () => { if(lijst.length){ html += '<ul>' + lijst.map(l => `<li>${esc(l)}</li>`).join('') + '</ul>'; lijst = []; } };
+    for(const regel of blok.split(/\r?\n/)){
+      const r = regel.trim(); if(!r) continue;
+      const m = r.match(/^[-•*]\s*(.+)$/);
+      if(m){ sluitRegels(); lijst.push(m[1]); } else { sluitLijst(); regels.push(r); }
+    }
+    sluitRegels(); sluitLijst();
   }
-  sluitLijst();
   $('info').innerHTML = `<section class="info">${titel ? `<h2>${esc(titel)}</h2>` : ''}${html}</section>`;
 }
 
