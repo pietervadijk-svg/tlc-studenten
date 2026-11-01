@@ -120,24 +120,23 @@
     @keyframes op{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
   }
 
-  .info{background:#fff;border-radius:14px;padding:18px 20px 16px;margin:0 0 20px;border-left:8px solid var(--oranje);box-shadow:0 1px 0 var(--lijn),0 8px 22px -16px rgba(0,50,100,.45)}
-  .info h2{margin:0 0 6px;font-size:1.2rem;color:var(--blauw)}
-  .info p{margin:0 0 16px;font-size:.93rem}
-  .info ul{margin:0 0 16px;padding-left:20px;font-size:.92rem}
-  .info p + ul{margin-top:-10px}
-  .info > :last-child{margin-bottom:0}
-  .info li{margin-bottom:4px}
-  .info li::marker{color:var(--oranje)}
-  .minimum{font-size:.78rem;color:var(--grijs);margin:-8px 0 12px}
-  .stap ol{margin:0 0 12px;padding-left:20px;font-size:.9rem}
-  .stap ol li{margin-bottom:4px}
-  .stap .knoppen{display:grid;gap:8px}
-  .stap + .stap{margin-top:12px}
   .binnenkort{background:#fff;border-radius:16px;padding:36px 24px;text-align:center;box-shadow:0 1px 0 var(--lijn),0 8px 22px -14px rgba(0,50,100,.45);border-top:6px solid var(--oranje);max-width:620px;margin:10px auto}
   .binnenkort .ico{font-size:2.8rem;line-height:1;margin-bottom:10px}
   .binnenkort h2{margin:0 0 8px;font-size:1.5rem;color:var(--blauw)}
   .binnenkort p{margin:0 auto;color:var(--grijs);max-width:30em}
   .binnenkort p.bericht{margin-top:14px;color:var(--inkt);font-weight:700;background:#FFF4E3;border-radius:10px;padding:12px 14px}
+
+  .teken-blok{margin:6px 0 14px}
+  .teken-blok > label{display:block;font-weight:600;font-size:.86rem;margin:0 0 6px}
+  .tekenvak{position:relative;height:150px;background:#fff;border:2px dashed var(--lichtblauw);border-radius:10px;overflow:hidden}
+  .tekenvak::after{content:"";position:absolute;left:16px;right:16px;bottom:34px;border-bottom:1.5px solid var(--lijn);pointer-events:none}
+  .tekenvak canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair;z-index:1}
+  .tekenvak.getekend{border-style:solid;border-color:var(--blauw)}
+  .teken-hint{position:absolute;left:0;right:0;bottom:10px;text-align:center;font-size:.8rem;color:var(--grijs);pointer-events:none}
+  .tekenvak.getekend .teken-hint{display:none}
+  .opnieuw{background:none;border:0;color:var(--blauw);font-weight:700;font-size:.82rem;cursor:pointer;padding:6px 0;text-decoration:underline}
+  .lnk{background:none;border:0;color:var(--blauw);font-weight:700;cursor:pointer;padding:0;font-size:.85rem;text-decoration:underline}
+  .betaal{font-size:.86rem;background:#F3F8FD;border-left:4px solid var(--lichtblauw);border-radius:8px;padding:10px 12px;margin:0 0 16px}
 </style>
 </head>
 <body>
@@ -155,7 +154,6 @@
     <button aria-pressed="false" data-f="reis">Studiereizen</button>
     <button aria-pressed="false" data-f="activiteit">Activiteiten</button>
   </div>
-  <div id="info"></div>
   <div id="mijn"></div>
   <div id="lijst" aria-live="polite"><div class="status">Laden...</div></div>
 </main>
@@ -170,37 +168,51 @@
 
 <script>
 /* ===== Deelnameformulier (pdf in de browser, gegevens gaan niet naar de server) ===== */
-const FORM_VELDEN = {
-  altijd: [
-    ['geboortedatum', 'Geboortedatum', 'date'],
-    ['telefoon', 'Je telefoonnummer', 'tel'],
-    ['nood_naam', 'Noodcontact: naam', 'text'],
-    ['nood_relatie', 'Noodcontact: wie is dit? (bijv. moeder)', 'text'],
-    ['nood_tel', 'Noodcontact: telefoonnummer', 'tel'],
-  ],
-  id: [
-    ['id_soort', 'Soort identiteitsbewijs', 'select:Paspoort|ID-kaart'],
-    ['id_nummer', 'Documentnummer', 'text'],
-    ['id_geldig', 'Geldig tot', 'date'],
-    ['nationaliteit', 'Nationaliteit', 'text'],
-  ],
-  verzekering: [
-    ['zorg_maatschappij', 'Zorgverzekeraar', 'text'],
-    ['zorg_polis', 'Polisnummer zorgverzekering', 'text'],
-    ['reis_maatschappij', 'Reisverzekering (maatschappij, of "geen")', 'text'],
-    ['reis_polis', 'Polisnummer reisverzekering', 'text'],
-  ],
-  dieet: [['dieet', 'Dieetwensen of allergieën', 'textarea']],
-  medisch: [['medisch', 'Medicijnen of medische bijzonderheden die de begeleiders moeten weten', 'textarea']],
+// Onderdelen die per reis aan- of uitgevinkt worden: [sleutel, naam in beheer, groep, velden]
+const FORM_BLOKKEN = [
+  ['geboorte', 'Geboortedatum', 'Persoonlijk', [['geboortedatum', 'Geboortedatum', 'date']]],
+  ['telefoon', 'Telefoonnummer student', 'Persoonlijk', [['telefoon', 'Je telefoonnummer', 'tel']]],
+  ['adres', 'Adres', 'Persoonlijk', [
+    ['adres_straat', 'Straat en huisnummer', 'text'], ['adres_postcode', 'Postcode', 'text'], ['adres_plaats', 'Woonplaats', 'text']]],
+  ['bsn', 'BSN (wordt gecontroleerd)', 'Persoonlijk', [['bsn', 'BSN (burgerservicenummer)', 'bsn']]],
+  ['nood', 'Noodcontact', 'Contact', [
+    ['nood_naam', 'Noodcontact: naam', 'text'], ['nood_relatie', 'Noodcontact: wie is dit? (bijv. moeder)', 'text'], ['nood_tel', 'Noodcontact: telefoonnummer', 'tel']]],
+  ['ouder', 'Ouder of verzorger', 'Contact', [
+    ['ouder_naam', 'Ouder of verzorger: naam', 'text'], ['ouder_tel', 'Ouder of verzorger: telefoonnummer', 'tel'], ['ouder_mail', 'Ouder of verzorger: e-mailadres', 'email']]],
+  ['id', 'Paspoort of ID-kaart', 'Reizen', [
+    ['id_soort', 'Soort identiteitsbewijs', 'select:Paspoort|ID-kaart'], ['id_nummer', 'Documentnummer', 'text'],
+    ['id_geldig', 'Geldig tot', 'date'], ['nationaliteit', 'Nationaliteit', 'text']]],
+  ['verzekering', 'Zorg- en reisverzekering', 'Reizen', [
+    ['zorg_maatschappij', 'Zorgverzekeraar', 'text'], ['zorg_polis', 'Polisnummer zorgverzekering', 'text'],
+    ['reis_maatschappij', 'Reisverzekering (maatschappij, of "geen")', 'text'], ['reis_polis', 'Polisnummer reisverzekering', 'text']]],
+  ['dieet', 'Dieetwensen en allergieën', 'Gezondheid', [['dieet', 'Dieetwensen of allergieën', 'textarea']]],
+  ['medisch', 'Medicijnen en medische bijzonderheden', 'Gezondheid', [['medisch', 'Medicijnen of medische bijzonderheden die de begeleiders moeten weten', 'textarea']]],
+  ['foto', "Toestemming foto's en video's", 'Toestemming', [['foto_ok', "Mag school foto's en video's van jou gebruiken op de website en social media?", 'select:Ja|Nee']]],
+  ['teken', 'Laten ondertekenen (vinger of muis)', 'Ondertekenen', []],
+];
+const FORM_VOORKEUZE = {
+  buitenland: ['geboorte', 'telefoon', 'adres', 'bsn', 'nood', 'ouder', 'id', 'verzekering', 'dieet', 'medisch', 'foto', 'teken'],
+  dag: ['geboorte', 'telefoon', 'nood', 'dieet', 'medisch', 'teken'],
 };
 
-function formVelden(act) {
-  return [...FORM_VELDEN.altijd,
-    ...(act.vraag_id ? FORM_VELDEN.id : []),
-    ...(act.vraag_verzekering ? FORM_VELDEN.verzekering : []),
-    ...(act.vraag_dieet ? FORM_VELDEN.dieet : []),
-    ...(act.vraag_medisch ? FORM_VELDEN.medisch : [])];
+/** Welke onderdelen staan aan? Werkt met de nieuwe lijst en met oude reizen (losse vinkjes). */
+function blokken(a) {
+  if (Array.isArray(a.formulier)) return new Set(a.formulier);
+  if (a.formulier) return new Set(String(a.formulier).split(',').filter(Boolean));
+  const b = new Set(['geboorte', 'telefoon', 'nood']);
+  if (a.vraag_id) b.add('id'); if (a.vraag_verzekering) b.add('verzekering');
+  if (a.vraag_dieet) b.add('dieet'); if (a.vraag_medisch) b.add('medisch');
+  return b;
 }
+function formVelden(a) {
+  const b = blokken(a);
+  return FORM_BLOKKEN.filter((x) => b.has(x[0])).flatMap((x) => x[3]);
+}
+
+// Vaste tekst over factuur en betalen in termijnen (komt op het formulier en op de studentenpagina)
+const BETAALTEKST = 'Na ontvangst van dit formulier stuurt Albeda een factuur. Deze kan eventueel in termijnen betaald worden. '
+  + 'Wil je in termijnen betalen? Neem dan contact op met de debiteurenadministratie (facturen en betalingen): '
+  + 'telefoon 010 892 7672 of debiteuren@albeda.nl.';
 
 function fDatum(d) {
   if (!d) return '';
@@ -287,33 +299,51 @@ function maakFormulier(jsPDF, a, g) {
   y += 3;
 
   // Student
+  const b = blokken(a);
   kop('Jouw gegevens');
   rij(['Naam', g.naam], ['Klas', g.klas]);
   rij(['Studentnummer', g.studentnummer], ['E-mailadres', g.email]);
-  rij(['Geboortedatum', fDatum(g.geboortedatum)], ['Telefoonnummer', g.telefoon]);
+  const extra = [];
+  if (b.has('geboorte')) extra.push(['Geboortedatum', fDatum(g.geboortedatum)]);
+  if (b.has('telefoon')) extra.push(['Telefoonnummer', g.telefoon]);
+  if (b.has('bsn')) extra.push(['BSN (burgerservicenummer)', g.bsn]);
+  for (let i = 0; i < extra.length; i += 2) rij(...extra.slice(i, i + 2));
+  if (b.has('adres')) { rij(['Straat en huisnummer', g.adres_straat]); rij(['Postcode', g.adres_postcode], ['Woonplaats', g.adres_plaats]); }
   y += 2;
 
-  kop('Bij nood bellen we');
-  rij(['Naam', g.nood_naam], ['Wie is dit?', g.nood_relatie], ['Telefoonnummer', g.nood_tel]);
-  y += 2;
-
-  if (a.vraag_id) {
+  if (b.has('nood')) {
+    kop('Bij nood bellen we');
+    rij(['Naam', g.nood_naam], ['Wie is dit?', g.nood_relatie], ['Telefoonnummer', g.nood_tel]);
+    y += 2;
+  }
+  if (b.has('ouder')) {
+    kop('Ouder of verzorger');
+    rij(['Naam', g.ouder_naam], ['Telefoonnummer', g.ouder_tel]);
+    rij(['E-mailadres', g.ouder_mail]);
+    y += 2;
+  }
+  if (b.has('id')) {
     kop('Identiteitsbewijs');
     rij(['Soort', g.id_soort], ['Documentnummer', g.id_nummer]);
     rij(['Geldig tot', fDatum(g.id_geldig)], ['Nationaliteit', g.nationaliteit]);
     alinea('Neem dit identiteitsbewijs mee op reis. Het moet geldig zijn tot na de terugreis.', 8.5);
     y += 2;
   }
-  if (a.vraag_verzekering) {
+  if (b.has('verzekering')) {
     kop('Verzekeringen');
     rij(['Zorgverzekeraar', g.zorg_maatschappij], ['Polisnummer', g.zorg_polis]);
     rij(['Reisverzekering', g.reis_maatschappij], ['Polisnummer', g.reis_polis]);
     y += 2;
   }
-  if (a.vraag_dieet || a.vraag_medisch) {
+  if (b.has('dieet') || b.has('medisch')) {
     kop('Goed om te weten');
-    if (a.vraag_dieet) blok('Dieetwensen of allergieën', g.dieet, 2);
-    if (a.vraag_medisch) blok('Medicijnen of medische bijzonderheden', g.medisch, 2);
+    if (b.has('dieet')) blok('Dieetwensen of allergieën', g.dieet, 2);
+    if (b.has('medisch')) blok('Medicijnen of medische bijzonderheden', g.medisch, 2);
+  }
+  if (b.has('foto')) {
+    kop('Toestemming');
+    rij(["Mag school foto's en video's van mij gebruiken op de website en social media?", g.foto_ok || (g.naam ? '' : 'Ja / Nee')]);
+    y += 2;
   }
 
   // Afspraken
@@ -322,7 +352,9 @@ function maakFormulier(jsPDF, a, g) {
     `Ik ga mee met "${a.titel}" op ${fWanneer(a)}${a.vertrektijd ? ` en ben om ${a.vertrektijd} uur op de vertreklocatie` : ''}.`,
     'Ik houd me aan de schoolregels en luister naar de begeleiders.',
     Number(a.prijs) > 0 ? `Ik weet dat deelname ${fPrijs(a.prijs)} kost.${a.betaalinfo ? ' ' + a.betaalinfo : ''}` : null,
+    Number(a.prijs) > 0 ? BETAALTEKST : null,
     'De gegevens op dit formulier kloppen.',
+    'Ben ik jonger dan 18? Dan tekent ook mijn ouder of verzorger dit formulier.',
   ].filter(Boolean);
   afspraken.forEach((t) => alinea('•  ' + t));
   y += 2;
@@ -330,18 +362,30 @@ function maakFormulier(jsPDF, a, g) {
   // Handtekeningen
   const lft = leeftijdOp(g.geboortedatum, a.datum_van);
   const ouderVerplicht = lft !== null && lft < 18;
-  nieuwePagina(40);
+  nieuwePagina(44);
   const half = (W - 8) / 2;
-  const handtekening = (x, titel, sub) => {
-    doc.setDrawColor(...LIJN); doc.setLineWidth(0.4); doc.roundedRect(x, y, half, 30, 2, 2, 'S');
+  // Handtekeningvak; met een digitale handtekening (PNG) wordt die erin gezet, met datum en tijd
+  const handtekening = (x, titel, sub, img, moment) => {
+    doc.setDrawColor(...LIJN); doc.setLineWidth(0.4); doc.roundedRect(x, y, half, 36, 2, 2, 'S');
     doc.setTextColor(...BL); doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.text(titel, x + 4, y + 6);
     doc.setTextColor(...GR); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.text(sub, x + 4, y + 10.5);
-    doc.text('Handtekening', x + 4, y + 26); doc.text('Datum', x + half - 30, y + 26);
-    doc.setDrawColor(...LIJN); doc.line(x + 4, y + 23, x + half - 34, y + 23); doc.line(x + half - 30, y + 23, x + half - 4, y + 23);
+    if (img) {
+      try {
+        const p = doc.getImageProperties(img);
+        const maxW = half - 42, maxH = 14;
+        const sch = Math.min(maxW / p.width, maxH / p.height);
+        doc.addImage(img, 'PNG', x + 4, y + 13 + (maxH - p.height * sch), p.width * sch, p.height * sch);
+      } catch (e) {}
+    }
+    doc.setDrawColor(...LIJN); doc.line(x + 4, y + 28, x + half - 34, y + 28); doc.line(x + half - 30, y + 28, x + half - 4, y + 28);
+    doc.setTextColor(...GR); doc.setFontSize(7.5);
+    doc.text(img ? 'Handtekening (digitaal gezet)' : 'Handtekening', x + 4, y + 32); doc.text('Datum', x + half - 30, y + 32);
+    if (moment) { doc.setTextColor(...INKT); doc.setFontSize(8.5); doc.text(moment, x + half - 30, y + 26.5); }
   };
-  handtekening(L, 'Student', 'Naam: ' + (g.naam || ''));
-  handtekening(L + half + 8, 'Ouder of verzorger', ouderVerplicht ? 'Verplicht: je bent jonger dan 18' : 'Alleen nodig als je jonger bent dan 18');
-  y += 35;
+  handtekening(L, 'Student', 'Naam: ' + (g.naam || ''), g.teken_student, g.teken_student ? g.teken_moment : '');
+  const ouderSub = g.ouder_naam ? 'Naam: ' + g.ouder_naam : (ouderVerplicht ? 'Verplicht: je bent jonger dan 18' : 'Alleen nodig als je jonger bent dan 18');
+  handtekening(L + half + 8, 'Ouder of verzorger', ouderSub, g.teken_ouder, g.teken_ouder ? g.teken_moment : '');
+  y += 41;
 
   // Inleveren en privacy
   nieuwePagina(a.inleveren ? 20 : 14);
@@ -349,7 +393,7 @@ function maakFormulier(jsPDF, a, g) {
   doc.setTextColor(...INKT); doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5);
   if (a.inleveren) { doc.text(doc.splitTextToSize('Inleveren: ' + a.inleveren, W - 8)[0], L + 4, y + 6.5); }
   doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...GR);
-  doc.text(doc.splitTextToSize('Dit formulier is niet online opgeslagen. De school bewaart het alleen voor deze activiteit en vernietigt het daarna.', W - 8), L + 4, y + (a.inleveren ? 12.5 : 6.5));
+  doc.text(doc.splitTextToSize('Dit formulier is niet online opgeslagen. De school gebruikt de gegevens alleen voor deze activiteit en verwijdert ze daarna.', W - 8), L + 4, y + (a.inleveren ? 12.5 : 6.5));
 
   // Voettekst op elke pagina
   const n = doc.getNumberOfPages();
@@ -406,7 +450,6 @@ async function laad(){
     if(!r.ok) throw new Error();
     items = await r.json();
     const status = st && st.ok ? await st.json() : {};
-    toonInfo(status.binnenkort ? {} : status);
     if(status.binnenkort){
       document.querySelector('.filters').style.display = 'none'; $('mijn').innerHTML = '';
       return toonBinnenkort(status.binnenkort_tekst);
@@ -421,42 +464,12 @@ async function laad(){
   if(id && !laatst){ laatst = id; if(items.find(x => x.id === id)) open_(id); }
 }
 
-// Informatieblok dat docenten in beheer invullen. Regels die met - of • beginnen worden een lijstje.
-function toonInfo(st){
-  const titel = (st.info_titel || '').trim(), tekst = (st.info_tekst || '').trim();
-  if(!titel && !tekst){ $('info').innerHTML = ''; return; }
-  // Een lege regel = nieuwe alinea. Regels direct onder elkaar blijven bij elkaar (met een regeleinde).
-  // Regels die met - of • beginnen worden een lijstje.
-  let html = '';
-  for(const blok of tekst.split(/\r?\n\s*\r?\n/)){
-    let regels = [], lijst = [];
-    const sluitRegels = () => { if(regels.length){ html += `<p>${regels.map(esc).join('<br>')}</p>`; regels = []; } };
-    const sluitLijst = () => { if(lijst.length){ html += '<ul>' + lijst.map(l => `<li>${esc(l)}</li>`).join('') + '</ul>'; lijst = []; } };
-    for(const regel of blok.split(/\r?\n/)){
-      const r = regel.trim(); if(!r) continue;
-      const m = r.match(/^[-•*]\s*(.+)$/);
-      if(m){ sluitRegels(); lijst.push(m[1]); } else { sluitLijst(); regels.push(r); }
-    }
-    sluitRegels(); sluitLijst();
-  }
-  $('info').innerHTML = `<section class="info">${titel ? `<h2>${esc(titel)}</h2>` : ''}${html}</section>`;
-}
-
-// Bij studiereizen (of als er een minimum is) is inschrijven nog geen zekere plek: na de sluitingsdatum hoor je of de reis doorgaat.
-const onzeker = a => a.soort === 'reis' || a.min_deelnemers > 0;
-const okLabel = a => onzeker(a) ? 'Ingeschreven' : 'Je gaat mee';
-
 function toonMijn(){
   const m = mijnLijst();
   const rijen = items.filter(a => m[a.id]);
   $('mijn').innerHTML = rijen.length ? `<div class="mijn"><h2>Jouw inschrijvingen</h2><ul>${rijen.map(a => `
-    <li><span><b>${esc(a.titel)}</b> ${m[a.id].wachtlijst ? '<span class="lbl wacht">Wachtlijst</span>' : `<span class="lbl ok">${okLabel(a)}</span>`}</span>
-    <button class="lnk" onclick="open_(${a.id}, true)">${a.heeft_overeenkomst ? 'Overeenkomst en formulier' : 'Formulier downloaden'}</button></li>`).join('')}</ul></div>` : '';
-}
-
-function minTekst(a){
-  if(!(a.min_deelnemers > 0)) return '';
-  return a.deelnemers >= a.min_deelnemers ? `Gaat door vanaf ${a.min_deelnemers} deelnemers: dat zijn er genoeg!` : `Gaat door vanaf ${a.min_deelnemers} deelnemers (nu ${a.deelnemers})`;
+    <li><span><b>${esc(a.titel)}</b> ${m[a.id].wachtlijst ? '<span class="lbl wacht">Wachtlijst</span>' : '<span class="lbl ok">Je gaat mee</span>'}</span>
+    <button class="lnk" onclick="open_(${a.id}, true)">Formulier downloaden</button></li>`).join('')}</ul></div>` : '';
 }
 
 function standTekst(a){
@@ -490,13 +503,12 @@ function toonLijst(){
         <span class="soort">${a.soort === 'reis' ? 'Studiereis' : 'Activiteit'}</span>
       </div>
       <div class="inhoud">
-        <h3>${esc(a.titel)} ${m[a.id] ? (m[a.id].wachtlijst ? '<span class="lbl wacht">Wachtlijst</span>' : `<span class="lbl ok">${okLabel(a)}</span>`) : ''}</h3>
+        <h3>${esc(a.titel)} ${m[a.id] ? (m[a.id].wachtlijst ? '<span class="lbl wacht">Wachtlijst</span>' : '<span class="lbl ok">Je gaat mee</span>') : ''}</h3>
         <div class="wanneer">${esc(wanneerKort(a))}</div>
         <div class="waar">${esc([a.bestemming, a.doelgroep].filter(Boolean).join(' · '))}</div>
         <div class="onder">
           <div class="stand">${esc(standTekst(a))}</div>
           ${a.status === 'open' || a.status === 'wachtlijst' || a.status === 'vol' ? `<div class="meter"><i class="${pct>=80?'bijna':''}" style="width:${pct}%"></i></div>` : ''}
-          ${minTekst(a) ? `<div class="minimum">${esc(minTekst(a))}</div>` : ''}
           <button class="knop ${kanIn || m[a.id] ? '' : 'tweede'}" type="button" onclick="open_(${a.id})">${knop}</button>
         </div>
       </div>
@@ -519,7 +531,6 @@ function open_(id, naarFormulier){
     a.terugtijd ? ['Terug', a.terugtijd + ' uur'] : null,
     a.bestemming ? ['Waar naartoe', a.bestemming] : null,
     ['Kosten', fPrijs(a.prijs)],
-    a.min_deelnemers > 0 ? ['Gaat door bij', `minimaal ${a.min_deelnemers} deelnemers (nu ${a.deelnemers})`] : null,
     a.doelgroep ? ['Voor wie', a.doelgroep] : null,
     a.aanmelden_tot ? ['Inschrijven kan tot', fDatum(a.aanmelden_tot)] : null,
     a.docent ? ['Docent', a.docent] : null,
@@ -527,12 +538,13 @@ function open_(id, naarFormulier){
   $('dlg-body').innerHTML = `
     ${a.omschrijving ? `<h4>Wat gaan we doen?</h4><p class="omschr">${esc(a.omschrijving)}</p>` : ''}
     <dl class="feiten">${feiten.map(([k,v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
+    ${Number(a.prijs) > 0 ? `<p class="betaal">💶 ${esc(BETAALTEKST)}</p>` : ''}
     ${a.heeft_pdf ? `<a class="download" href="${API}/pdf/${a.id}" target="_blank" rel="noopener">📄 Meer informatie (pdf)</a>` : ''}
     <hr>
     <div id="inschrijf"></div>`;
   if(mijn){
-    $('inschrijf').innerHTML = `<div class="melding ok">${mijn.wachtlijst ? 'Je staat op de wachtlijst voor deze ' + (a.soort === 'reis' ? 'reis' : 'activiteit') + '.' : onzeker(a) ? 'Je bent ingeschreven!' : 'Je bent ingeschreven. Leuk dat je meegaat!'}</div>
-      <button class="knop blauw" type="button" onclick="toonFormulierStap(mijnLijst()[huidig.id])">${a.heeft_overeenkomst ? 'Naar je overeenkomst en formulier' : 'Download je deelnameformulier'}</button>`;
+    $('inschrijf').innerHTML = `<div class="melding ok">${mijn.wachtlijst ? 'Je staat op de wachtlijst voor deze ' + (a.soort === 'reis' ? 'reis' : 'activiteit') + '.' : 'Je bent ingeschreven. Leuk dat je meegaat!'}</div>
+      <button class="knop blauw" type="button" onclick="toonFormulierStap(mijnLijst()[huidig.id])">Download je deelnameformulier</button>`;
   } else if(a.status === 'open' || a.status === 'wachtlijst'){
     toonInschrijven(a.status === 'wachtlijst');
   } else {
@@ -611,12 +623,10 @@ function gelukt(res, mijn){
   $('dlg-body').innerHTML = `
     <div class="gelukt">
       <div class="vinkje ${res.wachtlijst ? 'wacht' : ''}" aria-hidden="true">${res.wachtlijst ? '⏳' : '✓'}</div>
-      <h4>${res.wachtlijst ? 'Je staat op de wachtlijst' : onzeker(a) ? 'Gefeliciteerd, je bent ingeschreven!' : 'Top, je gaat mee!'}</h4>
+      <h4>${res.wachtlijst ? 'Je staat op de wachtlijst' : 'Top, je gaat mee!'}</h4>
       <p>${res.wachtlijst
         ? `Je bent nummer <b>${res.positie}</b> op de wachtlijst. Komt er plek vrij, dan krijg je bericht van de docent.`
-        : onzeker(a)
-          ? `Zet ${esc(fWanneer(a))} alvast in je agenda. ${a.aanmelden_tot ? `Na <b>${esc(fDatum(a.aanmelden_tot))}</b>` : 'Na de inschrijving'} hoor je of de ${a.soort === 'reis' ? 'reis' : 'activiteit'} doorgaat en of je bent ingedeeld.`
-          : `Zet ${esc(fWanneer(a))} alvast in je agenda${a.vertrektijd ? `. Vertrek om <b>${esc(a.vertrektijd)} uur</b>` : ''}.`}</p>
+        : `Zet ${esc(fWanneer(a))} alvast in je agenda${a.vertrektijd ? `. Vertrek om <b>${esc(a.vertrektijd)} uur</b>` : ''}.`}</p>
     </div>
     ${signaal}
     <div id="stap2"></div>`;
@@ -627,56 +637,184 @@ function toonFormulierStap(mijn, alsStap){
   const a = huidig;
   const doel = alsStap ? $('stap2') : $('dlg-body');
   const velden = formVelden(a);
-  const toonForm = a.toon_formulier !== 0;
-  let nr = 2;
-  const overeenkomst = a.heeft_overeenkomst ? (() => {
-    const onderwerp = `Overeenkomst ${a.titel} - ${mijn.naam || ''} ${mijn.klas || ''}`.trim();
-    const mail = a.inlever_email || 'travelreizen@albeda.nl';
-    return `<div class="stap">
-      <h4><span>${nr++}</span>${mijn.wachtlijst ? 'Overeenkomst alvast downloaden' : 'Download en onderteken je overeenkomst'}</h4>
-      <ol>
-        <li>Download de overeenkomst en vul je gegevens in.</li>
-        <li>Print hem en zet je handtekening. Ben je jonger dan 18? Dan tekent ook je ouder of verzorger.</li>
-        <li>Maak een scan of duidelijke foto en mail die naar <b>${esc(mail)}</b>${a.aanmelden_tot ? `, uiterlijk <b>${esc(fDatum(a.aanmelden_tot))}</b>` : ''}.${a.inleveren ? ` Op papier inleveren mag ook: ${esc(a.inleveren)}.` : ''}</li>
-      </ol>
-      <div class="knoppen">
-        <a class="knop blauw" style="text-align:center;text-decoration:none" href="${API}/overeenkomst/${a.id}" download>Download de overeenkomst</a>
-        <a class="knop tweede" style="text-align:center;text-decoration:none" href="mailto:${esc(mail)}?subject=${encodeURIComponent(onderwerp)}">Mail je getekende overeenkomst</a>
-      </div>
-      <p class="privacy">Zonder getekende overeenkomst kun je niet mee. Lever hem dus op tijd in!</p>
-    </div>`;
-  })() : '';
-  const formulier = toonForm ? `
+  const teken = blokken(a).has('teken');
+  const mail = a.formulier_email || '';
+  const uitleg = teken
+    ? `Vul je gegevens in, zet je handtekening hieronder${mail ? ` en verstuur het formulier naar <b>${esc(mail)}</b>` : ' en download het formulier'}. Ben je jonger dan 18? Dan moet ook je ouder of verzorger tekenen.`
+    : `Vul je gegevens in, download het formulier, print het en zet je handtekening. Ben je jonger dan 18? Dan moet ook je ouder of verzorger tekenen.${a.inleveren ? ` Lever het in <b>${esc(a.inleveren)}</b>.` : ''}`;
+  doel.innerHTML = `
     <div class="stap">
-      <h4><span>${nr++}</span>${mijn.wachtlijst ? 'Deelnameformulier alvast downloaden' : 'Download je deelnameformulier'}</h4>
-      <p style="margin:0 0 12px;font-size:.9rem">Vul je gegevens in, download het formulier, print het en zet je handtekening.${a.inleveren && !a.heeft_overeenkomst ? ` Lever het in <b>${esc(a.inleveren)}</b>.` : ''}</p>
+      <h4><span>2</span>${mijn.wachtlijst ? 'Formulier alvast invullen' : 'Je deelnameformulier'}</h4>
+      <p style="margin:0 0 12px;font-size:.9rem">${uitleg}</p>
       <form id="pdfform" novalidate>
+        <div id="pdf-melding"></div>
         <div class="rij">
           ${velden.map(([k, label, type]) => {
-            if(type === 'textarea') return `<div class="veld" style="grid-column:1/-1"><label for="p-${k}">${esc(label)}</label><textarea id="p-${k}"></textarea></div>`;
-            if(type.startsWith('select:')) return `<div class="veld"><label for="p-${k}">${esc(label)}</label><select id="p-${k}"><option value="">Kies...</option>${type.slice(7).split('|').map(o => `<option>${esc(o)}</option>`).join('')}</select></div>`;
-            return `<div class="veld"><label for="p-${k}">${esc(label)}</label><input id="p-${k}" type="${type}" ${type === 'tel' ? 'inputmode="tel"' : ''}></div>`;
+            const ster = teken && type !== 'textarea' ? ' *' : '';
+            if(type === 'textarea') return `<div class="veld" style="grid-column:1/-1"><label for="p-${k}">${esc(label)}</label><textarea id="p-${k}" placeholder="Niets? Typ dan: geen"></textarea></div>`;
+            if(type.startsWith('select:')) return `<div class="veld"${label.length > 50 ? ' style="grid-column:1/-1"' : ''}><label for="p-${k}">${esc(label)}${ster}</label><select id="p-${k}"><option value="">Kies...</option>${type.slice(7).split('|').map(o => `<option>${esc(o)}</option>`).join('')}</select></div>`;
+            if(type === 'bsn') return `<div class="veld"><label for="p-${k}">${esc(label)}${ster}</label><input id="p-${k}" type="text" inputmode="numeric" maxlength="9" autocomplete="off"><small style="font-size:.76rem;color:var(--grijs)">9 cijfers. Staat op je paspoort, ID-kaart of zorgpas.</small></div>`;
+            return `<div class="veld"><label for="p-${k}">${esc(label)}${ster}</label><input id="p-${k}" type="${type}" ${type === 'tel' ? 'inputmode="tel"' : ''}></div>`;
           }).join('')}
         </div>
-        <p class="privacy">🔒 Deze gegevens worden niet verstuurd of online opgeslagen. Ze komen alleen op het formulier dat je nu downloadt.</p>
-        <button class="knop blauw" type="submit">Download formulier (pdf)</button>
+        ${teken ? `
+        <div class="teken-blok">
+          <label>Jouw handtekening *</label>
+          <div class="tekenvak"><canvas id="t-student" aria-label="Tekenvak voor je handtekening"></canvas><span class="teken-hint">Teken hier met je vinger of muis</span></div>
+          <button type="button" class="opnieuw" onclick="wisVak('t-student')">Opnieuw</button>
+        </div>
+        <div class="teken-blok" id="ouder-blok">
+          <label id="ouder-label">Handtekening ouder of verzorger <span style="font-weight:500;color:var(--grijs)">(alleen als je jonger bent dan 18)</span></label>
+          ${blokken(a).has('ouder') ? '' : `<div class="veld" style="margin-top:6px"><input id="p-ouder_naam" type="text" placeholder="Naam ouder of verzorger" aria-label="Naam ouder of verzorger"></div>`}
+          <div class="tekenvak"><canvas id="t-ouder" aria-label="Tekenvak voor handtekening ouder of verzorger"></canvas><span class="teken-hint">Laat je ouder of verzorger hier tekenen</span></div>
+          <button type="button" class="opnieuw" onclick="wisVak('t-ouder')">Opnieuw</button>
+        </div>` : ''}
+        <p class="privacy">🔒 Deze gegevens worden niet online opgeslagen. Ze komen alleen op het formulier dat jij ${mail ? 'verstuurt' : 'downloadt'}.</p>
+        ${mail ? `
+          <button class="knop" type="submit">Verstuur formulier</button>
+          <p class="klein"><button type="button" onclick="verwerkPdf(true)">Alleen downloaden</button></p>`
+        : `<button class="knop blauw" type="submit">Download formulier (pdf)</button>`}
       </form>
-      <p class="klein">Liever met de hand invullen? <button type="button" onclick="downloadPdf(true)">Download een leeg formulier</button></p>
-    </div>` : '';
-  doel.innerHTML = overeenkomst + formulier || '<div class="melding info">Je hoeft verder niets in te leveren. Tot dan!</div>';
-  if($('pdfform')) $('pdfform').addEventListener('submit', e => { e.preventDefault(); downloadPdf(false); });
+      <div id="verstuurd"></div>
+      ${teken ? '' : `<p class="klein">Liever met de hand invullen? <button type="button" onclick="downloadLeeg()">Download een leeg formulier</button></p>`}
+    </div>`;
+  $('pdfform').addEventListener('submit', e => { e.preventDefault(); verwerkPdf(false); });
   window.__mijn = mijn;
   if(!$('dlg').open) $('dlg').showModal();
+  if(teken){
+    requestAnimationFrame(() => { maakTekenvak('t-student'); maakTekenvak('t-ouder'); });
+    const geb = $('p-geboortedatum');
+    if(geb) geb.addEventListener('change', ouderBlokBijwerken);
+  }
 }
 
-function downloadPdf(leeg){
-  const mijn = window.__mijn || {};
-  const g = leeg ? {} : {naam:mijn.naam, klas:mijn.klas, studentnummer:mijn.studentnummer, email:mijn.email};
-  if(!leeg) for(const [k] of formVelden(huidig)) { const el = $('p-' + k); if(el) g[k] = el.value.trim(); }
-  try{
-    const doc = maakFormulier(window.jspdf.jsPDF, huidig, g);
-    doc.save(bestandsnaam(huidig, g));
-  }catch(e){ alert('Het formulier kon niet gemaakt worden. Probeer het in een andere browser.'); }
+/* ---------- Tekenvak (vinger, muis, touchpad of pen) ---------- */
+function maakTekenvak(id){
+  const c = $(id); if(!c) return;
+  const r = window.devicePixelRatio || 1;
+  c.width = c.clientWidth * r; c.height = c.clientHeight * r;
+  const ctx = c.getContext('2d');
+  ctx.scale(r, r); ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#14233A';
+  c.__leeg = true;
+  let bezig = false, vorige = null;
+  const punt = e => { const b = c.getBoundingClientRect(); return {x: e.clientX - b.left, y: e.clientY - b.top}; };
+  c.addEventListener('pointerdown', e => {
+    e.preventDefault(); c.setPointerCapture(e.pointerId); bezig = true; vorige = punt(e);
+    ctx.beginPath(); ctx.arc(vorige.x, vorige.y, 1.1, 0, Math.PI * 2); ctx.fillStyle = '#14233A'; ctx.fill();
+    if(c.__leeg){ c.__leeg = false; c.parentElement.classList.add('getekend'); }
+  });
+  c.addEventListener('pointermove', e => {
+    if(!bezig) return; e.preventDefault();
+    const p = punt(e); ctx.beginPath(); ctx.moveTo(vorige.x, vorige.y); ctx.lineTo(p.x, p.y); ctx.stroke(); vorige = p;
+  });
+  const stop = () => { bezig = false; };
+  c.addEventListener('pointerup', stop); c.addEventListener('pointercancel', stop); c.addEventListener('pointerleave', stop);
+}
+function wisVak(id){
+  const c = $(id); if(!c) return;
+  c.getContext('2d').clearRect(0, 0, c.width, c.height);
+  c.__leeg = true; c.parentElement.classList.remove('getekend');
+}
+// Bijgesneden PNG van de handtekening, of null als er niets getekend is
+function vakAlsPng(id){
+  const c = $(id); if(!c || c.__leeg) return null;
+  const ctx = c.getContext('2d'), {width:w, height:h} = c, d = ctx.getImageData(0, 0, w, h).data;
+  let x0 = w, y0 = h, x1 = 0, y1 = 0;
+  for(let y = 0; y < h; y++) for(let x = 0; x < w; x++) if(d[(y * w + x) * 4 + 3] > 10){ if(x < x0) x0 = x; if(x > x1) x1 = x; if(y < y0) y0 = y; if(y > y1) y1 = y; }
+  if(x1 <= x0 || y1 <= y0) return null;
+  const m = 6, uit = document.createElement('canvas');
+  uit.width = x1 - x0 + m * 2; uit.height = y1 - y0 + m * 2;
+  uit.getContext('2d').drawImage(c, x0 - m, y0 - m, uit.width, uit.height, 0, 0, uit.width, uit.height);
+  return uit.toDataURL('image/png');
+}
+function ouderNodig(){
+  const geb = $('p-geboortedatum') ? $('p-geboortedatum').value : '';
+  const l = leeftijdOp(geb, huidig.datum_van);
+  return l === null ? null : l < 18;
+}
+function ouderBlokBijwerken(){
+  const nodig = ouderNodig(), blok = $('ouder-blok'); if(!blok) return;
+  blok.style.display = nodig === false ? 'none' : '';
+  $('ouder-label').innerHTML = nodig ? 'Handtekening ouder of verzorger * <span style="font-weight:500;color:var(--grijs)">(verplicht, want je bent jonger dan 18)</span>'
+    : 'Handtekening ouder of verzorger <span style="font-weight:500;color:var(--grijs)">(alleen als je jonger bent dan 18)</span>';
+  if(nodig !== false) requestAnimationFrame(() => { const c = $('t-ouder'); if(c && c.width === 0) maakTekenvak('t-ouder'); });
+}
+
+function bsnKlopt(v){
+  if(!/^\d{8,9}$/.test(v)) return false;
+  const n = v.padStart(9, '0').split('').map(Number);
+  let som = 0; for(let i = 0; i < 8; i++) som += n[i] * (9 - i);
+  som -= n[8];
+  return som > 0 && som % 11 === 0;
+}
+
+/* ---------- Formulier maken, controleren en versturen ---------- */
+function verzamel(){
+  const a = huidig, mijn = window.__mijn || {}, teken = blokken(a).has('teken');
+  const fout = t => { $('pdf-melding').innerHTML = `<div class="melding" role="alert">${esc(t)}</div>`; $('pdf-melding').scrollIntoView({block:'center', behavior:'smooth'}); return null; };
+  const g = {naam:mijn.naam, klas:mijn.klas, studentnummer:mijn.studentnummer, email:mijn.email};
+  for(const [k, label, type] of formVelden(a)){
+    const el = $('p-' + k); if(!el) continue;
+    g[k] = el.value.trim();
+    if(teken && type !== 'textarea' && !g[k]) { el.focus(); return fout(`Vul nog in: ${label}.`); }
+  }
+  if(blokken(a).has('bsn') && g.bsn && !bsnKlopt(g.bsn.replace(/\s/g, ''))) { $('p-bsn').focus(); return fout('Dit BSN klopt niet. Controleer het nummer nog een keer.'); }
+  if(teken){
+    g.teken_student = vakAlsPng('t-student');
+    if(!g.teken_student) return fout('Zet je handtekening in het tekenvak.');
+    const nodig = ouderNodig();
+    if(nodig !== false){
+      g.ouder_naam = ($('p-ouder_naam') ? $('p-ouder_naam').value.trim() : '') || g.ouder_naam || '';
+      g.teken_ouder = vakAlsPng('t-ouder');
+      if(nodig && (!g.teken_ouder || !g.ouder_naam)) return fout('Je bent jonger dan 18. Laat je ouder of verzorger zijn naam invullen en tekenen.');
+    }
+    g.teken_moment = new Date().toLocaleString('nl-NL', {day:'numeric', month:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit'});
+  }
+  $('pdf-melding').innerHTML = '';
+  return g;
+}
+
+async function verwerkPdf(alleenDownload){
+  const a = huidig, g = verzamel(); if(!g) return;
+  let doc;
+  try{ doc = maakFormulier(window.jspdf.jsPDF, a, g); }
+  catch(e){ return alert('Het formulier kon niet gemaakt worden. Probeer het in een andere browser.'); }
+  const naam = bestandsnaam(a, g);
+  const mail = a.formulier_email;
+  if(alleenDownload || !mail){ doc.save(naam); return toonVerstuurd('download', naam); }
+
+  // Telefoon of tablet: deel de pdf direct met de mail-app
+  const file = new File([doc.output('blob')], naam, {type:'application/pdf'});
+  const telefoon = window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
+  if(telefoon && navigator.canShare && navigator.canShare({files:[file]})){
+    try{
+      await navigator.share({files:[file], title:'Deelnameformulier ' + a.titel, text:`Deelnameformulier ${a.titel} van ${g.naam} (${g.klas}). Graag versturen naar ${mail}`});
+      return toonVerstuurd('gedeeld', naam);
+    }catch(e){ if(e && e.name === 'AbortError') return; }
+  }
+  // Laptop: downloaden en een nieuwe mail openen met het adres al ingevuld
+  doc.save(naam);
+  const onderwerp = encodeURIComponent(`Deelnameformulier ${a.titel} - ${g.naam} (${g.klas})`);
+  const tekst = encodeURIComponent(`Beste docent,\n\nIn de bijlage stuur ik mijn ingevulde en ondertekende deelnameformulier voor ${a.titel}.\n\nGroet,\n${g.naam}\n${g.klas}, studentnummer ${g.studentnummer}`);
+  setTimeout(() => { location.href = `mailto:${mail}?subject=${onderwerp}&body=${tekst}`; }, 700);
+  toonVerstuurd('mail', naam);
+}
+
+function toonVerstuurd(hoe, naam){
+  const mail = huidig.formulier_email;
+  const kopieer = mail ? ` <button type="button" class="lnk" onclick="navigator.clipboard.writeText('${esc(mail)}').then(()=>this.textContent='Gekopieerd!')">Kopieer adres</button>` : '';
+  const tekst = {
+    gedeeld: `<b>Bijna klaar!</b> Kies in het scherm dat opende je mail-app (bijvoorbeeld Mail, Gmail of Outlook). Vul als ontvanger in: <b>${esc(mail)}</b>${kopieer} en druk op verzenden.`,
+    mail: `<b>Bijna klaar!</b> Je formulier <b>${esc(naam)}</b> staat in je Downloads. Er opent nu een nieuwe mail aan <b>${esc(mail)}</b>. Voeg het formulier als bijlage toe en klik op verzenden.<br><span style="font-size:.84rem">Opent er geen mail? Stuur het bestand dan zelf naar ${esc(mail)}.${kopieer}</span>`,
+    download: `Je formulier <b>${esc(naam)}</b> staat in je Downloads.${mail ? ` Vergeet niet het te mailen naar <b>${esc(mail)}</b>.${kopieer}` : (blokken(huidig).has('teken') ? '' : ' Print het, zet je handtekening en lever het in.')}`,
+  }[hoe];
+  $('verstuurd').innerHTML = `<div class="melding ok" style="margin-top:12px;font-weight:500">${tekst}</div>`;
+  $('verstuurd').scrollIntoView({block:'center', behavior:'smooth'});
+}
+
+function downloadLeeg(){
+  try{ maakFormulier(window.jspdf.jsPDF, huidig, {}).save(bestandsnaam(huidig, {})); }
+  catch(e){ alert('Het formulier kon niet gemaakt worden.'); }
 }
 
 function sluit(){ $('dlg').close(); }
