@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stagebedrijven | BPV | TLC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--blauw:#005AA7;--lichtblauw:#6FB3DF;--oranje:#F39200;--donker:#0B2E4F;--grijs:#5B6B7B;--lijn:#DCE4EC;--bg:#F3F7FB;--wit:#fff;--r:14px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Montserrat,system-ui,sans-serif;color:var(--donker);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{color:var(--blauw)}
+.kop{background:var(--blauw);color:#fff;position:relative;overflow:hidden}
+.kop::after{content:"";position:absolute;right:0;top:0;border-top:64px solid var(--oranje);border-left:64px solid transparent}
+.kop::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:linear-gradient(var(--oranje) 0 33%,var(--lichtblauw) 33% 66%,#fff 66%)}
+.kop-in{max-width:1100px;margin:0 auto;padding:18px 20px 22px 28px}
+.terug{color:#D6E8F6;text-decoration:none;font-size:13px;font-weight:600;display:inline-flex;gap:6px;align-items:center}
+.terug:hover{color:#fff}
+h1{font-size:28px;font-weight:800;margin:6px 0 2px;letter-spacing:-.3px}
+h1 b{font-weight:800}h1 span{font-weight:500}
+.stand{font-size:13px;color:#D6E8F6;margin:0}
+main{max-width:1100px;margin:0 auto;padding:18px 16px 60px}
+.filters{background:var(--wit);border-radius:var(--r);padding:16px;box-shadow:0 1px 2px rgba(11,46,79,.06);display:grid;gap:12px}
+@media (min-width:900px){.filters{position:sticky;top:0;z-index:5}}
+.zoek{display:flex;align-items:center;gap:10px;border:1.5px solid var(--lijn);border-radius:10px;padding:0 12px;background:#fff}
+.zoek:focus-within{border-color:var(--blauw)}
+.zoek svg{flex:none;color:var(--grijs)}
+.zoek input{border:0;outline:0;font:inherit;font-size:15px;padding:12px 0;width:100%;background:transparent;color:inherit}
+.rij{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{font:inherit;font-size:13px;font-weight:600;border:1.5px solid var(--lijn);background:#fff;color:var(--donker);padding:7px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.chip:hover{border-color:var(--lichtblauw)}
+.chip[aria-pressed=true]{background:var(--blauw);border-color:var(--blauw);color:#fff}
+.chip.oranje[aria-pressed=true]{background:var(--oranje);border-color:var(--oranje)}
+.scheid{width:1px;height:24px;background:var(--lijn);margin:0 2px}
+select{font:inherit;font-size:13px;font-weight:600;border:1.5px solid var(--lijn);border-radius:999px;padding:7px 30px 7px 13px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23005AA7' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 11px center;appearance:none;color:var(--donker);cursor:pointer;max-width:100%}
+select.actief{border-color:var(--blauw)}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 4px 10px}
+.telling{font-size:14px;font-weight:700}
+.wis{font:inherit;font-size:13px;font-weight:600;background:none;border:0;color:var(--blauw);cursor:pointer;text-decoration:underline;padding:0}
+.lijst{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.kaart{background:#fff;border-radius:var(--r);padding:14px 16px;border:1.5px solid transparent;box-shadow:0 1px 2px rgba(11,46,79,.06);cursor:pointer;text-align:left;font:inherit;color:inherit;display:grid;gap:6px;position:relative;border-left:5px solid var(--lichtblauw)}
+.kaart:hover,.kaart:focus-visible{border-color:var(--lichtblauw);border-left-color:var(--blauw);outline:0}
+.kaart.top{border-left-color:var(--oranje)}
+.naam{font-size:15px;font-weight:700;margin:0;line-height:1.3}
+.waar{font-size:13px;color:var(--grijs);margin:0}
+.labels{display:flex;gap:6px;flex-wrap:wrap}
+.lab{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:#E6F1FA;color:#00467F}
+.lab.o{background:#FDEBD0;color:#7A4600}
+.lab.of{background:var(--oranje);color:#fff}
+.lab.g{background:#EEF1F4;color:#44515E}
+.meer{display:block;margin:20px auto 0;font:inherit;font-weight:700;font-size:14px;background:#fff;border:1.5px solid var(--blauw);color:var(--blauw);border-radius:999px;padding:10px 22px;cursor:pointer}
+.leeg,.melding{background:#fff;border-radius:var(--r);padding:28px;text-align:center;color:var(--grijs)}
+.leeg b{display:block;color:var(--donker);font-size:16px;margin-bottom:4px}
+dialog{border:0;padding:0;border-radius:18px;width:min(620px,calc(100% - 24px));max-height:calc(100% - 24px);box-shadow:0 20px 60px rgba(11,46,79,.35);color:var(--donker)}
+dialog::backdrop{background:rgba(11,46,79,.55)}
+.p-kop{background:var(--blauw);color:#fff;padding:18px 54px 18px 22px;position:relative}
+.p-kop::after{content:"";position:absolute;right:0;bottom:0;border-bottom:34px solid var(--oranje);border-left:34px solid transparent}
+.p-kop h2{margin:0;font-size:20px;font-weight:800;line-height:1.25}
+.p-kop p{margin:4px 0 0;font-size:13px;color:#D6E8F6}
+.sluit{position:absolute;right:10px;top:10px;background:rgba(255,255,255,.15);border:0;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1}
+.sluit:hover{background:rgba(255,255,255,.3)}
+.p-body{padding:18px 22px 22px;display:grid;gap:16px}
+.blokken{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px}
+@media (max-width:560px){.blokken{grid-template-columns:1fr}h1{font-size:23px}}
+.blok h3{margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--grijs)}
+.blok p{margin:0;font-size:14px;line-height:1.55;word-break:break-word}
+.vac{border-left:5px solid var(--oranje);background:#FFF6EA;padding:12px 14px;font-size:14px;line-height:1.5}
+.vac b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#7A4600;margin-bottom:2px}
+.zoekt{border-left:5px solid var(--blauw);background:#EAF3FB;padding:12px 14px;font-size:14px;line-height:1.5}
+.zoekt b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#00467F;margin-bottom:4px}
+.zoekt p{margin:0 0 6px}.zoekt dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:0}.zoekt dt{font-weight:700}.zoekt dd{margin:0}
+.nog{background:var(--bg);padding:12px 14px;font-size:13px;color:var(--grijs);border-radius:10px}
+.acties{display:flex;gap:8px;flex-wrap:wrap}
+.knop{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;text-decoration:none;padding:9px 15px;border-radius:999px;border:1.5px solid var(--blauw);color:var(--blauw);background:#fff}
+.knop.vol{background:var(--blauw);color:#fff}
+.knop:hover{filter:brightness(.95)}
+.tip{font-size:13px;color:var(--grijs);margin:0;display:flex;gap:8px}
+.tip svg{flex:none;color:var(--oranje);margin-top:1px}
+.bij{font-size:11px;color:var(--grijs);margin:0}
+@media (max-width:640px){.rij.scroll{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px 2px}.rij.scroll::-webkit-scrollbar{display:none}.rij #waar{flex-wrap:nowrap}.kop::after{border-top-width:44px;border-left-width:44px}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<header class="kop"><div class="kop-in">
+  <a class="terug" href="../">&larr; BPV</a>
+  <h1><b>Stagebedrijven</b> <span>vind jouw stageplek</span></h1>
+  <p class="stand" id="stand">Gegevens laden...</p>
+</div></header>
+<main>
+  <section class="filters" aria-label="Zoeken en filteren">
+    <label class="zoek"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <span class="sr">Zoeken</span><input id="q" type="search" placeholder="Zoek op naam, plaats, adres, telefoon of ID" autocomplete="off"></label>
+    <div class="rij scroll" id="opl" role="group" aria-label="Opleiding"></div>
+    <div class="rij scroll">
+      <div class="rij" id="waar" role="group" aria-label="Waar"></div>
+      <select id="land" aria-label="Land" hidden></select>
+      <select id="prov" aria-label="Provincie"></select>
+      <span class="scheid" aria-hidden="true"></span>
+      <select id="type" aria-label="Soort bedrijf"></select>
+    </div>
+    <div class="rij scroll">
+      <button class="chip oranje" data-f="vac" aria-pressed="false">Met vacature</button>
+      <button class="chip oranje" data-f="verg" aria-pressed="false">Met stagevergoeding</button>
+      <button class="chip" data-f="jaar1" aria-pressed="false" hidden>Stage leerjaar 1</button>
+      <button class="chip" data-f="examen" aria-pressed="false">Examenstage leerjaar 2</button>
+      <select id="niv" aria-label="Niveau" hidden></select>
+      <span class="scheid" aria-hidden="true"></span>
+      <select id="sort" aria-label="Sorteren"><option value="aanb">Sorteren: aanbevolen</option><option value="naam">Sorteren: naam A-Z</option><option value="plaats">Sorteren: plaats A-Z</option></select>
+    </div>
+  </section>
+  <div class="meta"><span class="telling" id="telling" aria-live="polite"></span><button class="wis" id="wis" hidden>Wis alle filters</button></div>
+  <div class="lijst" id="lijst"></div>
+  <button class="meer" id="meer" hidden>Toon meer bedrijven</button>
+</main>
+<dialog id="pop" aria-labelledby="p-naam"></dialog>
+<script>
+(() => {
+  const OPL = [['', 'Alle opleidingen'], ['travel', 'Travel'], ['leisure', 'Leisure'], ['sport', 'Sport en recreatie'], ['facilitair', 'Facilitair']];
+  const OPLNAAM = Object.fromEntries(OPL.slice(1));
+  const PER = 40;
+  const st = { q: '', opl: '', waar: '', land: '', prov: '', type: '', niv: '', vac: false, verg: false, examen: false, jaar1: false, sort: 'aanb', toon: PER };
+  try { const o = localStorage.getItem('bpv-opl'); if (o && OPLNAAM[o]) st.opl = o; } catch (e) {}
+  let data = [];
+  const $ = id => document.getElementById(id);
+  const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const norm = t => String(t ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const score = b => (b.vac ? 8 : 0) + (b.verg ? 4 : 0) + (b.aanrader ? 3 : 0) + (b.examen ? 2 : 0) + (b.vast ? 1 : 0);
+  const buiten = b => b.land && b.land !== 'Nederland';
+  const datum = d => { if (!d) return ''; const x = new Date(d); return isNaN(x) ? '' : x.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }); };
+
+  function voorbereiden(lijst) {
+    for (const b of lijst) {
+      const cijfers = String(b.tel || '').replace(/\D/g, '');
+      const telVarianten = cijfers ? [cijfers, cijfers.startsWith('31') ? '0' + cijfers.slice(2) : ''].join(' ') : '';
+      b._z = norm([b.naam, b.adres, b.pc, String(b.pc || '').replace(/\s/g, ''), b.plaats, b.land, b.id, (b.types || []).join(' '), b.email, b.profiel, b.talen].join(' '));
+      b._t = telVarianten;
+      b._s = score(b);
+    }
+    return lijst;
+  }
+  function past(b, termen, cijfers) {
+    if (st.opl && !(b.opl || []).includes(st.opl)) return false;
+    if (st.waar === 'nl' && buiten(b)) return false;
+    if (st.waar === 'bl' && !buiten(b)) return false;
+    if (st.waar === 'bl' && st.land && b.land !== st.land) return false;
+    if (st.waar !== 'bl' && st.prov && b.prov !== st.prov) return false;
+    if (st.type && !(b.types || []).includes(st.type)) return false;
+    if (st.niv && !(b.niv || b.nivE || []).includes(st.niv)) return false;
+    if (st.vac && !b.vac) return false;
+    if (st.verg && b.verg !== true) return false;
+    if (st.examen && !b.examen) return false;
+    if (st.jaar1 && !(b.jaar || []).includes('1')) return false;
+    if (cijfers.length >= 4 && b._t.includes(cijfers)) return true;
+    return termen.every(t => b._z.includes(t));
+  }
+  function gefilterd() {
+    const termen = norm(st.q).split(/\s+/).filter(Boolean);
+    const cijfers = st.q.replace(/\D/g, '').replace(/^0031/, '31');
+    const uit = data.filter(b => past(b, termen, /^\+?[\d\s()-]+$/.test(st.q.trim()) ? cijfers : ''));
+    const c = new Intl.Collator('nl');
+    if (st.sort === 'naam') uit.sort((a, b) => c.compare(a.naam, b.naam));
+    else if (st.sort === 'plaats') uit.sort((a, b) => c.compare(a.plaats || '', b.plaats || '') || c.compare(a.naam, b.naam));
+    else uit.sort((a, b) => b._s - a._s || c.compare(a.naam, b.naam));
+    return uit;
+  }
+  function labels(b, kort) {
+    const l = [];
+    if (b.vac) l.push('<span class="lab of">Vacature</span>');
+    if (b.verg === true) l.push('<span class="lab o">Stagevergoeding</span>');
+    if (b.aanrader) l.push('<span class="lab o">Aanrader van TLC</span>');
+    if ((b.jaar || []).includes('1')) l.push('<span class="lab">Stage leerjaar 1</span>');
+    if (b.examen) l.push('<span class="lab">Examenstage leerjaar 2</span>');
+    if (b.vast) l.push('<span class="lab">Vaste stagepartner</span>');
+    const nv = b.niv || b.nivE; if (nv && nv.length) l.push('<span class="lab g">' + nivTekst(nv) + '</span>');
+    if (!kort) for (const o of b.opl || []) l.push('<span class="lab g">' + esc(OPLNAAM[o] || o) + '</span>');
+    return l.join('');
+  }
+  const nivTekst = n => 'Niveau ' + (n.length > 1 ? n.slice(0, -1).join(', ') + ' en ' + n[n.length - 1] : n[0]);
+  const plek = b => [b.plaats, buiten(b) ? b.land : ''].filter(Boolean).join(', ');
+
+  function filtersTekenen() {
+    $('opl').innerHTML = OPL.map(([k, n]) => `<button class="chip" data-opl="${k}" aria-pressed="${st.opl === k}">${n}</button>`).join('');
+    $('waar').innerHTML = [['', 'Overal'], ['nl', 'Nederland'], ['bl', 'Buitenland']].map(([k, n]) => `<button class="chip" data-waar="${k}" aria-pressed="${st.waar === k}">${n}</button>`).join('');
+    const basis = data.filter(b => !st.opl || (b.opl || []).includes(st.opl));
+    const landen = {}; basis.filter(buiten).forEach(b => landen[b.land] = (landen[b.land] || 0) + 1);
+    $('land').hidden = st.waar !== 'bl';
+    $('land').innerHTML = '<option value="">Alle landen</option>' + Object.entries(landen).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'nl'))
+      .map(([l, n]) => `<option value="${esc(l)}"${st.land === l ? ' selected' : ''}>${esc(l)} (${n})</option>`).join('');
+    $('land').classList.toggle('actief', !!st.land);
+    const provs = {}; basis.filter(b => !buiten(b) && b.prov).forEach(b => provs[b.prov] = (provs[b.prov] || 0) + 1);
+    $('prov').hidden = st.waar === 'bl' || !Object.keys(provs).length;
+    $('prov').innerHTML = '<option value="">Alle provincies</option>' + Object.entries(provs).sort((a, b) => a[0].localeCompare(b[0], 'nl'))
+      .map(([p, n]) => `<option value="${esc(p)}"${st.prov === p ? ' selected' : ''}>${esc(p)} (${n})</option>`).join('');
+    $('prov').classList.toggle('actief', !!st.prov);
+    const types = {}; basis.forEach(b => (b.types || []).forEach(t => types[t] = (types[t] || 0) + 1));
+    if (st.type && !types[st.type]) st.type = '';
+    $('type').innerHTML = '<option value="">Alle soorten bedrijven</option>' + Object.entries(types).sort((a, b) => b[1] - a[1])
+      .map(([t, n]) => `<option value="${esc(t)}"${st.type === t ? ' selected' : ''}>${esc(t)} (${n})</option>`).join('');
+    $('type').classList.toggle('actief', !!st.type);
+    const nivs = {}; basis.forEach(b => (b.niv || b.nivE || []).forEach(n => nivs[n] = (nivs[n] || 0) + 1));
+    $('niv').hidden = !Object.keys(nivs).length;
+    document.querySelector('[data-f=jaar1]').hidden = !basis.some(b => (b.jaar || []).includes('1'));
+    $('niv').innerHTML = '<option value="">Alle niveaus</option>' + ['2', '3', '4'].filter(n => nivs[n]).map(n => `<option value="${n}"${st.niv === n ? ' selected' : ''}>Niveau ${n} (${nivs[n]})</option>`).join('');
+    $('niv').classList.toggle('actief', !!st.niv);
+    document.querySelectorAll('[data-f]').forEach(k => k.setAttribute('aria-pressed', st[k.dataset.f]));
+    $('sort').value = st.sort;
+  }
+  function lijstTekenen() {
+    const r = gefilterd();
+    $('telling').textContent = r.length === 1 ? '1 bedrijf gevonden' : r.length.toLocaleString('nl-NL') + ' bedrijven gevonden';
+    $('wis').hidden = !(st.q || st.waar || st.prov || st.type || st.niv || st.vac || st.verg || st.examen || st.jaar1);
+    if (!r.length) {
+      $('lijst').innerHTML = '<div class="leeg" style="grid-column:1/-1"><b>Geen bedrijven gevonden</b>Probeer een ander zoekwoord of zet een filter uit.</div>';
+      $('meer').hidden = true; return;
+    }
+    $('lijst').innerHTML = r.slice(0, st.toon).map(b => `<button class="kaart${b._s >= 4 ? ' top' : ''}" data-id="${b.id}">
+      <p class="naam">${esc(b.naam)}</p>
+      <p class="waar">${esc([(b.types || [])[0], plek(b)].filter(Boolean).join(' · '))}</p>
+      ${labels(b, true) ? `<div class="labels">${labels(b, true)}</div>` : ''}</button>`).join('');
+    $('meer').hidden = r.length <= st.toon;
+    $('meer').textContent = `Toon meer bedrijven (nog ${(r.length - st.toon).toLocaleString('nl-NL')})`;
+  }
+  const opnieuw = () => { st.toon = PER; filtersTekenen(); lijstTekenen(); };
+
+  function open(id, viaHash) {
+    const b = data.find(x => String(x.id) === String(id)); if (!b) return;
+    const adres = [b.adres, [b.pc, b.plaats].filter(Boolean).join(' '), buiten(b) ? b.land : b.prov].filter(Boolean);
+    const route = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent([b.naam, ...adres].join(', '));
+    const contact = [b.contact ? esc(b.contact) : '', b.cMail ? `<a href="mailto:${esc(b.cMail)}">${esc(b.cMail)}</a>` : '',
+      b.cTel ? `<a href="tel:${esc(b.cTel.replace(/\s/g, ''))}">${esc(b.cTel)}</a>` : ''].filter(Boolean);
+    const algemeen = [b.email ? `<a href="mailto:${esc(b.email)}">${esc(b.email)}</a>` : '', b.tel ? `<a href="tel:${esc(b.tel.replace(/\s/g, ''))}">${esc(b.tel)}</a>` : '',
+      b.web ? `<a href="${esc(b.web)}" target="_blank" rel="noopener">${esc(b.web.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''))}</a>` : ''].filter(Boolean);
+    const info = [];
+    if (b.verg !== undefined) info.push(`<div class="blok"><h3>Stagevergoeding</h3><p>${b.verg ? 'Ja' + (b.bedrag ? ', ' + esc(b.bedrag) : '') : 'Nee'}</p></div>`);
+    if (b.werk) info.push(`<div class="blok"><h3>Werkzaamheden</h3><p>${esc(b.werk)}</p></div>`);
+    if (b.erk && b.erk.length) info.push(`<div class="blok"><h3>Erkend leerbedrijf (SBB)</h3><p>${b.erk.map(e => { const [o, n] = e.split('|'); return esc((OPLNAAM[o] || o) + (n ? ' niveau ' + n : '')); }).join('<br>')}</p></div>`);
+    if (b.ervaring) info.push(`<div class="blok"><h3>Ervaring van TLC</h3><p>${esc(b.ervaring)}</p></div>`);
+    $('pop').innerHTML = `<div class="p-kop"><h2 id="p-naam">${esc(b.naam)}</h2>
+      <p>${esc([(b.types || []).join(', '), plek(b)].filter(Boolean).join(' · '))}</p>
+      <button class="sluit" aria-label="Sluiten" data-sluit>&times;</button></div>
+      <div class="p-body">
+        ${labels(b) ? `<div class="labels">${labels(b)}</div>` : ''}
+        ${b.vac ? `<div class="vac"><b>Vacature</b>${b.vac === 'Ja' ? 'Dit bedrijf heeft een stageplek open.' : esc(b.vac)}${b.vacNiv ? '<br>Voor: ' + esc(b.vacNiv) : ''}</div>` : ''}
+        ${zoekt(b)}
+        <div class="blokken">
+          <div class="blok"><h3>Adres</h3><p>${adres.map(esc).join('<br>') || 'Onbekend'}</p></div>
+          <div class="blok"><h3>Contact</h3><p>${algemeen.join('<br>') || 'Nog niet bekend'}</p></div>
+          ${contact.length ? `<div class="blok"><h3>Stagecontact</h3><p>${contact.join('<br>')}</p></div>` : ''}
+          ${info.join('')}
+        </div>
+        ${!info.filter(x => !x.includes('Erkend leerbedrijf')).length && !b.vac && !zoekt(b) ? '<div class="nog">Over vacatures, wat voor student het bedrijf zoekt, stagevergoeding en werkzaamheden hebben we nog geen informatie. We vragen dit op bij het bedrijf.</div>' : ''}
+        <div class="acties">
+          <a class="knop vol" href="${route}" target="_blank" rel="noopener">Route</a>
+          ${b.web ? `<a class="knop" href="${esc(b.web)}" target="_blank" rel="noopener">Website</a>` : ''}
+          ${(b.cMail || b.email) ? `<a class="knop" href="mailto:${esc(b.cMail || b.email)}">Mail het bedrijf</a>` : ''}
+        </div>
+        <p class="tip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>Bespreek je keuze met je BPV-coördinator voordat je het bedrijf benadert.</p>
+        <p class="bij">ID ${esc(b.id)}${b.upd ? ' · informatie van het bedrijf bijgewerkt op ' + datum(b.upd) : ''}</p>
+      </div>`;
+    if (!$('pop').open) $('pop').showModal();
+    if (!viaHash) history.replaceState(null, '', '#b=' + b.id);
+  }
+  function zoekt(b) {
+    const r = [];
+    if (b.niv) r.push(['Niveau', nivTekst(b.niv).replace('Niveau ', '')]);
+    if (b.jaar) r.push(['Stage', b.jaar.map(j => j === '1' ? 'leerjaar 1 (ontwikkeling)' : 'leerjaar 2 (examen)').join(' en ')]);
+    if (b.talen) r.push(['Talen', b.talen]);
+    if (b.eisen) r.push(['Eisen', b.eisen]);
+    if (!r.length && !b.profiel) return '';
+    return `<div class="zoekt"><b>Wie zoeken we?</b>${b.profiel ? `<p>${esc(b.profiel)}</p>` : ''}${r.length ? `<dl>${r.map(([k, w]) => `<dt>${k}</dt><dd>${esc(w)}</dd>`).join('')}</dl>` : ''}</div>`;
+  }
+  function sluit() { if ($('pop').open) $('pop').close(); }
+  $('pop').addEventListener('close', () => { if (location.hash) history.replaceState(null, '', location.pathname + location.search); });
+  $('pop').addEventListener('click', e => { if (e.target === $('pop') || e.target.closest('[data-sluit]')) sluit(); });
+
+  document.addEventListener('click', e => {
+    const k = e.target.closest('.kaart'); if (k) return open(k.dataset.id);
+    const o = e.target.closest('[data-opl]');
+    if (o) { st.opl = o.dataset.opl; try { localStorage.setItem('bpv-opl', st.opl); } catch (x) {} return opnieuw(); }
+    const w = e.target.closest('[data-waar]'); if (w) { st.waar = w.dataset.waar; if (st.waar !== 'bl') st.land = ''; else st.prov = ''; return opnieuw(); }
+    const f = e.target.closest('[data-f]'); if (f) { st[f.dataset.f] = !st[f.dataset.f]; return opnieuw(); }
+  });
+  let tik; $('q').addEventListener('input', e => { clearTimeout(tik); tik = setTimeout(() => { st.q = e.target.value; st.toon = PER; lijstTekenen(); }, 120); });
+  $('land').addEventListener('change', e => { st.land = e.target.value; opnieuw(); });
+  $('prov').addEventListener('change', e => { st.prov = e.target.value; opnieuw(); });
+  $('type').addEventListener('change', e => { st.type = e.target.value; opnieuw(); });
+  $('niv').addEventListener('change', e => { st.niv = e.target.value; opnieuw(); });
+  $('sort').addEventListener('change', e => { st.sort = e.target.value; opnieuw(); });
+  $('meer').addEventListener('click', () => { st.toon += PER * 2; lijstTekenen(); });
+  $('wis').addEventListener('click', () => { Object.assign(st, { q: '', waar: '', land: '', prov: '', type: '', niv: '', vac: false, verg: false, examen: false, jaar1: false }); $('q').value = ''; opnieuw(); });
+  const hashOpen = () => { const m = location.hash.match(/b=(\d+)/); if (m) open(m[1], true); };
+  window.addEventListener('hashchange', hashOpen);
+
+  const laden = window.BPV_DATA ? Promise.resolve(window.BPV_DATA) : fetch('/bpv/api/bedrijven', { credentials: 'same-origin' })
+    .then(r => { if (!r.ok || !(r.headers.get('content-type') || '').includes('json')) throw new Error(r.status); return r.json(); });
+  laden.then(d => {
+    data = voorbereiden(d.bedrijven || []);
+    $('stand').textContent = d.stand ? 'Stand van ' + datum(d.stand) + ' · ' + data.length.toLocaleString('nl-NL') + ' stagebedrijven' : data.length + ' stagebedrijven';
+    opnieuw(); hashOpen();
+  }).catch(() => {
+    $('stand').textContent = '';
+    $('lijst').innerHTML = '<div class="melding" style="grid-column:1/-1">De stagebedrijven konden niet worden geladen. Ga naar <a href="https://studenten.tlctools.nl/bpv/">studenten.tlctools.nl/bpv</a>, log in met je @student.albeda.nl-account en probeer het opnieuw.</div>';
+  });
+})();
+</script>
+</body>
+</html>

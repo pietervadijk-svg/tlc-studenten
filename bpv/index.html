@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BPV | TLC</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--blauw:#005AA7;--lichtblauw:#6FB3DF;--oranje:#F39200;--donker:#0B2E4F;--grijs:#5B6B7B;--bg:#F3F7FB}
+*{box-sizing:border-box}
+body{margin:0;font-family:Montserrat,system-ui,sans-serif;color:var(--donker);background:var(--bg)}
+.kop{background:var(--blauw);color:#fff;position:relative;overflow:hidden}
+.kop::after{content:"";position:absolute;right:0;top:0;border-top:64px solid var(--oranje);border-left:64px solid transparent}
+.kop::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:linear-gradient(var(--oranje) 0 33%,var(--lichtblauw) 33% 66%,#fff 66%)}
+.kop-in{max-width:1000px;margin:0 auto;padding:18px 20px 26px 28px}
+.terug{color:#D6E8F6;text-decoration:none;font-size:13px;font-weight:600}
+h1{font-size:30px;font-weight:800;margin:6px 0 4px}h1 span{font-weight:500}
+.kop p{margin:0;color:#D6E8F6;font-size:14px;max-width:560px;line-height:1.5}
+main{max-width:1000px;margin:0 auto;padding:24px 16px 60px}
+.tegels{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.tegel{background:var(--blauw);color:#fff;text-decoration:none;border-radius:16px;padding:20px;min-height:150px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .15s}
+.tegel::after{content:"";position:absolute;right:0;top:0;border-top:40px solid var(--oranje);border-left:40px solid transparent}
+.tegel:hover{transform:translateY(-2px)}
+.tegel b{font-size:18px;font-weight:800}
+.tegel span{font-size:13px;color:#D6E8F6;margin-top:3px}
+.tegel svg{position:absolute;left:20px;top:20px}
+.tegel.later{background:#fff;color:var(--grijs);border:1.5px dashed #C6D3E0;pointer-events:none}
+.tegel.later::after{border-top-color:#E6EDF4}
+.tegel.later span{color:var(--grijs)}
+</style>
+</head>
+<body>
+<header class="kop"><div class="kop-in">
+  <a class="terug" href="/">&larr; Studentenomgeving</a>
+  <h1>BPV <span>beroepspraktijkvorming</span></h1>
+  <p>Alles voor je stage op één plek. Zoek een stagebedrijf dat bij jou past.</p>
+</div></header>
+<main><div class="tegels">
+  <a class="tegel" href="stagebedrijven/">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg>
+    <b>Stagebedrijven</b><span>Adressen, vacatures en informatie</span></a>
+  <div class="tegel later"><b>Stage-ABC</b><span>Binnenkort</span></div>
+  <div class="tegel later"><b>Beoordeel je stage</b><span>Binnenkort</span></div>
+</div></main>
+</body>
+</html>
