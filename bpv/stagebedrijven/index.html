@@ -39,12 +39,12 @@ select.actief{border-color:var(--blauw)}
 .telling{font-size:14px;font-weight:700}
 .wis{font:inherit;font-size:13px;font-weight:600;background:none;border:0;color:var(--blauw);cursor:pointer;text-decoration:underline;padding:0}
 .lijst{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
-.kaart{background:#fff;border-radius:var(--r);padding:14px 16px;border:1.5px solid transparent;box-shadow:0 1px 2px rgba(11,46,79,.06);cursor:pointer;text-align:left;font:inherit;color:inherit;display:grid;gap:6px;position:relative;border-left:5px solid var(--lichtblauw)}
+.kaart{background:#fff;border-radius:var(--r);padding:14px 16px;border:1.5px solid transparent;box-shadow:0 1px 2px rgba(11,46,79,.06);cursor:pointer;text-align:left;font:inherit;color:inherit;display:grid;gap:6px;align-content:start;position:relative;border-left:5px solid var(--lichtblauw)}
 .kaart:hover,.kaart:focus-visible{border-color:var(--lichtblauw);border-left-color:var(--blauw);outline:0}
 .kaart.top{border-left-color:var(--oranje)}
 .naam{font-size:15px;font-weight:700;margin:0;line-height:1.3}
 .waar{font-size:13px;color:var(--grijs);margin:0}
-.labels{display:flex;gap:6px;flex-wrap:wrap}
+.labels{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start}
 .lab{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:#E6F1FA;color:#00467F}
 .lab.o{background:#FDEBD0;color:#7A4600}
 .lab.of{background:var(--oranje);color:#fff}
@@ -101,11 +101,11 @@ dialog::backdrop{background:rgba(11,46,79,.55)}
       <select id="type" aria-label="Soort bedrijf"></select>
     </div>
     <div class="rij scroll">
+      <select id="niv" aria-label="Niveau"></select>
+      <select id="stage" aria-label="Soort stage"></select>
+      <span class="scheid" aria-hidden="true"></span>
       <button class="chip oranje" data-f="vac" aria-pressed="false">Met vacature</button>
       <button class="chip oranje" data-f="verg" aria-pressed="false">Met stagevergoeding</button>
-      <button class="chip" data-f="jaar1" aria-pressed="false" hidden>Stage leerjaar 1</button>
-      <button class="chip" data-f="examen" aria-pressed="false">Examenstage leerjaar 2</button>
-      <select id="niv" aria-label="Niveau" hidden></select>
       <span class="scheid" aria-hidden="true"></span>
       <select id="sort" aria-label="Sorteren"><option value="aanb">Sorteren: aanbevolen</option><option value="naam">Sorteren: naam A-Z</option><option value="plaats">Sorteren: plaats A-Z</option></select>
     </div>
@@ -120,7 +120,7 @@ dialog::backdrop{background:rgba(11,46,79,.55)}
   const OPL = [['', 'Alle opleidingen'], ['travel', 'Travel'], ['leisure', 'Leisure'], ['sport', 'Sport en recreatie'], ['facilitair', 'Facilitair']];
   const OPLNAAM = Object.fromEntries(OPL.slice(1));
   const PER = 40;
-  const st = { q: '', opl: '', waar: '', land: '', prov: '', type: '', niv: '', vac: false, verg: false, examen: false, jaar1: false, sort: 'aanb', toon: PER };
+  const st = { q: '', opl: '', waar: '', land: '', prov: '', type: '', niv: '', stage: '', vac: false, verg: false, sort: 'aanb', toon: PER };
   try { const o = localStorage.getItem('bpv-opl'); if (o && OPLNAAM[o]) st.opl = o; } catch (e) {}
   let data = [];
   const $ = id => document.getElementById(id);
@@ -150,8 +150,8 @@ dialog::backdrop{background:rgba(11,46,79,.55)}
     if (st.niv && !(b.niv || b.nivE || []).includes(st.niv)) return false;
     if (st.vac && !b.vac) return false;
     if (st.verg && b.verg !== true) return false;
-    if (st.examen && !b.examen) return false;
-    if (st.jaar1 && !(b.jaar || []).includes('1')) return false;
+    if (st.stage === '2' && !b.examen) return false;
+    if (st.stage === '1' && !(b.jaar || []).includes('1')) return false;
     if (cijfers.length >= 4 && b._t.includes(cijfers)) return true;
     return termen.every(t => b._z.includes(t));
   }
@@ -200,9 +200,11 @@ dialog::backdrop{background:rgba(11,46,79,.55)}
       .map(([t, n]) => `<option value="${esc(t)}"${st.type === t ? ' selected' : ''}>${esc(t)} (${n})</option>`).join('');
     $('type').classList.toggle('actief', !!st.type);
     const nivs = {}; basis.forEach(b => (b.niv || b.nivE || []).forEach(n => nivs[n] = (nivs[n] || 0) + 1));
-    $('niv').hidden = !Object.keys(nivs).length;
-    document.querySelector('[data-f=jaar1]').hidden = !basis.some(b => (b.jaar || []).includes('1'));
-    $('niv').innerHTML = '<option value="">Alle niveaus</option>' + ['2', '3', '4'].filter(n => nivs[n]).map(n => `<option value="${n}"${st.niv === n ? ' selected' : ''}>Niveau ${n} (${nivs[n]})</option>`).join('');
+    $('niv').innerHTML = '<option value="">Alle niveaus</option>' + ['2', '3', '4'].map(n => `<option value="${n}"${st.niv === n ? ' selected' : ''}>Niveau ${n} (${nivs[n] || 0})</option>`).join('');
+    const stg = { '1': basis.filter(b => (b.jaar || []).includes('1')).length, '2': basis.filter(b => b.examen).length };
+    $('stage').innerHTML = '<option value="">Alle stages</option>' + [['1', 'Leerjaar 1 (ontwikkelingsgericht)'], ['2', 'Leerjaar 2 (examen/kwalificerend)']]
+      .map(([k, n]) => `<option value="${k}"${st.stage === k ? ' selected' : ''}>${n} (${stg[k]})</option>`).join('');
+    $('stage').classList.toggle('actief', !!st.stage);
     $('niv').classList.toggle('actief', !!st.niv);
     document.querySelectorAll('[data-f]').forEach(k => k.setAttribute('aria-pressed', st[k.dataset.f]));
     $('sort').value = st.sort;
@@ -210,9 +212,10 @@ dialog::backdrop{background:rgba(11,46,79,.55)}
   function lijstTekenen() {
     const r = gefilterd();
     $('telling').textContent = r.length === 1 ? '1 bedrijf gevonden' : r.length.toLocaleString('nl-NL') + ' bedrijven gevonden';
-    $('wis').hidden = !(st.q || st.waar || st.prov || st.type || st.niv || st.vac || st.verg || st.examen || st.jaar1);
+    $('wis').hidden = !(st.q || st.waar || st.prov || st.type || st.niv || st.stage || st.vac || st.verg);
     if (!r.length) {
-      $('lijst').innerHTML = '<div class="leeg" style="grid-column:1/-1"><b>Geen bedrijven gevonden</b>Probeer een ander zoekwoord of zet een filter uit.</div>';
+      const uitleg = (st.niv || st.stage) ? 'Van veel bedrijven weten we nog niet welk niveau of leerjaar ze zoeken. Dat vragen we op bij de bedrijven. Kies "Alle niveaus" of "Alle stages" om alle bedrijven te zien.' : 'Probeer een ander zoekwoord of zet een filter uit.';
+      $('lijst').innerHTML = '<div class="leeg" style="grid-column:1/-1"><b>Geen bedrijven gevonden</b>' + uitleg + '</div>';
       $('meer').hidden = true; return;
     }
     $('lijst').innerHTML = r.slice(0, st.toon).map(b => `<button class="kaart${b._s >= 4 ? ' top' : ''}" data-id="${b.id}">
@@ -265,7 +268,7 @@ dialog::backdrop{background:rgba(11,46,79,.55)}
   function zoekt(b) {
     const r = [];
     if (b.niv) r.push(['Niveau', nivTekst(b.niv).replace('Niveau ', '')]);
-    if (b.jaar) r.push(['Stage', b.jaar.map(j => j === '1' ? 'leerjaar 1 (ontwikkeling)' : 'leerjaar 2 (examen)').join(' en ')]);
+    if (b.jaar) r.push(['Stage', b.jaar.map(j => j === '1' ? 'leerjaar 1 (ontwikkelingsgericht)' : 'leerjaar 2 (examen/kwalificerend)').join(' en ')]);
     if (b.talen) r.push(['Talen', b.talen]);
     if (b.eisen) r.push(['Eisen', b.eisen]);
     if (!r.length && !b.profiel) return '';
@@ -286,10 +289,11 @@ dialog::backdrop{background:rgba(11,46,79,.55)}
   $('land').addEventListener('change', e => { st.land = e.target.value; opnieuw(); });
   $('prov').addEventListener('change', e => { st.prov = e.target.value; opnieuw(); });
   $('type').addEventListener('change', e => { st.type = e.target.value; opnieuw(); });
+  $('stage').addEventListener('change', e => { st.stage = e.target.value; opnieuw(); });
   $('niv').addEventListener('change', e => { st.niv = e.target.value; opnieuw(); });
   $('sort').addEventListener('change', e => { st.sort = e.target.value; opnieuw(); });
   $('meer').addEventListener('click', () => { st.toon += PER * 2; lijstTekenen(); });
-  $('wis').addEventListener('click', () => { Object.assign(st, { q: '', waar: '', land: '', prov: '', type: '', niv: '', vac: false, verg: false, examen: false, jaar1: false }); $('q').value = ''; opnieuw(); });
+  $('wis').addEventListener('click', () => { Object.assign(st, { q: '', waar: '', land: '', prov: '', type: '', niv: '', stage: '', vac: false, verg: false }); $('q').value = ''; opnieuw(); });
   const hashOpen = () => { const m = location.hash.match(/b=(\d+)/); if (m) open(m[1], true); };
   window.addEventListener('hashchange', hashOpen);
 
