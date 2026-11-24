@@ -321,7 +321,13 @@ table.rp tr.grp td{background:#f3f7fc;font-size:11px;font-weight:800;color:var(-
 #tour .tb p{margin:0 0 14px;line-height:1.55}
 #tour .tstep{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--muted)}
 #tour .tbtn{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
-#mission.game{width:380px}
+#mission.game{width:360px;top:16px;bottom:16px;right:16px;display:flex;flex-direction:column}
+#mission.game .gq{flex:1;overflow:auto}
+body.gaming .mainwrap{margin-right:392px}
+#mission.game.gmin{top:auto;bottom:16px}
+#mission.game.gmin .gq,#mission.game.gmin .gfoot{display:none}
+.gtog{all:unset;cursor:pointer;position:absolute;right:38px;top:12px;font-weight:800;font-size:16px;opacity:.85}
+@media(max-width:1180px){body.gaming .mainwrap{margin-right:0}#mission.game{top:auto;max-height:55vh}}
 #mission .gstat{font-weight:800;font-size:13px;background:rgba(255,255,255,.15);padding:3px 8px;border-radius:8px}
 #mission.game .mt{gap:6px;padding-right:40px;flex-wrap:wrap}#mission.game .mt b{width:100%}
 .gq{display:flex;flex-direction:column;gap:8px;padding:12px}
@@ -757,7 +763,7 @@ function startDemo() {
   VIEW = 'dashboard'; VA = {};
   showApp();
   if (GAME) { clearInterval(GAME._t); GAME = null; }
-  DEMOMODE = 'free'; DIRTY = false;
+  DEMOMODE = 'free'; DIRTY = false; document.body.classList.remove('gaming'); $('#mission').classList.remove('game', 'gmin');
   missionTick();
   demoWelcome();
 }
@@ -839,7 +845,7 @@ function startGame() {
   gameSpawn(); gameSpawn();
   missionTick();
   clearInterval(GAME._t); GAME._t = setInterval(gameLoop, 500);
-  toast('⚡ Receptie Rush gestart! Help de gasten rechtsonder.', 'ok');
+  toast('⚡ Receptie Rush gestart! Help de gasten in het paneel rechts.', 'ok');
 }
 function gameSpawn() {
   const st = S, bd = st.businessDate, free = id => !GAME.used.includes(id);
@@ -894,10 +900,11 @@ function gameLoop() {
 function gameDraw() {
   const m = $('#mission'); if (!GAME || DEMOMODE !== 'game') return;
   const left = Math.max(0, Math.ceil(GAME.dur - (Date.now() - GAME.start) / 1000));
-  m.classList.remove('hidden', 'min'); m.classList.add('game');
-  m.innerHTML = `<div class="mt"><b>⚡ Receptie Rush</b><span class="gstat">⏱ ${Math.floor(left / 60)}:${pad(left % 60)}</span><span class="gstat">⭐ ${GAME.score}</span><span class="gstat">${'❤️'.repeat(Math.max(0, GAME.lives))}${'🖤'.repeat(3 - Math.max(0, GAME.lives))}</span></div>
+  const wasMin = m.classList.contains('gmin');
+  m.classList.remove('hidden', 'min'); m.classList.add('game'); document.body.classList.add('gaming');
+  m.innerHTML = `<div class="mt"><b>⚡ Receptie Rush</b><span class="gstat">⏱ ${Math.floor(left / 60)}:${pad(left % 60)}</span><span class="gstat">⭐ ${GAME.score}</span><span class="gstat">${'❤️'.repeat(Math.max(0, GAME.lives))}${'🖤'.repeat(3 - Math.max(0, GAME.lives))}</span><button class="gtog" title="In- of uitklappen" onclick="$('#mission').classList.toggle('gmin')">${wasMin ? '▴' : '▾'}</button></div>
    <div class="gq">${GAME.guests.map(g => { const p = Math.max(0, 1 - (Date.now() - g.born) / 1000 / g.pat); const isNew = !g.shown; g.shown = true; return `<div class="gc${isNew ? ' new' : ''}"><div class="gf">${g.face}</div><div style="flex:1;min-width:0"><b>${h(g.name)}</b><div class="gt">${g.text}</div><div class="gp"><i style="width:${p * 100}%;background:${p > .5 ? 'var(--green)' : p > .25 ? 'var(--orange)' : 'var(--red)'}"></i></div></div><button class="btn sm" title="Waar moet ik zijn?" onclick="gameHint(${g.id})">?</button></div>`; }).join('') || '<div class="small muted" style="padding:10px">Even rustig… de volgende gast komt eraan!</div>'}</div>
-   <div style="padding:0 14px 12px;display:flex;justify-content:space-between" class="small muted"><span>${GAME.served} gast(en) geholpen</span><a href="#" onclick="gameOver();return false">Stoppen</a></div>`;
+   <div style="padding:0 14px 12px;display:flex;justify-content:space-between" class="small muted gfoot"><span>${GAME.served} gast(en) geholpen</span><a href="#" onclick="gameOver();return false">Stoppen</a></div>`;
 }
 function gameHint(id) { const g = GAME.guests.find(x => x.id === id); if (g) { closeModal(); g.hint(); } }
 function gameScores() { try { return JSON.parse(localStorage.getItem('tlchotel-rush') || '[]'); } catch (e) { return []; } }
@@ -911,7 +918,7 @@ function gameOver() {
     ${sc > 0 ? `<div class="field" style="max-width:320px;margin:0 auto;text-align:left"><label>Jouw voornaam voor de topscores</label><div style="display:flex;gap:8px"><input id="g-name" maxlength="16" autofocus placeholder="Voornaam"><button class="btn primary" onclick="gameSave()">Opslaan</button></div></div>` : ''}
     <div id="g-board">${gameBoard()}</div></div>
    <div class="mf"><button class="btn ghost" onclick="closeModal();resetDemo()">Terug naar start</button><button class="btn accent lg" onclick="startGame()">⚡ Nog een keer</button></div>`, 'mid');
-  $('#mission').classList.remove('game'); $('#mission').classList.add('hidden');
+  $('#mission').classList.remove('game', 'gmin'); $('#mission').classList.add('hidden'); document.body.classList.remove('gaming');
 }
 function gameSave() {
   const n = ($('#g-name').value.trim() || 'Anoniem').slice(0, 16), hs = gameScores();
