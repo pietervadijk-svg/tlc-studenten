@@ -130,6 +130,8 @@ main{max-width:1240px;margin:0 auto;padding:clamp(20px,3vw,36px) max(4vw,16px) 5
 .exf strong.g{color:var(--ok)}.exf strong.m{color:var(--mid)}.exf strong.f{color:var(--bad)}
 .steps{margin:10px 0 0;padding-left:22px}
 .steps li{margin:4px 0}
+.steps.tips{list-style:none;padding-left:0}.steps.tips li{background:#fff7ea;border-left:4px solid #F39200;padding:8px 12px;border-radius:0 8px 8px 0}.steps.tips li::before{content:'Tip: ';font-weight:700;color:#b86600}
+.btn:disabled{opacity:.55;cursor:default}
 .fr{display:inline-flex;flex-direction:column;align-items:center;line-height:1;vertical-align:middle;margin:0 .1em;font-size:.95em}
 .fr sup,.fr sub{font-size:.8em;line-height:1.05;vertical-align:baseline}
 .fr sup{border-bottom:1.5px solid currentColor;padding:0 .15em}
@@ -233,6 +235,32 @@ main{max-width:1240px;margin:0 auto;padding:clamp(20px,3vw,36px) max(4vw,16px) 5
 .bonlist h3{font-size:18px;margin:6px 0 10px}
 .bon{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;border:2px dashed #F39200;border-radius:12px;padding:12px 16px;margin-bottom:10px;background:var(--orsoft)}
 .bon span{display:block;font-size:14px;color:var(--muted)}
+.bon.open{border-style:solid;border-color:var(--line);background:#fff}
+.wstit{margin:8px 0 0;font-size:15px;color:var(--muted)}.wstit b{display:block;color:#1d2733;font-size:17px}.wstit i{display:inline-block;margin-top:4px;font-style:normal;font-weight:700;font-size:13px;padding:3px 10px;border-radius:999px;color:#fff;background:#005AA7}.wstit i.z{background:#6b3fa0}.wstit i.l{background:linear-gradient(135deg,#F39200,#e8b41e)}
+.mbox{grid-column:1/-1;display:grid;grid-template-columns:140px minmax(0,1fr);gap:18px;align-items:start;border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff}
+.mbox>svg{width:140px;height:140px}.mbox.shake>svg{animation:mbs .5s ease 2}@keyframes mbs{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+@media (prefers-reduced-motion:reduce){.mbox.shake>svg{animation:none}}
+.mbodds{width:100%;max-width:420px;border-collapse:collapse;font-size:14px;margin:8px 0}.mbodds th{background:#005AA7;color:#fff;text-align:left;padding:5px 8px}.mbodds td{padding:5px 8px;border-bottom:1px solid var(--line)}
+.mbres{border-left:4px solid #F39200;background:#fff7ea;padding:10px 14px;border-radius:0 8px 8px 0;margin-top:10px}
+.tlist{grid-column:1/-1}.tlist h3{font-size:18px;margin:14px 0 8px}.trow{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px;background:#fff}.trow.on{border:2px solid #005AA7}.trow span{font-size:13px;color:var(--muted)}
+@media(max-width:560px){.mbox{grid-template-columns:1fr}}
+.rin{margin:14px 0 12px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fff}.rin .inrow input{max-width:180px}.rin .fb{margin-top:10px}
+.mbov{position:fixed;inset:0;z-index:300;display:grid;place-items:center;background:rgba(10,30,60,.72);opacity:0;transition:opacity .25s}.mbov.in{opacity:1}
+.mbstage{position:relative;width:min(92vw,520px);display:grid;place-items:center}
+.mbbig{position:relative;width:min(70vw,320px);aspect-ratio:1}.mbbig svg{width:100%;height:100%;overflow:visible}
+.mbov.in .mbbig svg{animation:mbsh .28s ease-in-out 6}@keyframes mbsh{0%,100%{transform:rotate(0) scale(1)}25%{transform:rotate(-10deg) scale(1.04)}75%{transform:rotate(10deg) scale(1.04)}}
+.mblid{transform-box:fill-box;transform-origin:center;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .5s}
+.mbov.burst .mblid{transform:translate(30px,-140px) rotate(35deg);opacity:0}.mbov.burst .mbbody{transform-box:fill-box;transform-origin:center bottom;animation:mbpop .4s ease forwards}@keyframes mbpop{to{transform:scale(1.25);opacity:0}}
+.mbconf{position:absolute;left:50%;top:50%}.mbconf i{position:absolute;width:12px;height:16px;border-radius:2px;opacity:0;transform:translate(0,0)}
+.mbov.burst .mbconf i{animation:mbc 1.1s ease-out forwards}@keyframes mbc{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}}
+.mbwin{position:absolute;inset:auto;display:none;text-align:center;background:#fff;border-radius:18px;padding:28px 26px 24px;width:min(90vw,480px);box-shadow:0 20px 60px rgba(0,0,0,.35);border-top:8px solid #005AA7}
+.mbov.win .mbwin{display:block;animation:mbin .45s cubic-bezier(.2,1.4,.4,1)}@keyframes mbin{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.mbov.win .mbbig{visibility:hidden}
+.mbwin.z{border-top-color:#6b3fa0}.mbwin.l,.mbwin.bon{border-top-color:#F39200}
+.mbkop{margin:0;font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:15px;color:#F39200}
+.mbtit{margin:6px 0;font-weight:800;font-size:clamp(28px,7vw,44px);line-height:1.1;color:#005AA7}.mbwin.z .mbtit{color:#6b3fa0}.mbwin.l .mbtit{background:linear-gradient(135deg,#F39200,#c98a00);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mbsub{margin:4px 0;color:var(--muted)}.mbwin .btn{margin-top:16px}
+@media (prefers-reduced-motion:reduce){.mbov.in .mbbig svg,.mbov.burst .mbconf i,.mbov.burst .mbbody,.mbov.win .mbwin{animation:none}.mblid{transition:none}}
 .bon.used{opacity:.6;border-style:solid;border-color:var(--line);background:var(--soft)}
 .cpk{margin:18px 0 6px;border-left-color:var(--or);background:var(--orsoft)}
 .btn.buy{background:#F39200;color:#1d2733}
@@ -317,6 +345,7 @@ main{max-width:1240px;margin:0 auto;padding:clamp(20px,3vw,36px) max(4vw,16px) 5
       <h2 id="rt"></h2>
       <div class="rq" id="rq"></div>
       <div class="rvis" id="rv"></div>
+      <div class="rin" id="rin"></div>
       <div class="row"><button class="btn alt" id="hb">Geef een hint</button><button class="btn" id="ab">Toon het antwoord</button></div>
       <div class="fb" id="hint" hidden></div>
       <div class="fb" id="ans" hidden></div>
@@ -340,7 +369,7 @@ main{max-width:1240px;margin:0 auto;padding:clamp(20px,3vw,36px) max(4vw,16px) 5
 <section id="pW" hidden>
   <div class="wsg">
     <div class="card o wsl"><p class="eye">Webshop</p><h2><b>Mijn</b> avatar</h2>
-      <div class="wsava" id="wsava"></div>
+      <div class="wsava" id="wsava"></div><p class="wstit" id="wstit" hidden></p>
       <div class="wsbal"><svg class="coin" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#F39200"/><text x="12" y="16.5" text-anchor="middle" font-family="Montserrat,sans-serif" font-weight="800" font-size="11" fill="#fff">M</text></svg><b id="wsbal">0</b><span>munten</span></div>
       <p class="note">Verdien munten door leerdoelen te bewijzen: zet een leerdoel op <b>Ik kan het!</b> en maak de oefenvraag goed (+10). Elke extra goede oefenvraag levert +2 op.</p></div>
     <div class="card wsr"><p class="eye">Kies en koop</p><h2><b>Maak</b> je eigen look</h2>
@@ -352,7 +381,7 @@ main{max-width:1240px;margin:0 auto;padding:clamp(20px,3vw,36px) max(4vw,16px) 5
 <section id="pO" hidden>
   <section class="card ov" id="ovs">
     <p class="eye">Inleveren</p><h2><b>Mijn</b> overzicht</h2>
-    <div class="ovtop"><label for="nm">Je naam<input id="nm" autocomplete="name" placeholder="Voor- en achternaam"></label>
+    <div class="ovtop"><label for="nm">Je naam<input id="nm" autocomplete="name" placeholder="Voor- en achternaam"></label><p class="wstit" id="ovtit" hidden></p>
     <span class="note" id="dt"></span></div>
     <div class="row" id="ovl" style="margin:4px 0 12px"></div>
     <div class="scroll"><table class="ovt ov3"><thead><tr><th>Domein</th><th>Ik kan het!</th><th>Bewezen</th><th>Munten</th></tr></thead><tbody id="ovt"></tbody></table></div>
@@ -409,6 +438,25 @@ const RS=[
 let les=Math.min(Math.max(+store.get('les',0)||0,0),RS.length-1);
 $('#les').innerHTML=RS.map((r,i)=>`<button class="pill" data-i="${i}" aria-pressed="false">${r.t}</button>`).join('');
 $('#les').querySelectorAll('button').forEach(b=>b.onclick=()=>showR(+b.dataset.i));
+const RCH={'Goedkoper':['Goedkoper','Duurder','Even duur'],'Eerst 20%, dan € 10':['Eerst 20%, dan € 10','Eerst € 10, dan 20%','Maakt niet uit']};
+const R_RAADSEL=5;
+function rSpec(r){if(RCH[r.a])return{c:RCH[r.a]};const m=r.a.match(/(€\s*)?(\d+(?:[.,]\d+)?)\s*(.*)$/);return{v:parseFloat(m[2].replace(',','.')),pre:m[1]?'€':'',post:m[3]||'',lead:r.a.slice(0,m.index).trim()}}
+function paintRin(i){const r=RS[i],sp=rSpec(r),done=(store.get('raadsel-opgelost',{})||{})[i],box=$('#rin');
+  if(done){box.innerHTML=`<p class="earn" style="margin:0">${COIN(22)}<b>Opgelost!</b><span>Je hebt voor dit raadsel al ${R_RAADSEL} munten gekregen.</span></p>`;return}
+  const inp=sp.c?`<label>Kies je antwoord</label><div class="row chs" style="margin-top:6px">${sp.c.map(o=>`<button class="pill" data-c="${o}" aria-pressed="false">${o}</button>`).join('')}</div>`:`<label for="rinv">Jouw antwoord</label><div class="inrow">${sp.lead?sp.lead+' ':''}${sp.pre}<input id="rinv" inputmode="decimal" autocomplete="off">${sp.post}</div>`;
+  box.innerHTML=`${inp}<div class="row" style="margin-top:10px"><button class="btn sm" id="rchk">Controleer</button><span class="note">Goed opgelost? Dan krijg je ${COIN(16)} ${R_RAADSEL} munten.</span></div><div class="fb" id="rfb" hidden></div>`;
+  let pick='';box.querySelectorAll('.chs button').forEach(b=>b.onclick=()=>{box.querySelectorAll('.chs button').forEach(x=>x.setAttribute('aria-pressed',x===b));pick=b.dataset.c});
+  const fb=$('#rfb'),say=(c,t,m)=>{fb.hidden=false;fb.innerHTML=`<strong class="${c}">${t}</strong><p>${m}</p>`};
+  const go=()=>{const gez=(store.get('raadsel-gezien',{})||{})[i],fout=store.get('raadsel-fout',{})||{};let ok;
+    if(sp.c){if(!pick)return say('f','Kies eerst een antwoord','');ok=pick===r.a}
+    else{const raw=$('#rinv').value.trim();const v=num(raw);if(raw===''||isNaN(v))return say('f','Vul eerst een getal in','');ok=Math.abs(v-sp.v)<1e-6}
+    if(!ok){if(sp.c){fout[i]=true;store.set('raadsel-fout',fout)}return say('f','Nog niet goed',sp.c?'Denk nog eens goed na en lees de hint. Bij een keuzevraag krijg je alleen munten als je eerste keuze goed is.':'Probeer het nog een keer. Je kunt ook een hint vragen.')}
+    if(gez)return say('g','Goed!','Je had het antwoord al bekeken. Daarom krijg je voor dit raadsel geen munten.');
+    if(sp.c&&fout[i])return say('g','Goed!','Je eerste keuze was niet goed. Daarom krijg je voor dit raadsel geen munten.');
+    const o=store.get('raadsel-opgelost',{})||{};o[i]=new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'long'});store.set('raadsel-opgelost',o);
+    store.set('munten',wallet()+R_RAADSEL);paintWallet(true);paintRin(i);$('#rin').insertAdjacentHTML('afterbegin',`<strong class="g" style="display:block;margin-bottom:6px">Goed opgelost!</strong>`);$('#rin .earn span').textContent=`+${R_RAADSEL} munten erbij. Goed gedaan!`};
+  $('#rchk').onclick=go;const ri=$('#rinv');if(ri)ri.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();go()}};
+}
 function showR(i){
   les=i;store.set('les',i);const r=RS[i];
   $('#rn').textContent=`Rekenraadsel ${i+1} van ${RS.length}`;{const w=r.t.split(' ');$('#rt').innerHTML='';const b=document.createElement('b');b.textContent=w[0];$('#rt').append(b,w.length>1?' '+w.slice(1).join(' '):'')}$('#rq').textContent=r.q;
@@ -417,10 +465,10 @@ function showR(i){
   $('#hint').innerHTML=`<strong>Hint</strong><p></p>`;$('#hint').querySelector('p').textContent=r.h;
   $('#ans').innerHTML=`<strong></strong><p></p>`;$('#ans').querySelector('strong').textContent='Antwoord: '+r.a;$('#ans').querySelector('p').textContent=r.u;
   $('#les').querySelectorAll('button').forEach(b=>{const on=+b.dataset.i===i;b.setAttribute('aria-pressed',on);if(on)b.scrollIntoView({block:'nearest',inline:'nearest'})});
-  $('#pv').disabled=i===0;$('#nx').disabled=i===RS.length-1;resetT();
+  $('#pv').disabled=i===0;$('#nx').disabled=i===RS.length-1;resetT();paintRin(i);
 }
 $('#hb').onclick=()=>{$('#hint').hidden=false};
-$('#ab').onclick=()=>{$('#ans').hidden=false};
+$('#ab').onclick=()=>{$('#ans').hidden=false;const g=store.get('raadsel-gezien',{})||{};if(!(store.get('raadsel-opgelost',{})||{})[les]){g[les]=true;store.set('raadsel-gezien',g)}};
 $('#pv').onclick=()=>les>0&&showR(les-1);
 $('#nx').onclick=()=>les<RS.length-1&&showR(les+1);
 const TT=120;let tl=TT,tOn=false,tI=null;
@@ -954,7 +1002,7 @@ const earned=(l,d)=>+store.get(`${d}${l}-munten`,0)||0;
 const lvlCoins=l=>DOMS.reduce((a,[d])=>a+earned(l,d),0);
 function getProof(l,d){const n=cfg(l,d).goals.length;let a=store.get(`${d}${l}-bewijs`,[]);if(!Array.isArray(a)||a.length!==n)a=Array(n).fill(false);return a}
 const proofCount=(l,d)=>getProof(l,d).filter(Boolean).length;
-function paintWallet(bump){const w=$('#wal');w.querySelector('b').textContent=fN(wallet());$('#wava').innerHTML=avatarSVG(getAv(),'head');if(bump){w.classList.remove('bump');void w.offsetWidth;w.classList.add('bump')}if(view==='W')renderShop()}
+function paintWallet(bump){if(typeof paintTitle==='function')try{paintTitle()}catch(e){}const w=$('#wal');w.querySelector('b').textContent=fN(wallet());$('#wava').innerHTML=avatarSVG(getAv(),'head');if(bump){w.classList.remove('bump');void w.offsetWidth;w.classList.add('bump')}if(view==='W')renderShop()}
 function reward(i,p){
   if(p.paid)return '';p.paid=true;
   const pr=getProof(lvl,dom);let amt=R_EXTRA,txt='Extra oefening goed!';
@@ -971,23 +1019,26 @@ const CAT=[
  {k:'lichaam',n:'Avatar',items:[{id:'v',n:'Vrouwelijk',p:0},{id:'m',n:'Mannelijk',p:0}]},
  {k:'huid',n:'Huidskleur',items:SKIN.map(([c,n],j)=>({id:'s'+j,n,p:0,c}))},
  {k:'gezicht',n:'Gezicht',items:[['vrolijk','Vrolijk'],['lachend','Lachend'],['stoer','Stoer'],['knipoog','Knipoog'],['rustig','Rustig']].map(([id,n])=>({id,n,p:0}))},
- {k:'haar',n:'Kapsel',items:[['kort','Kort',0],['buzz','Opgeschoren',15],['kuif','Kuif',30],['krul','Krullen',25],['afro','Afro',35],['lang','Lang',30],['knot','Knot',25],['vlecht','Vlechten',40],['geen','Kaal',10]].map(([id,n,p])=>({id,n,p}))},
+ {k:'haar',n:'Kapsel',items:[['kort','Kort',0],['buzz','Opgeschoren',15],['kuif','Kuif',30],['krul','Krullen',25],['afro','Afro',35],['lang','Lang',30],['knot','Knot',25],['vlecht','Vlechten',40],['matje','Haags matje',35],['geen','Kaal',10]].map(([id,n,p])=>({id,n,p}))},
  {k:'haarkleur',n:'Haarkleur',items:[['zwart','Zwart',0],['bruin','Bruin',0],['blond','Blond',10],['rood','Rood',10],['wit','Wit',20],['blauw','Blauw',30],['roze','Roze',30]].map(([id,n,p])=>({id,n,p}))},
  {k:'top',n:'Bovenkleding',items:[['tee-wit','T-shirt wit',0,'tee','#f4f4f2'],['tee-blauw','T-shirt blauw',15,'tee','#005AA7'],['tee-oranje','T-shirt oranje',15,'tee','#F39200'],['tee-zwart','T-shirt zwart',15,'tee','#26262b'],['hood-grijs','Hoodie grijs',30,'hood','#9aa3ad'],['hood-blauw','Hoodie lichtblauw',35,'hood','#6FB3DF'],['hood-zwart','Hoodie zwart',35,'hood','#2b2b31'],['voetbal','Voetbalshirt',45,'jersey','#c8102e'],['blouse','Blouse',40,'blouse','#dfe9f3'],['trainings','Trainingsjack',50,'track','#1e3a6e'],['spijker','Spijkerjack',60,'jacket','#4a6d96']].map(([id,n,p,t,c])=>({id,n,p,t,c}))},
- {k:'broek',n:'Broek',items:[['jeans','Spijkerbroek',0,'long','#3c5a85'],['jog-grijs','Joggingbroek grijs',20,'jog','#8a929b'],['jog-zwart','Joggingbroek zwart',20,'jog','#2b2b31'],['kort','Korte broek',15,'short','#2f4f7a'],['cargo','Cargobroek',30,'long','#6b6b47'],['chino','Chino beige',25,'long','#c9b48a']].map(([id,n,p,t,c])=>({id,n,p,t,c}))},
+ {k:'broek',n:'Broek',items:[['jeans','Spijkerbroek',0,'long','#3c5a85'],['jog-grijs','Joggingbroek grijs',20,'jog','#8a929b'],['jog-zwart','Joggingbroek zwart',20,'jog','#2b2b31'],['kort','Korte broek',15,'short','#2f4f7a'],['cargo','Cargobroek',30,'long','#6b6b47'],['chino','Chino beige',25,'long','#c9b48a'],['rok-zwart','Zwart rokje',25,'rok','#26262b',1],['rok-plooi','Blauwe plooirok',30,'plooi','#005AA7',1],['rok-spijker','Spijkerrok',30,'rok','#3c5a85',1],['rok-lang','Lange rok oranje',40,'lrok','#F39200',1]].map(([id,n,p,t,c,v])=>({id,n,p,t,c,v:!!v}))},
  {k:'schoen',n:'Schoenen',items:[['wit','Witte sneakers',0,'sneak','#f7f7f5'],['zwart','Zwarte sneakers',20,'sneak','#26262b'],['oranje','Oranje sneakers',35,'sneak','#F39200'],['high','High-tops',45,'high','#c8102e'],['boots','Boots',50,'boot','#6b4426'],['slipper','Slippers',10,'slip','#005AA7']].map(([id,n,p,t,c])=>({id,n,p,t,c}))},
- {k:'hoofd',n:'Pet en muts',slot:true,items:[['geen','Geen',0],['pet','Pet',30],['muts','Muts',30]].map(([id,n,p])=>({id,n,p}))},
- {k:'bril',n:'Bril',slot:true,items:[['geen','Geen',0],['bril','Bril',25],['zonne','Zonnebril',40]].map(([id,n,p])=>({id,n,p}))},
- {k:'makeup',n:'Make-up',slot:true,v:true,items:[{id:'geen',k:'lippen',n:'Geen lipstick',p:0},{id:'rood',k:'lippen',n:'Rode lippenstift',p:20},{id:'roze',k:'lippen',n:'Roze lipgloss',p:20},{id:'paars',k:'lippen',n:'Paarse lippenstift',p:25},{id:'geen',k:'ogen',n:'Geen oogschaduw',p:0},{id:'blauw',k:'ogen',n:'Blauwe oogschaduw',p:25},{id:'goud',k:'ogen',n:'Gouden oogschaduw',p:30},{id:'paars',k:'ogen',n:'Paarse oogschaduw',p:25},{id:'geen',k:'wangen',n:'Geen blush',p:0},{id:'blush',k:'wangen',n:'Blush',p:15}]},
- {k:'sieraden',n:'Sieraden',slot:true,items:[{id:'geen',k:'ketting',n:'Geen ketting',p:0},{id:'zilver',k:'ketting',n:'Zilveren ketting',p:50},{id:'goud',k:'ketting',n:'Gouden ketting',p:100},{id:'geen',k:'oorbel',n:'Geen oorbellen',p:0},{id:'zknop',k:'oorbel',n:'Zilveren oorknopjes',p:30},{id:'gknop',k:'oorbel',n:'Gouden oorknopjes',p:45},{id:'ring',k:'oorbel',n:'Gouden oorringen',p:60},{id:'geen',k:'horloge',n:'Geen horloge',p:0},{id:'sport',k:'horloge',n:'Sporthorloge',p:40},{id:'zilver',k:'horloge',n:'Zilveren horloge',p:70},{id:'goud',k:'horloge',n:'Gouden horloge',p:120}]},
- {k:'school',n:'School outfit',slot:true,items:[{id:'geen',k:'outfit',n:'Geen schooloutfit',p:0},{id:'pak',k:'outfit',n:'Donkerblauw pak',p:150,d:'Met wit overhemd en witte schoenen'},{id:'polo',k:'outfit',n:'Donkerblauwe polo',p:45}]},
- {k:'spullen',n:'Schoolspullen',slot:true,items:[{id:'geen',k:'hand',n:'Niets in je hand',p:0},{id:'pen',k:'hand',n:'Pen en papier',p:15},{id:'reken',k:'hand',n:'Rekenmachine',p:25},{id:'mobiel',k:'hand',n:'Mobiel',p:50},{id:'laptop',k:'hand',n:'Laptop',p:90}]},
- {k:'dieren',n:'Huisdieren',slot:true,items:[{id:'geen',k:'huisdier',n:'Geen huisdier',p:0},{id:'konijn',k:'huisdier',n:'Konijn',p:60},{id:'kat',k:'huisdier',n:'Kat',p:70},{id:'hond',k:'huisdier',n:'Hond',p:80},{id:'aap',k:'huisdier',n:'Aapje',p:150},{id:'kip',k:'huisdier',n:'Kip',p:50},{id:'varken',k:'huisdier',n:'Varkentje',p:75},{id:'das',k:'huisdier',n:'Albedas',p:200,d:'De das van Albeda'}]},
- {k:'beloning',n:'Beloningen',items:[]},
- {k:'feest',n:'Feestdagen',slot:true,items:[{id:'kerstmuts',k:'hoofd',n:'Kerstmuts',p:40},{id:'rendier',k:'hoofd',n:'Rendieroortjes',p:35},{id:'kerst',k:'outfit',n:'Kerstpak',p:120},{id:'geen',k:'lampjes',n:'Geen kerstlampjes',p:0},{id:'lampjes',k:'lampjes',n:'Kerstlampjes',p:60,d:'Om je avatar heen gewikkeld'}]}];
-const DEF={lippen:'geen',ogen:'geen',wangen:'geen',lampjes:'geen',huisdier:'geen',oorbel:'geen',outfit:'geen',hand:'geen',lichaam:'m',huid:'s1',gezicht:'vrolijk',haar:'kort',haarkleur:'bruin',top:'tee-wit',broek:'jeans',schoen:'wit',hoodf:'geen',hoofd:'geen',bril:'geen',ketting:'geen',horloge:'geen'};
+ {k:'baard',n:'Baard',slot:true,m:true,items:[{id:'stoppel',n:'Stoppelbaard',p:20},{id:'snor',n:'Snor',p:25},{id:'sik',n:'Sikje',p:25},{id:'lang',n:'Lange baard',p:40}]},
+ {k:'gala',n:'Galakleding',slot:true,items:[{id:'smoking',k:'outfit',n:'Smoking',p:180,m:true,d:'Met wit overhemd en vlinderdas'},{id:'j-zomer',k:'outfit',n:'Zomerjurk',p:60,v:true},{id:'j-zwart',k:'outfit',n:'Zwart jurkje',p:90,v:true},{id:'j-rood',k:'outfit',n:'Rode feestjurk',p:120,v:true},{id:'j-gala',k:'outfit',n:'Lange galajurk',p:180,v:true,d:'Met glitters'}]},
+ {k:'tattoo',n:'Tatoeages',slot:true,items:[{id:'zwart',k:'sleeve',n:'Sleeve zwart',p:90,d:'Over je hele linkerarm'},{id:'kleur',k:'sleeve',n:'Sleeve in kleur',p:120,d:'Over je hele linkerarm'},{id:'anker',k:'armtat',n:'Anker',p:35,d:'Op je rechterarm'},{id:'hart',k:'armtat',n:'Hartje',p:30,d:'Op je rechterarm'},{id:'pi',k:'armtat',n:'Pi-tatoeage π',p:40,d:'Voor echte rekenaars'},{id:'roos',k:'armtat',n:'Roos',p:45,d:'Op je rechterarm'},{id:'sterren',k:'pols',n:'Sterretjes',p:25,d:'Op je rechterpols'}]},
+ {k:'hoofd',n:'Pet en muts',slot:true,items:[['pet','Pet',30],['muts','Muts',30]].map(([id,n,p])=>({id,n,p}))},
+ {k:'makeup',n:'Make-up',slot:true,v:true,items:[{id:'rood',k:'lippen',n:'Rode lippenstift',p:20},{id:'roze',k:'lippen',n:'Roze lipgloss',p:20},{id:'paars',k:'lippen',n:'Paarse lippenstift',p:25},{id:'blauw',k:'ogen',n:'Blauwe oogschaduw',p:25},{id:'goud',k:'ogen',n:'Gouden oogschaduw',p:30},{id:'paars',k:'ogen',n:'Paarse oogschaduw',p:25},{id:'blush',k:'wangen',n:'Blush',p:15}]},
+ {k:'sieraden',n:'Accessoires',slot:true,items:[{id:'bril',k:'bril',n:'Bril',p:25},{id:'zonne',k:'bril',n:'Zonnebril',p:40},{id:'zwart',k:'tas',n:'Zwart nektasje',p:35},{id:'bruin',k:'tas',n:'Bruin nektasje',p:40},{id:'blauw',k:'tas',n:'Blauw nektasje',p:40},{id:'oranje',k:'tas',n:'Oranje nektasje',p:45,d:'In Albeda-oranje'},{id:'zilver',k:'ketting',n:'Zilveren ketting',p:50},{id:'goud',k:'ketting',n:'Gouden ketting',p:100},{id:'zknop',k:'oorbel',n:'Zilveren oorknopjes',p:30},{id:'gknop',k:'oorbel',n:'Gouden oorknopjes',p:45},{id:'ring',k:'oorbel',n:'Gouden oorringen',p:60},{id:'sport',k:'horloge',n:'Sporthorloge',p:40},{id:'zilver',k:'horloge',n:'Zilveren horloge',p:70},{id:'goud',k:'horloge',n:'Gouden horloge',p:120}]},
+ {k:'school',n:'School outfit',slot:true,items:[{id:'pak',k:'outfit',n:'Donkerblauw pak',p:150,d:'Met wit overhemd en witte schoenen'},{id:'polo',k:'outfit',n:'Donkerblauwe polo',p:45}]},
+ {k:'spullen',n:'Schoolspullen',slot:true,items:[{id:'pen',k:'hand',n:'Pen en papier',p:15},{id:'reken',k:'hand',n:'Rekenmachine',p:25},{id:'mobiel',k:'hand',n:'Mobiel',p:50},{id:'laptop',k:'hand',n:'Laptop',p:90}]},
+ {k:'dieren',n:'Huisdieren',slot:true,items:[{id:'konijn',k:'huisdier',n:'Konijn',p:60},{id:'kat',k:'huisdier',n:'Kat',p:70},{id:'hond',k:'huisdier',n:'Hond',p:80},{id:'aap',k:'huisdier',n:'Aapje',p:150},{id:'kip',k:'huisdier',n:'Kip',p:50},{id:'varken',k:'huisdier',n:'Varkentje',p:75},{id:'das',k:'huisdier',n:'Albedas',p:200,d:'De das van Albeda'}]},
+ {k:'feest',n:'Feestdagen',slot:true,items:[{id:'kerstmuts',k:'hoofd',n:'Kerstmuts',p:40},{id:'rendier',k:'hoofd',n:'Rendieroortjes',p:35},{id:'kerst',k:'outfit',n:'Kerstpak',p:120},{id:'lampjes',k:'lampjes',n:'Kerstlampjes',p:60,d:'Om je avatar heen gewikkeld'}]},
+ {k:'mystery',n:'Mysterybox',items:[]},
+ {k:'beloning',n:'Beloningen',items:[]}];
+const DEF={sleeve:'geen',armtat:'geen',pols:'geen',baard:'geen',tas:'geen',lippen:'geen',ogen:'geen',wangen:'geen',lampjes:'geen',huisdier:'geen',oorbel:'geen',outfit:'geen',hand:'geen',lichaam:'m',huid:'s1',gezicht:'vrolijk',haar:'kort',haarkleur:'bruin',top:'tee-wit',broek:'jeans',schoen:'wit',hoodf:'geen',hoofd:'geen',bril:'geen',ketting:'geen',horloge:'geen'};
 const item=(k,id)=>{for(const c of CAT)for(const x of c.items)if((x.k||c.k)===k&&x.id===id)return x};
-function getAv(){const a=store.get('avatar',{});const o={...DEF};for(const k in o)if(a&&a[k]&&item(k,a[k]))o[k]=a[k];return o}
+function getAv(){const a=store.get('avatar',{});const o={...DEF};for(const k in o)if(a&&a[k]&&item(k,a[k]))o[k]=a[k];for(const k in o){const it=item(k,o[k]);if(it&&((it.v&&o.lichaam!=='v')||(it.m&&o.lichaam!=='m')))o[k]=DEF[k]}if(o.lichaam!=='m')o.baard='geen';return o}
 function owned(){const b=store.get('bezit',[]);return new Set(Array.isArray(b)?b:[])}
 const isOwned=(k,it,o)=>it.p===0||o.has(k+':'+it.id);
 function avatarSVG(a,mode){
@@ -995,12 +1046,16 @@ function avatarSVG(a,mode){
   const NV='#1b2a4a',RD='#c8102e';
   if(a.outfit==='pak'){top={t:'suit',c:NV};br={t:'long',c:NV};sh={t:'sneak',c:'#f7f7f5'}}
   if(a.outfit==='polo')top={t:'polo',c:NV};
+  if(a.outfit==='smoking'){top={t:'tux',c:'#15151a'};br={t:'long',c:'#15151a'};sh={t:'sneak',c:'#15151a'}}
+  const JR={'j-zomer':['#ffd75e',0],'j-zwart':['#26262b',0],'j-rood':['#c8102e',0],'j-gala':['#1f4fa3',1]}[a.outfit];if(JR){top={t:JR[1]?'jlang':'jurk',c:JR[0]};br={t:'none'}}
   if(a.outfit==='kerst'){sh={t:'boot',c:'#1d1d1d'};if(a.lichaam==='v'){top={t:'kjurk',c:RD};br={t:'none'}}else{top={t:'kerst',c:RD};br={t:'long',c:RD}}}
   const dk='#1d2733',P=[];
-  const hairBack={lang:`<path d="M64 58 Q58 120 70 152 L130 152 Q142 120 136 58 Z" fill="${hc}"/>`,afro:`<circle cx="100" cy="54" r="50" fill="${hc}"/>`,vlecht:`<path d="M70 70 v78 M130 70 v78" stroke="${hc}" stroke-width="12" stroke-linecap="round" stroke-dasharray="10 3"/>`}[a.haar]||'';
+  const hairBack={matje:`<path d="M66 60 Q60 102 70 128 L130 128 Q140 102 134 60 Z" fill="${hc}"/>`,lang:`<path d="M64 58 Q58 120 70 152 L130 152 Q142 120 136 58 Z" fill="${hc}"/>`,afro:`<circle cx="100" cy="54" r="50" fill="${hc}"/>`,vlecht:`<path d="M70 70 v78 M130 70 v78" stroke="${hc}" stroke-width="12" stroke-linecap="round" stroke-dasharray="10 3"/>`}[a.haar]||'';
   // legs skin + shoes
-  P.push(`<path d="M64 250 L68 322 L92 322 L96 250Z M104 250 L108 322 L132 322 L136 250Z" fill="${sk}"/>`);
+  P.push(a.lichaam==='v'?`<path d="M66 250 Q70 290 72 322 L90 322 Q92 290 96 250Z M104 250 Q108 290 110 322 L128 322 Q130 290 134 250Z" fill="${sk}"/>`:`<path d="M64 250 L68 322 L92 322 L96 250Z M104 250 L108 322 L132 322 L136 250Z" fill="${sk}"/>`);
   if(br.t==='none'){}
+  else if(br.t==='rok'||br.t==='plooi')P.push(`<path d="M58 204 L142 204 L154 258 Q100 266 46 258Z" fill="${br.c}"/>`+(br.t==='plooi'?`<path d="M74 210 L66 260 M88 210 L84 262 M100 210 V263 M112 210 L116 262 M126 210 L134 260" stroke="#000" stroke-opacity=".18" stroke-width="2"/>`:`<path d="M100 206 V262" stroke="#e8b41e" stroke-opacity=".7" stroke-width="1.5" stroke-dasharray="3 2"/>`));
+  else if(br.t==='lrok')P.push(`<path d="M58 204 L142 204 L156 312 Q100 320 44 312Z" fill="${br.c}"/><path d="M76 212 L64 312 M124 212 L136 312" stroke="#000" stroke-opacity=".12" stroke-width="2"/>`);
   else if(br.t==='short')P.push(`<path d="M56 204 L144 204 L146 266 L104 266 L100 236 L96 266 L54 266Z" fill="${br.c}"/>`);
   else P.push(`<path d="M56 204 L144 204 L146 322 L106 322 L100 236 L94 322 L54 322Z" fill="${br.c}"/>`+(br.t==='jog'?`<path d="M56 306 h38 M106 306 h40" stroke="#000" stroke-opacity=".18" stroke-width="6"/><path d="M60 214 L58 318 M140 214 L142 318" stroke="#fff" stroke-opacity=".35" stroke-width="3"/>`:'')+(a.broek==='cargo'?`<rect x="56" y="262" width="16" height="18" rx="3" fill="#000" fill-opacity=".15"/><rect x="128" y="262" width="16" height="18" rx="3" fill="#000" fill-opacity=".15"/>`:'')+(br.t==='long'&&a.broek==='jeans'?`<path d="M100 236 V210 M58 216 h84" stroke="#000" stroke-opacity=".15" stroke-width="2"/>`:''));
   const shoe=(x,m)=>{if(sh.t==='slip')return `<ellipse cx="${x}" cy="330" rx="21" ry="7" fill="${sk}"/><rect x="${x-22}" y="332" width="44" height="6" rx="3" fill="${sh.c}"/><path d="M${x-10} 332 L${x} 324 L${x+10} 332" stroke="${sh.c}" stroke-width="4" fill="none"/>`;
@@ -1008,11 +1063,25 @@ function avatarSVG(a,mode){
   P.push(shoe(80,false),shoe(120,true));
   // arms
   P.push(`<path d="M58 124 L44 204 L58 206 L70 132Z M142 124 L156 204 L142 206 L130 132Z" fill="${sk}"/><circle cx="50" cy="210" r="9" fill="${sk}"/><circle cx="150" cy="210" r="9" fill="${sk}"/>`);
-  const longS=['hood','track','jacket','blouse','suit','kerst','kjurk'].includes(top.t);
+  const ti='#1f2a36';
+  if(a.sleeve!=='geen'){const kl=a.sleeve==='kleur';P.push(`<clipPath id="armL"><path d="M58 124 L44 204 L58 206 L70 132Z"/></clipPath><g clip-path="url(#armL)">`+[132,146,160,174,188].map(y=>`<path d="M38 ${y} q8 -7 16 0 t16 0 t16 0" fill="none" stroke="${ti}" stroke-opacity=".75" stroke-width="2.2"/>`).join('')+(kl?`<circle cx="62" cy="139" r="5" fill="#c8102e" opacity=".8"/><circle cx="55" cy="167" r="5" fill="#2f6fd1" opacity=".8"/><circle cx="51" cy="193" r="4.5" fill="#2f8f5b" opacity=".8"/><circle cx="59" cy="153" r="3.5" fill="#F39200" opacity=".85"/><circle cx="54" cy="181" r="3.5" fill="#e8b41e" opacity=".85"/>`:`<circle cx="61" cy="152" r="4.5" fill="${ti}" opacity=".7"/><circle cx="53" cy="181" r="4" fill="${ti}" opacity=".7"/>`)+`</g>`)}
+  if(a.armtat!=='geen'){P.push(`<g transform="translate(151.5 181) scale(.62)">`+{anker:`<path d="M0 -9 v16 M-5 -5 h10 M-7 3 q7 8 14 0" fill="none" stroke="${ti}" stroke-width="1.8" stroke-linecap="round"/><circle cx="0" cy="-10" r="2" fill="none" stroke="${ti}" stroke-width="1.5"/>`,
+    hart:`<path d="M0 6 L-7 -1 Q-9 -7 -4 -8 Q-1 -8 0 -5 Q1 -8 4 -8 Q9 -7 7 -1Z" fill="#c8102e" stroke="${ti}" stroke-width="1"/>`,
+    pi:`<path d="M-7 -6 h14 M-3 -6 v12 M3 -6 v10 q0 2 3 2" fill="none" stroke="${ti}" stroke-width="2.2" stroke-linecap="round"/>`,
+    roos:`<circle cx="0" cy="-3" r="5" fill="#c8102e" stroke="${ti}" stroke-width="1"/><path d="M-2 -4 q2 -3 4 0 q-2 3 -4 0" fill="none" stroke="${ti}" stroke-width=".9"/><path d="M0 2 v8 M0 6 q-5 -1 -6 -4 M0 6 q5 -1 6 -3" fill="none" stroke="#2f8f5b" stroke-width="1.6"/>`}[a.armtat]+`</g>`)}
+  if(a.pols==='sterren')P.push([[153,197,2.3],[149,201,1.8],[156,202,1.5]].map(([x,y,r])=>`<path d="M${x} ${y-r*1.6} L${x+r*.5} ${y-r*.5} L${x+r*1.6} ${y} L${x+r*.5} ${y+r*.5} L${x} ${y+r*1.6} L${x-r*.5} ${y+r*.5} L${x-r*1.6} ${y} L${x-r*.5} ${y-r*.5}Z" fill="${ti}"/>`).join(''));
+  const longS=['hood','track','jacket','blouse','suit','kerst','kjurk','tux'].includes(top.t);
   const sl=longS?`M58 122 L43 200 L59 203 L72 130Z M142 122 L157 200 L141 203 L128 130Z`:`M58 122 L51 166 L66 168 L72 130Z M142 122 L149 166 L134 168 L128 130Z`;
   if(top.t==='hood')P.push(`<path d="M74 118 Q100 92 126 118 Q100 128 74 118Z" fill="${top.c}" stroke="#000" stroke-opacity=".15"/>`);
-  const tor=top.t==='kjurk'?'M64 120 Q100 112 136 120 L134 160 Q132 186 152 264 Q100 274 48 264 Q68 186 66 160 Z':a.lichaam==='v'?'M64 120 Q100 112 136 120 L134 160 Q130 182 144 210 Q100 216 56 210 Q70 182 66 160 Z':'M60 120 Q100 110 140 120 L146 210 Q100 216 54 210 Z';
-  P.push(`<path d="${sl}" fill="${top.c}"/><path d="${tor}" fill="${top.t==='jacket'||top.t==='suit'?'#f8f8f6':top.c}"/>`);
+  const tor=top.t==='jlang'?'M64 120 Q100 113 136 120 Q141 140 133 154 Q123 170 127 186 Q136 220 158 316 Q100 326 42 316 Q64 220 73 186 Q77 170 67 154 Q59 140 64 120 Z':top.t==='kjurk'||top.t==='jurk'?'M64 120 Q100 113 136 120 Q141 140 133 154 Q123 170 127 186 Q136 214 152 264 Q100 274 48 264 Q64 214 73 186 Q77 170 67 154 Q59 140 64 120 Z':a.lichaam==='v'?'M64 120 Q100 113 136 120 Q141 140 133 154 Q123 170 126 184 Q140 198 148 212 Q100 220 52 212 Q60 198 74 184 Q77 170 67 154 Q59 140 64 120 Z':'M60 120 Q100 110 140 120 L146 210 Q100 216 54 210 Z';
+  P.push(`<path d="${sl}" fill="${top.c}"/><path d="${tor}" fill="${top.t==='jacket'||top.t==='suit'||top.t==='tux'?'#f8f8f6':top.c}"/>`);
+  if(a.lichaam==='v'&&!['jurk','jlang','kjurk','suit','tux','jacket'].includes(top.t))P.push(`<path d="M78 142 Q89 156 99 146 M101 146 Q111 156 122 142" fill="none" stroke="#000" stroke-opacity=".14" stroke-width="2" stroke-linecap="round"/>`);
+  if(top.t==='tux')P.push(`<path d="M60 120 Q76 114 92 116 L97 212 Q74 214 54 210Z M140 120 Q124 114 108 116 L103 212 Q126 214 146 210Z" fill="${top.c}"/><path d="M92 116 L80 154 L96 166 Z M108 116 L120 154 L104 166 Z" fill="#3a3a44"/><path d="M89 122 L100 127 L89 132Z M111 122 L100 127 L111 132Z" fill="#111"/><circle cx="100" cy="127" r="2.6" fill="#111"/><circle cx="100" cy="146" r="1.8" fill="#9aa3ad"/><circle cx="100" cy="158" r="1.8" fill="#9aa3ad"/><circle cx="100" cy="186" r="2.4" fill="#111"/>`);
+  if(top.t==='jurk'||top.t==='jlang'){const hy=top.t==='jlang'?316:264;P.push(`<path d="M66 174 Q100 182 134 174 L135 182 Q100 190 65 182Z" fill="#000" fill-opacity=".2"/>`);
+    if(a.outfit==='j-zomer')P.push([[80,140],[112,150],[96,200],[74,230],[122,224],[100,250],[86,170],[126,192]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.6" fill="#fff"/>`).join(''));
+    if(a.outfit==='j-zwart')P.push(`<path d="M86 116 Q100 132 114 116" fill="none" stroke="#fff" stroke-width="3"/>`);
+    if(a.outfit==='j-rood')P.push(`<rect x="66" y="172" width="68" height="9" rx="4" fill="#8e0a20"/><circle cx="100" cy="176" r="5" fill="#e8b41e"/>`);
+    if(a.outfit==='j-gala')P.push([[84,140],[116,136],[100,160],[78,200],[122,206],[96,236],[70,276],[130,282],[110,296],[86,300]].map(([x,y])=>`<path d="M${x} ${y-4} L${x+1.2} ${y-1.2} L${x+4} ${y} L${x+1.2} ${y+1.2} L${x} ${y+4} L${x-1.2} ${y+1.2} L${x-4} ${y} L${x-1.2} ${y-1.2}Z" fill="#fff" opacity=".85"/>`).join(''))}
   if(top.t==='suit')P.push(`<path d="M60 120 Q76 114 92 116 L98 212 Q74 214 54 210Z M140 120 Q124 114 108 116 L102 212 Q126 214 146 210Z" fill="${top.c}"/><path d="M92 116 L82 150 L97 158 M108 116 L118 150 L103 158" fill="none" stroke="#0e1830" stroke-width="2.5"/><path d="M88 116 L100 128 L112 116" fill="none" stroke="#d9dde3" stroke-width="2"/><circle cx="99" cy="180" r="2.4" fill="#0e1830"/><circle cx="99" cy="196" r="2.4" fill="#0e1830"/>`);
   if(top.t==='polo')P.push(`<path d="M86 114 L100 124 L114 114 L112 122 L100 130 L88 122Z" fill="#24365e"/><path d="M100 124 V146" stroke="#0e1830" stroke-width="1.6"/><circle cx="100" cy="134" r="1.8" fill="#fff"/><circle cx="100" cy="142" r="1.8" fill="#fff"/><path d="M51 162 L66 164 M149 162 L134 164" stroke="#24365e" stroke-width="4"/>`);
   if(top.t==='kerst'||top.t==='kjurk'){const hy=top.t==='kjurk'?262:204;P.push(`<path d="M100 120 V${hy}" stroke="#fff" stroke-width="8"/><rect x="${top.t==='kjurk'?50:54}" y="${hy-4}" width="${top.t==='kjurk'?100:92}" height="12" rx="6" fill="#fff"/><rect x="56" y="176" width="88" height="10" fill="#1d1d1d"/><rect x="92" y="174" width="16" height="14" rx="2" fill="none" stroke="#e8b41e" stroke-width="3"/><path d="M42 196 L60 199 M158 196 L140 199" stroke="#fff" stroke-width="8" stroke-linecap="round"/><path d="M84 116 Q100 126 116 116" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/>`)}
@@ -1023,10 +1092,16 @@ function avatarSVG(a,mode){
   if(top.t==='blouse')P.push(`<path d="M88 116 L100 132 L112 116 L106 114 L100 124 L94 114Z" fill="#fff"/><path d="M100 132 V210" stroke="#000" stroke-opacity=".12" stroke-width="1.5"/>${[146,166,186].map(y=>`<circle cx="100" cy="${y}" r="2.2" fill="#7a8a9a"/>`).join('')}`);
   if(top.t==='tee')P.push(`<path d="M86 116 Q100 128 114 116" fill="none" stroke="#000" stroke-opacity=".15" stroke-width="2"/>`);
   if(a.lampjes==='lampjes'){const cols=['#d62f25','#F39200','#2f8f5b','#005AA7','#e8b41e'];const W=['M50 132 Q100 158 150 136','M52 170 Q100 196 150 172','M54 208 Q100 232 146 210','M58 250 Q100 270 142 252'];let g='';W.forEach((d,wi)=>{g+=`<path d="${d}" stroke="#2f4f3a" stroke-width="2" fill="none"/>`;const m=d.match(/-?\d+/g).map(Number);for(let k=0;k<=6;k++){const t=k/6,x=(1-t)**2*m[0]+2*(1-t)*t*m[2]+t*t*m[4],y=(1-t)**2*m[1]+2*(1-t)*t*m[3]+t*t*m[5];g+=`<ellipse cx="${x.toFixed(1)}" cy="${(y+3).toFixed(1)}" rx="3" ry="4.2" fill="${cols[(k+wi)%5]}"/><circle cx="${x.toFixed(1)}" cy="${(y+3).toFixed(1)}" r="6" fill="${cols[(k+wi)%5]}" opacity=".25"/>`}});P.push(g)}
+  if(a.tas&&a.tas!=='geen'){const tc={zwart:'#26262b',bruin:'#8a5a33',blauw:'#005AA7',oranje:'#F39200'}[a.tas]||'#26262b',st=a.tas==='oranje'?'#b86600':a.tas==='blauw'?'#003f75':'#111';
+    P.push(`<path d="M66 121 L142 206" stroke="${st}" stroke-width="7" stroke-linecap="round"/><path d="M66 121 L142 206" stroke="${tc}" stroke-width="4.5" stroke-linecap="round"/><g transform="translate(-16 -15)"><rect x="87" y="150" width="34" height="26" rx="6" fill="${tc}" stroke="${st}" stroke-width="1.5"/><path d="M87 160 h34" stroke="${st}" stroke-opacity=".5" stroke-width="1.5"/><path d="M91 155 h26" stroke="#fff" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="3 2"/><rect x="100" y="158" width="8" height="5" rx="1.5" fill="#d9dde3"/></g>`)}
   // neck & head
   P.push(`<rect x="90" y="96" width="20" height="24" rx="6" fill="${sk}"/>`);
   if(a.ketting!=='geen'){const kc=a.ketting==='goud'?'#e8b41e':'#c4cbd3';P.push(`<path d="M88 118 Q100 140 112 118" fill="none" stroke="${kc}" stroke-width="3"/><circle cx="100" cy="134" r="4.5" fill="${kc}"/>`)}
   P.push(`<circle cx="68" cy="70" r="7" fill="${sk}"/><circle cx="132" cy="70" r="7" fill="${sk}"/><ellipse cx="100" cy="66" rx="32" ry="36" fill="${sk}"/>`);
+  if(a.lichaam==='m'&&a.baard!=='geen'){const snor=`<path d="M85 80 Q92 73 100 77 Q108 73 115 80 Q108 83 100 80 Q92 83 85 80Z" fill="${hc}"/>`;
+    P.push({stoppel:`<path d="M69 70 Q70 100 100 103 Q130 100 131 70 Q127 90 114 93 Q100 98 86 93 Q73 90 69 70Z M86 80 Q100 74 114 80 L114 83 Q100 78 86 83Z" fill="${hc}" opacity=".32"/>`,
+      snor,sik:`<path d="M93 93 Q100 91 107 93 Q106 103 100 106 Q94 103 93 93Z" fill="${hc}"/>`,
+      lang:`<path d="M68 62 Q64 104 84 120 Q100 132 116 120 Q136 104 132 62 Q128 88 114 92 Q100 99 86 92 Q72 88 68 62Z" fill="${hc}"/>`+snor}[a.baard]||'')}
   if(a.lichaam==='v'){const oc={blauw:'#6FB3DF',goud:'#e8b41e',paars:'#9b6bc9'}[a.ogen];if(oc)P.push(`<ellipse cx="88" cy="61" rx="8" ry="4.5" fill="${oc}" opacity=".7"/><ellipse cx="112" cy="61" rx="8" ry="4.5" fill="${oc}" opacity=".7"/>`);if(a.wangen==='blush')P.push(`<ellipse cx="80" cy="77" rx="7" ry="4.5" fill="#e8607a" opacity=".45"/><ellipse cx="120" cy="77" rx="7" ry="4.5" fill="#e8607a" opacity=".45"/>`);const lc={rood:'#c8102e',roze:'#ee7fa8',paars:'#8a3a9e'}[a.lippen];if(lc)P.push(`<path d="M89 83 Q100 78 111 83 Q100 94 89 83Z" fill="${lc}"/>`)}
   const f=a.gezicht,ey=(x)=>`<circle cx="${x}" cy="66" r="3.6" fill="${dk}"/>`,arc=(x)=>`<path d="M${x-5} 67 q5 -6 10 0" stroke="${dk}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
   P.push({vrolijk:ey(88)+ey(112)+`<path d="M88 82 Q100 93 112 82" stroke="${dk}" stroke-width="3" fill="none" stroke-linecap="round"/>`,
@@ -1039,11 +1114,11 @@ function avatarSVG(a,mode){
   const base=`M67 58 Q68 26 100 26 Q132 26 133 58 Q122 42 100 41 Q78 42 67 58Z`;
   const hf={kort:`<path d="${base}" fill="${hc}"/>`,buzz:`<path d="M69 54 Q72 30 100 30 Q128 30 131 54 Q116 43 100 43 Q84 43 69 54Z" fill="${hc}" opacity=".8"/>`,
    kuif:`<path d="${base}" fill="${hc}"/><path d="M80 40 Q96 6 128 30 Q112 30 98 42Z" fill="${hc}"/>`,
-   krul:[...Array(9)].map((_,j)=>{const t=Math.PI*(1.05+j*.11);return `<circle cx="${100+34*Math.cos(t)}" cy="${60+34*Math.sin(t)}" r="11" fill="${hc}"/>`}).join(''),
+   krul:`<path d="${base}" fill="${hc}"/>`+[...Array(17)].map((_,j)=>{const t=Math.PI*(1.0+j*.0625);return `<circle cx="${(100+33*Math.cos(t)).toFixed(1)}" cy="${(58+30*Math.sin(t)).toFixed(1)}" r="6" fill="${hc}"/>`}).join('')+[...Array(9)].map((_,j)=>{const t=Math.PI*(1.12+j*.095);return `<circle cx="${(100+24*Math.cos(t)).toFixed(1)}" cy="${(54+22*Math.sin(t)).toFixed(1)}" r="5.5" fill="${hc}"/>`}).join(''),
    afro:[...Array(7)].map((_,j)=>`<circle cx="${72+j*9.5}" cy="${36+Math.abs(j-3)*3}" r="10" fill="${hc}"/>`).join(''),
    lang:`<path d="${base}" fill="${hc}"/><path d="M67 56 Q62 90 66 120 L74 120 Q70 88 74 60Z M133 56 Q138 90 134 120 L126 120 Q130 88 126 60Z" fill="${hc}"/>`,
    knot:`<circle cx="100" cy="22" r="14" fill="${hc}"/><path d="${base}" fill="${hc}"/>`,
-   vlecht:`<path d="${base}" fill="${hc}"/>`,geen:''}[a.haar];
+   vlecht:`<path d="${base}" fill="${hc}"/>`,matje:`<path d="M68 56 Q70 30 100 28 Q130 30 132 56 Q118 42 100 42 Q82 42 68 56Z" fill="${hc}"/><path d="M78 36 q3 -9 8 -3 q3 -9 8 -3 q4 -9 8 -2 q4 -9 8 -2 q4 -8 8 2 Q100 30 78 36Z" fill="${hc}"/><path d="M66 58 Q64 72 68 80 L70 60Z M134 58 Q136 72 132 80 L130 60Z" fill="${hc}"/>`,geen:''}[a.haar];
   P.push(hf);
   if(a.oorbel!=='geen'){const oc=a.oorbel==='zknop'?'#c4cbd3':'#e8b41e';P.push(a.oorbel==='ring'?`<circle cx="68" cy="82" r="5" fill="none" stroke="${oc}" stroke-width="2.2"/><circle cx="132" cy="82" r="5" fill="none" stroke="${oc}" stroke-width="2.2"/>`:`<circle cx="67" cy="76" r="2.6" fill="${oc}"/><circle cx="133" cy="76" r="2.6" fill="${oc}"/>`)}
   if(a.bril!=='geen'){const fill=a.bril==='zonne'?dk:'none';P.push(`<rect x="78" y="58" width="20" height="16" rx="5" fill="${fill}" fill-opacity=".85" stroke="${dk}" stroke-width="2.5"/><rect x="102" y="58" width="20" height="16" rx="5" fill="${fill}" fill-opacity=".85" stroke="${dk}" stroke-width="2.5"/><path d="M98 64 h4 M78 64 h-10 M122 64 h10" stroke="${dk}" stroke-width="2.5"/>`)}
@@ -1063,7 +1138,7 @@ function avatarSVG(a,mode){
    das:`<g transform="translate(204 290)"><path d="M16 36 v12 M26 36 v12 M50 36 v12 M60 36 v12" stroke="#2b2b31" stroke-width="7" stroke-linecap="round"/><path d="M10 30 Q14 10 42 10 Q70 10 72 30 Q70 42 42 42 Q14 42 10 30Z" fill="#8f969e"/><path d="M70 28 q8 -2 10 4" stroke="#8f969e" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M-8 30 Q-6 14 10 12 Q22 12 24 24 Q22 36 8 38 Q-4 38 -8 30Z" fill="#f4f4f2"/><path d="M-6 26 Q2 14 16 14 Q20 15 22 18 Q10 18 2 30Z" fill="#1d1d1d"/><path d="M-2 34 Q8 26 22 26 L23 30 Q10 32 2 38Z" fill="#1d1d1d"/><circle cx="4" cy="24" r="2.2" fill="#fff"/><circle cx="4" cy="24" r="1.2" fill="#1d1d1d"/><ellipse cx="-8" cy="31" rx="3.4" ry="2.6" fill="#1d1d1d"/><circle cx="16" cy="12" r="3.5" fill="#f4f4f2" stroke="#1d1d1d" stroke-width="1.5"/><path d="M30 18 h30" stroke="#F39200" stroke-width="6" stroke-linecap="round"/><path d="M30 24 h30" stroke="#005AA7" stroke-width="6" stroke-linecap="round"/></g>`,
    aap:`<g transform="translate(212 262)"><path d="M48 62 q22 -2 16 -26 q-4 -10 -12 -4" stroke="#7a4b26" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="30" cy="54" rx="18" ry="20" fill="#7a4b26"/><ellipse cx="30" cy="58" rx="10" ry="13" fill="#d9b38c"/><circle cx="30" cy="22" r="16" fill="#7a4b26"/><circle cx="13" cy="22" r="6" fill="#d9b38c"/><circle cx="47" cy="22" r="6" fill="#d9b38c"/><ellipse cx="30" cy="26" rx="11" ry="10" fill="#d9b38c"/><circle cx="25" cy="21" r="2.4" fill="#1d2733"/><circle cx="35" cy="21" r="2.4" fill="#1d2733"/><path d="M25 30 q5 4 10 0" stroke="#1d2733" stroke-width="1.8" fill="none"/><path d="M14 66 q-4 8 4 10 M46 66 q4 8 -4 10" stroke="#7a4b26" stroke-width="7" stroke-linecap="round" fill="none"/></g>`}[a.huisdier]||'';
   if(PET&&mode!=='head')P.push(`<g transform="translate(200 338) scale(1.3) translate(-200 -338)">${PET}</g>`);
-  const vb=mode==='head'?'60 8 80 80':PET?'0 0 306 345':'0 0 200 345';
+  const vb=mode==='torso'?'28 104 144 116':mode==='face'?'54 8 92 126':mode==='head'?'60 8 80 80':PET?'0 0 306 345':'0 0 200 345';
   return `<svg viewBox="${vb}" role="img" aria-label="Avatar" xmlns="http://www.w3.org/2000/svg">${hairBack}${P.join('')}</svg>`;
 }
 
@@ -1072,39 +1147,86 @@ let shopCat='haar',shopMsg='',bonArm=false;
 function totalProof(){let n=0;for(const [d] of DOMS)for(const l of [2,3,4])if(cfg(l,d))n+=proofCount(l,d);return n}
 const BONGRENS=500;
 function spentTotal(){let t=0;const o=owned();o.forEach(key=>{const [k,id]=key.split(':');const it=item(k,id);if(it)t+=it.p});t+=(store.get('bonnen',[])||[]).filter(b=>b.kosten).reduce((x,b)=>x+b.kosten,0);return t}
+const TITELS=[['g1','Reken er maar niet op','g'],['g2','Kan je rekenen?','g'],['g3','Komma-kampioen','g'],['g4','Telt voor twee','g'],['g5','Hier valt mee te rekenen','g'],['g6','Rekent op niemand','g'],
+ ['z1','Leipe rekenaar','z'],['z2','Reken maar van YES!','z'],['z3','Breukenbreker','z'],['z4','Deelmeester','z'],['z5','Afrondingsartiest','z'],['z6','Keer op keer goed','z'],
+ ['l1','Procentenprofessor','l'],['l2','Rekenlegende','l'],['l3','Ongeëvenaard ≠','l'],['l4','100% Rekenwonder','l']].map(([id,n,r])=>({id,n,r}));
+const TR={g:'Gewoon',z:'Zeldzaam',l:'Legendarisch'},MBPRIJS=75,MBKANS={bon:2,g:58.8,z:29.4,l:9.8};
+let mbLast='';
+const titOwned=()=>{const t=store.get('titels',[]);return Array.isArray(t)?t:[]};
+function paintTitle(){const id=store.get('titel-aan',''),t=TITELS.find(x=>x.id===id),nm=(store.get('pct4-naam','')||'').trim();
+  ['#wstit','#ovtit'].forEach(sel=>{const el=$(sel);if(!el)return;if(!t){el.hidden=true;return}el.hidden=false;el.innerHTML=(sel==='#wstit'&&nm?`<b></b>`:'')+`<i class="${t.r}"></i>`;const b=el.querySelector('b');if(b)b.textContent=nm;el.querySelector('i').textContent=t.n})}
+function bonExtraMogelijk(){const bon=store.get('bonnen',[])||[];return bon.length+(+store.get('bon-extra',0)||0)<DOMS.length}
+function openMB(){
+  if(wallet()<MBPRIJS)return;const own=titOwned(),rest=TITELS.filter(t=>!own.includes(t.id));
+  if(!rest.length)return;
+  store.set('munten',wallet()-MBPRIJS);store.set('mb-gekocht',(+store.get('mb-gekocht',0)||0)+1);
+  const r=Math.random()*100;
+  if(r<MBKANS.bon&&bonExtraMogelijk()){store.set('bon-extra',(+store.get('bon-extra',0)||0)+1);mbLast='<b>Jackpot!</b> Je hebt een <b>bon voor 1 punt extra</b> op een rekentoets gewonnen. Kies bij Beloningen voor welke toets.';return {bon:true}}
+  let tier=r<MBKANS.bon+MBKANS.g?'g':r<MBKANS.bon+MBKANS.g+MBKANS.z?'z':'l';
+  let pool=rest.filter(t=>t.r===tier);if(!pool.length)pool=rest;
+  const t=pool[Math.floor(Math.random()*pool.length)];store.set('titels',[...own,t.id]);
+  if(!store.get('titel-aan',''))store.set('titel-aan',t.id);
+  mbLast=`Je hebt een nieuwe titel: <b>${t.n}</b> (${TR[t.r].toLowerCase()}).`+(store.get('titel-aan','')===t.id?' Hij staat nu onder je naam.':' Zet hem hieronder aan als je hem wilt laten zien.');
+  return {t};
+}
+function renderMB(w){
+  const own=titOwned(),rest=TITELS.filter(t=>!own.includes(t.id)),aan=store.get('titel-aan',''),kan=w>=MBPRIJS,klaar=!rest.length;
+  const box=`<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="16" y="50" width="88" height="60" rx="6" fill="#005AA7"/><rect x="10" y="36" width="100" height="20" rx="5" fill="#0a6ac2"/><rect x="54" y="36" width="12" height="74" fill="#F39200"/><path d="M60 36 Q40 10 30 24 Q26 34 60 36 Q94 34 90 24 Q80 10 60 36Z" fill="#F39200"/><text x="60" y="92" text-anchor="middle" font-family="Montserrat,sans-serif" font-weight="800" font-size="34" fill="#fff">?</text></svg>`;
+  const act=klaar?`<span class="tag on">Je hebt alle titels verzameld! De Mysterybox is nu leeg.</span>`:kan?`<button class="btn sm buy" id="mbb">Open een Mysterybox voor ${MBPRIJS} munten</button>`:`<span class="tag">Nog ${MBPRIJS-w} munten nodig</span>`;
+  $('#wsitems').innerHTML=`<div class="mbox" id="mbx">${box}<div><b style="font-size:18px">Mysterybox</b><p class="wpr" style="margin:4px 0">${COIN(16)} ${MBPRIJS} munten per box. In elke box zit een titel die je onder je naam kunt zetten. Je krijgt nooit twee keer dezelfde titel.</p>
+   <table class="mbodds"><thead><tr><th>Wat zit erin?</th><th>Kans</th></tr></thead><tbody><tr><td>Gewone titel</td><td>59%</td></tr><tr><td>Zeldzame titel</td><td>29%</td></tr><tr><td>Legendarische titel</td><td>10%</td></tr><tr><td><b>Bon voor 1 punt extra op een rekentoets</b></td><td><b>2%</b></td></tr></tbody></table>
+   <p class="note"><b>Let op:</b> munten die je uitgeeft aan een Mysterybox tellen <b>niet</b> mee voor de bonnen bij Beloningen.</p>${act}${mbLast?`<div class="mbres" role="status">${mbLast}</div>`:''}</div></div>
+   <div class="tlist"><h3>Mijn titels (${own.length} van ${TITELS.length})</h3>${own.length?TITELS.filter(t=>own.includes(t.id)).map(t=>`<div class="trow${aan===t.id?' on':''}"><div><b>${t.n}</b><br><span>${TR[t.r]}</span></div>${aan===t.id?`<button class="btn alt sm" data-t="">Zet uit</button>`:`<button class="btn sm" data-t="${t.id}">Zet aan</button>`}</div>`).join(''):'<p class="note">Je hebt nog geen titels. Open een Mysterybox!</p>'}</div>`;
+  const mb=$('#mbb');if(mb)mb.onclick=()=>{mb.disabled=true;const res=openMB();paintWallet(false);paintTitle();renderShop();if(res)mbShow(res)};
+  $('#wsitems').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{store.set('titel-aan',b.dataset.t);mbLast='';paintTitle();renderShop()});
+}
+function mbShow(res){
+  const ov=document.createElement('div');ov.className='mbov';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label','Mysterybox');
+  const t=res.t,cls=res.bon?'bon':t.r,kop=res.bon?'Jackpot!':t.r==='l'?'Legendarisch!':t.r==='z'?'Zeldzaam!':'Nieuwe titel!';
+  const conf=[...Array(28)].map((_,k)=>`<i style="--x:${(Math.cos(k*0.224)*(140+(k%5)*30)).toFixed(0)}px;--y:${(Math.sin(k*0.224)*(140+(k%4)*30)-40).toFixed(0)}px;--r:${k*47}deg;background:${['#F39200','#005AA7','#6FB3DF','#e8b41e','#c8102e'][k%5]}"></i>`).join('');
+  ov.innerHTML=`<div class="mbstage"><div class="mbbig"><svg viewBox="0 0 120 120" aria-hidden="true"><g class="mbbody"><rect x="16" y="50" width="88" height="60" rx="6" fill="#005AA7"/><rect x="54" y="50" width="12" height="60" fill="#F39200"/><text x="60" y="94" text-anchor="middle" font-family="Montserrat,sans-serif" font-weight="800" font-size="34" fill="#fff">?</text></g><g class="mblid"><rect x="10" y="36" width="100" height="20" rx="5" fill="#0a6ac2"/><rect x="54" y="36" width="12" height="20" fill="#F39200"/><path d="M60 36 Q40 10 30 24 Q26 34 60 36 Q94 34 90 24 Q80 10 60 36Z" fill="#F39200"/></g></svg><div class="mbconf">${conf}</div></div>
+   <div class="mbwin ${cls}"><p class="mbkop">${kop}</p>${res.bon?`<p class="mbtit">Bon voor 1 punt extra</p><p class="mbsub">op een rekentoets naar keuze. Kies bij Beloningen voor welke toets.</p>`:`<p class="mbsub">Je nieuwe titel is</p><p class="mbtit"></p><p class="mbsub">${TR[t.r]}</p>`}<button class="btn buy" id="mbok">Verder</button></div></div>`;
+  if(!res.bon)ov.querySelector('.mbtit').textContent=t.n;
+  document.body.appendChild(ov);const prev=document.activeElement;
+  const close=()=>{ov.remove();document.removeEventListener('keydown',esc);if(prev&&prev.focus)prev.focus()};const esc=e=>{if(e.key==='Escape')close()};
+  document.addEventListener('keydown',esc);ov.querySelector('#mbok').onclick=close;
+  const rm=reduceMotion();requestAnimationFrame(()=>ov.classList.add('in'));
+  setTimeout(()=>{ov.classList.add('burst');setTimeout(()=>{ov.classList.add('win');ov.querySelector('#mbok').focus()},rm?0:450)},rm?50:1700);
+}
+const reduceMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 function renderBon(w){
-  const naam=(store.get('pct4-naam','')||'').trim(),bon=store.get('bonnen',[]),sp=spentTotal(),open=sp>=BONGRENS,claimed=bon.length>0,pc=Math.min(100,Math.round(sp/BONGRENS*100));
-  const dom=`<label for="bondom" class="lbl" style="margin-top:4px">Voor welke domeintoets?</label><select id="bondom" class="msel" style="max-width:100%">${DOMS.map(([d,n])=>`<option value="${d}">${n}</option>`).join('')}</select>`;
-  let act;
-  if(claimed)act=`<span class="tag on">Je hebt je bon al ontvangen</span>`;
-  else if(!open)act=`<div class="pbar" style="width:100%;max-width:360px"><i style="width:${pc}%"></i></div><span class="note">${fN(sp)} van ${BONGRENS} munten uitgegeven. Nog ${fN(BONGRENS-sp)} te gaan.</span>`;
-  else if(!naam)act=`<span class="tag on">Ontgrendeld!</span><span class="note">Vul eerst je naam in bij Mijn overzicht.</span>`;
-  else act=`<span class="tag on">Ontgrendeld!</span>${dom}<button class="btn sm buy" id="bonb" style="margin-top:8px">Ontvang je bon</button>`;
-  $('#wsitems').innerHTML=`<div class="wit bonit"><div class="bonic">${open?'+1':'&#128274;'}</div><b>1 punt extra op een rekentoets naar keuze</b><span class="wpr">Gratis als je in totaal ${BONGRENS} munten hebt uitgegeven in de webshop</span><span class="note">Het punt geldt voor één van de 5 domeintoetsen rekenen: Verhoudingen gebruiken, Procenten gebruiken, Grootheden en eenheden, Oriëntatie in de twee- en driedimensionale wereld of Omgaan met kwantitatieve informatie. Laat de bon zien aan je docent.</span>${act}</div>`+
-   (bon.length?`<div class="bonlist"><h3>Mijn bon</h3>${bon.map((b,j)=>`<div class="bon${b.used?' used':''}"><div><b>1 punt extra op de rekentoets ${b.domein||'(domein n.t.b.)'}</b><span>${b.naam} · ontvangen op ${b.datum}</span><span>Code: <code>${b.code}</code> · ${b.bewezen} leerdoelen bewezen · ${fN(b.uitgegeven||sp)} munten uitgegeven</span></div>${b.used?`<span class="tag">Ingeleverd op ${b.used}</span>`:`<button class="btn alt sm" data-j="${j}">Ingeleverd bij docent</button>`}</div>`).join('')}</div>`:'');
-  const bb=$('#bonb');if(bb)bb.onclick=()=>{if(spentTotal()<BONGRENS||store.get('bonnen',[]).length)return;
-    const code='BD-'+Math.random().toString(36).slice(2,6).toUpperCase()+'-'+Date.now().toString(36).slice(-3).toUpperCase();
-    store.set('bonnen',[{naam,code,domein:DN[$('#bondom').value],datum:new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'}),bewezen:totalProof(),uitgegeven:spentTotal(),used:''}]);
-    shopMsg='Je bon staat hieronder. Laat hem zien aan je docent.';renderShop()};
-  $('#wsitems').querySelectorAll('.bon button').forEach(b=>b.onclick=()=>{const l=store.get('bonnen',[]);l[+b.dataset.j].used=new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'long'});store.set('bonnen',l);renderShop()});
+  const naam=(store.get('pct4-naam','')||'').trim(),bon=store.get('bonnen',[])||[],sp=spentTotal(),ex=+store.get('bon-extra',0)||0,nGewoon=bon.filter(b=>!b.mb).length,vrij=Math.min(DOMS.length,Math.floor(sp/BONGRENS)),kan=(nGewoon<vrij||ex>0)&&bon.length<DOMS.length,volgende=(nGewoon+1)*BONGRENS;
+  const intro=`<div class="wit bonit"><div class="bonic">+1</div><b>1 punt extra op een rekentoets</b><span class="wpr">Voor elke ${BONGRENS} munten die je in de webshop uitgeeft, krijg je 1 bon. Je kunt voor elk van de 5 domeintoetsen rekenen één bon krijgen.</span><span class="note">Je hebt ${fN(sp)} munten uitgegeven. Daarmee heb je ${vrij} ${vrij===1?'bon':'bonnen'} verdiend. Je hebt er ${bon.length} opgehaald.</span>${ex?`<span class="tag on">Je hebt ${ex===1?'een bon':ex+' bonnen'} gewonnen met de Mysterybox! Kies hieronder een toets.</span>`:''}<span class="note">Munten voor de Mysterybox tellen niet mee.</span>${bon.length>=DOMS.length?'<span class="tag on">Je hebt alle 5 bonnen!</span>':kan?'':`<div class="pbar" style="width:100%;max-width:360px"><i style="width:${Math.min(100,Math.round((sp-nGewoon*BONGRENS)/BONGRENS*100))}%"></i></div><span class="note">Nog ${fN(Math.max(0,volgende-sp))} munten uitgeven voor je volgende bon.</span>`}</div>`;
+  const cards=DOMS.map(([d,n])=>{const j=bon.findIndex(b=>b.domein===n),b=bon[j];
+    if(b)return `<div class="bon${b.used?' used':''}"><div><b>1 punt extra op de rekentoets ${n}</b><span>${b.naam} · ontvangen op ${b.datum}</span><span>Code: <code>${b.code}</code> · ${b.bewezen} leerdoelen bewezen · ${fN(b.uitgegeven||sp)} munten uitgegeven</span></div>${b.used?`<span class="tag">Ingeleverd op ${b.used}</span>`:`<button class="btn alt sm" data-j="${j}">Ingeleverd bij docent</button>`}</div>`;
+    const act=!kan?`<span class="tag">&#128274; Nog niet ontgrendeld</span>`:!naam?`<span class="note">Vul eerst je naam in bij Mijn overzicht.</span>`:`<button class="btn sm buy" data-d="${d}">Ontvang je bon</button>`;
+    return `<div class="bon open"><div><b>1 punt extra op de rekentoets ${n}</b><span>${kan?'Ontgrendeld! Kies je deze toets?':'Geef meer munten uit om deze bon te krijgen.'}</span></div>${act}</div>`}).join('');
+  $('#wsitems').innerHTML=intro+`<div class="bonlist"><h3>Mijn bonnen</h3>${cards}</div>`;
+  $('#wsitems').querySelectorAll('.bon button[data-d]').forEach(bt=>bt.onclick=()=>{const l=store.get('bonnen',[])||[],n=DN[bt.dataset.d];
+    if(l.length>=DOMS.length||l.some(b=>b.domein===n))return;const ng=l.filter(b=>!b.mb).length,ex2=+store.get('bon-extra',0)||0,viaShop=ng<Math.min(DOMS.length,Math.floor(spentTotal()/BONGRENS));if(!viaShop&&ex2<1)return;if(!viaShop)store.set('bon-extra',ex2-1);
+    const AL='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',W=[7,13,17,19,23];let r='',sm=11;for(let i=0;i<5;i++){const v=Math.floor(Math.random()*32);r+=AL[v];sm+=v*W[i]}sm%=1024;const code=`XP-${r}-${AL[Math.floor(sm/32)]}${AL[sm%32]}`;
+    l.push({naam,code,mb:!viaShop,domein:n,datum:new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'}),bewezen:totalProof(),uitgegeven:spentTotal(),used:''});store.set('bonnen',l);
+    shopMsg=`Je bon voor de rekentoets ${n} staat hieronder. Laat hem zien aan je docent.`;renderShop()});
+  $('#wsitems').querySelectorAll('.bon button[data-j]').forEach(bt=>bt.onclick=()=>{const l=store.get('bonnen',[]);l[+bt.dataset.j].used=new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'long'});store.set('bonnen',l);renderShop()});
 }
 function chooseBody(){const m=$('#bodyc');m.querySelector('.bopts').innerHTML=['v','m'].map(g=>{const a={...getAv(),lichaam:g};if(g==='v'&&!store.get('avatar',null))a.haar='lang';return `<button class="bopt" data-g="${g}"><span>${avatarSVG(a)}</span><b>${g==='v'?'Vrouwelijk':'Mannelijk'}</b></button>`}).join('');m.hidden=false;m.querySelectorAll('.bopt').forEach(b=>b.onclick=()=>{const av=getAv();av.lichaam=b.dataset.g;if(b.dataset.g==='v'&&!store.get('avatar',null))av.haar='lang';store.set('avatar',av);store.set('lichaam-gekozen',true);m.hidden=true;paintWallet(false);renderShop()});m.querySelector('.bopt').focus()}
 function renderShop(){
-  const a0=getAv();if(shopCat==='makeup'&&a0.lichaam!=='v')shopCat='haar';
+  const a0=getAv();if((shopCat==='makeup'&&a0.lichaam!=='v')||(shopCat==='baard'&&a0.lichaam!=='m'))shopCat='haar';
   const a=a0,o=owned(),c=CAT.find(x=>x.k===shopCat),w=wallet();
   $('#wsava').innerHTML=avatarSVG(a);$('#wsbal').textContent=fN(w);
   $('#wsmsg').innerHTML=shopMsg;$('#wsmsg').hidden=!shopMsg;
-  $('#wscat').innerHTML=CAT.filter(x=>!x.v||a.lichaam==='v').map(x=>`<button class="pill${['school','spullen','feest','dieren'].includes(x.k)?' spec':x.k==='beloning'?' spec gold':''}" data-k="${x.k}" aria-pressed="${x.k===shopCat}">${x.k==='spullen'?'Schoolbenodigdheden':x.n}</button>`).join('');
+  $('#wscat').innerHTML=CAT.filter(x=>(!x.v||a.lichaam==='v')&&(!x.m||a.lichaam==='m')).map(x=>`<button class="pill${['school','spullen','feest','dieren'].includes(x.k)?' spec':x.k==='beloning'||x.k==='mystery'?' spec gold':''}" data-k="${x.k}" aria-pressed="${x.k===shopCat}">${x.k==='spullen'?'Schoolbenodigdheden':x.n}</button>`).join('');
   $('#wscat').querySelectorAll('button').forEach(b=>b.onclick=()=>{shopCat=b.dataset.k;shopMsg='';renderShop()});
   if(shopCat==='beloning'){renderBon(w);return}
-  $('#wsitems').innerHTML=c.items.filter(it=>!(it.id==='kerst')||true).map(it=>{const K=it.k||c.k,own=isOwned(K,it,o),on=a[K]===it.id,can=w>=it.p;
+  if(shopCat==='mystery'){renderMB(w);return}
+  $('#wsitems').innerHTML=c.items.filter(it=>(!it.v||a.lichaam==='v')&&(!it.m||a.lichaam==='m')).map(it=>{const K=it.k||c.k,own=isOwned(K,it,o),on=a[K]===it.id,can=w>=it.p;
     const pv={...a,[K]:it.id};if(it.id==='kerst')it.n=a.lichaam==='v'?'Kerstvrouwenpak':'Kerstmannenpak';const sw=c.k==='huid'?`<span class="sw" style="background:${it.c}"></span>`:c.k==='haarkleur'?`<span class="sw" style="background:${HC[it.id]}"></span>`:'';
-    const rm=on&&DEF[K]==='geen'&&it.id!=='geen';const btn=rm?`<span class="wact"><span class="tag on">Draag je</span><button class="btn sm off" data-a="off" data-k="${K}" aria-label="${it.n} uit doen">Uit doen</button></span>`:on?`<span class="tag on">Draag je</span>`:own?`<button class="btn sm" data-a="dress" data-id="${it.id}" data-k="${K}">Dragen</button>`:can?`<button class="btn sm buy" data-a="buy" data-id="${it.id}" data-k="${K}">Kopen</button>`:`<span class="tag">Nog ${it.p-w} munten</span>`;
-    return `<div class="wit${on?' on':''}"><div class="wpv">${['gezicht','haar','haarkleur','hoofd','bril'].includes(c.k)?avatarSVG(pv,'head'):avatarSVG(pv)}</div><b>${sw}${it.n}</b>${it.d?`<span class="wpr">${it.d}</span>`:''}<span class="wpr">${own?'In bezit':it.p===0?'Gratis':COIN(16)+' '+it.p}</span>${btn}</div>`}).join('');
+    const rm=on&&!['lichaam','huid','gezicht'].includes(K)&&it.id!==DEF[K];const offl=['haar','haarkleur'].includes(K)?'Weg doen':'Uit doen';const btn=rm?`<span class="wact"><span class="tag on">Draag je</span><button class="btn sm off" data-a="off" data-k="${K}" aria-label="${it.n} ${offl.toLowerCase()}">${offl}</button></span>`:on?`<span class="tag on">Draag je</span>`:own?`<button class="btn sm" data-a="dress" data-id="${it.id}" data-k="${K}">Dragen</button>`:can?`<button class="btn sm buy" data-a="buy" data-id="${it.id}" data-k="${K}">Kopen</button>`:`<span class="tag">Nog ${it.p-w} munten</span>`;
+    return `<div class="wit${on?' on':''}"><div class="wpv">${c.k==='baard'?avatarSVG(pv,'face'):c.k==='tattoo'?avatarSVG(pv,'torso'):['gezicht','haar','haarkleur','hoofd'].includes(c.k)||['bril','oorbel'].includes(K)?avatarSVG(pv,'head'):avatarSVG(pv)}</div><b>${sw}${it.n}</b>${it.d?`<span class="wpr">${it.d}</span>`:''}<span class="wpr">${own?'In bezit':it.p===0?'Gratis':COIN(16)+' '+it.p}</span>${btn}</div>`}).join('');
   $('#wsitems').querySelectorAll('button').forEach(b=>b.onclick=()=>{const K=b.dataset.k,av=getAv();
-    if(b.dataset.a==='off'){const was=item(K,av[K]);av[K]='geen';store.set('avatar',av);shopMsg=`Je hebt <b>${was?was.n:'dit item'}</b> uit gedaan. Je kunt het altijd weer dragen.`;renderShop();return}
+    if(b.dataset.a==='off'){const was=item(K,av[K]);av[K]=DEF[K];store.set('avatar',av);const nu=DEF[K]!=='geen'?item(K,DEF[K]):null;shopMsg=`Je hebt <b>${was?was.n:'dit item'}</b> ${['haar','haarkleur'].includes(K)?'weg gedaan':'uit gedaan'}.`+(nu?` Je hebt nu weer: ${nu.n}.`:'')+' Je kunt het altijd weer dragen.';renderShop();return}
     const it=item(K,b.dataset.id);
-    if(b.dataset.a==='buy'){if(wallet()<it.p)return;store.set('munten',wallet()-it.p);const s=owned();s.add(K+':'+it.id);store.set('bezit',[...s]);const before=spentTotal()-it.p;shopMsg=`Je hebt <b>${it.n}</b> gekocht voor ${it.p} munten.`+(before<BONGRENS&&spentTotal()>=BONGRENS&&!store.get('bonnen',[]).length?' <b>Je hebt de beloning ontgrendeld!</b> Kijk bij Beloningen.':'')}
+    if(b.dataset.a==='buy'){if(wallet()<it.p)return;store.set('munten',wallet()-it.p);const s=owned();s.add(K+':'+it.id);store.set('bezit',[...s]);const before=spentTotal()-it.p;shopMsg=`Je hebt <b>${it.n}</b> gekocht voor ${it.p} munten.`+(Math.floor(spentTotal()/BONGRENS)>Math.floor(before/BONGRENS)&&(store.get('bonnen',[])||[]).length<DOMS.length?' <b>Je hebt een nieuwe bon ontgrendeld!</b> Kijk bij Beloningen.':'')}
     else shopMsg='';
     av[K]=it.id;store.set('avatar',av);paintWallet(false);renderShop()});
 }
@@ -1155,6 +1277,7 @@ const TOPH=new Set([970388881,970398296,970399511,970407229,970507876,970572629,
      if(!TOPH.has(hc))return say(bad);
      if(t[hc])return say('Deze pluim-code heb je al gebruikt. Elke code telt één keer.');
      t[hc]=dat();store.set('top-gebruikt',t);return give(50,'Een pluim van je docent. Goed bezig!')}
+   if(/^(XP[A-Z0-9]{7}|BD[A-Z0-9]{7,9})$/.test(c))return say('Dit is de code van je <b>bon voor 1 punt extra</b>. Die vul je hier niet in. Laat je bon zien aan je docent. Je vindt hem in de webshop bij Beloningen.');
    say(bad)};
  $('#cpin').onkeydown=e=>{if(e.key==='Enter')$('#cpgo').click()};list();}
 
@@ -1267,6 +1390,34 @@ informatie4:[['pctVan'],['ceilPak'],[],['gemiddelde'],['pctVan'],['formule'],[],
 function genFor(i){const own=cfg().gens[i],tg=(TAGS[dom+lvl]||[])[i]||[],prev=cur[i]&&cur[i].q;let p;
  for(let n=0;n<6;n++){p=(!tg.length||Math.random()<.3)?own():SK[pick(tg)](lvl);if(p.q!==prev)break}return p}
 
+function makeTips(p){
+  const FR=/<span class="fr"><sup>([^<]*)<\/sup><sub>([^<]*)<\/sub><\/span>/g;
+  const esc=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const hide=new Set(),KEEP=new Set(['0','1','2','10','100','1.000','1000','60','24','7','12','52','365','3.600']);const t=p.type,a=p.ans;
+  const addN=v=>{if(typeof v!=='number'||!isFinite(v))return;[fN(v,p.dec||0),fN(v,2),fN(v,1),v.toLocaleString('nl-NL',{maximumFractionDigits:3}),String(v)].forEach(x=>{if(x&&(x!=='0'||v===0))hide.add(x)})};
+  if(t==='frac'||t==='ratio'){}else if(t==='date'){}else if(t==='choice'){}else if(t==='time'||t==='clock'){}else addN(a);
+  const out=[];
+  for(const raw of p.s){
+    let s=raw.replace(FR,(m,n,d)=>`⟦${n}/${d}⟧`);
+    if(t==='choice'){const w=String(a);s=s.replace(new RegExp(esc(w)+'[a-zà-ÿ]*','gi'),'?');if(w.length>3)s=s.replace(new RegExp('\\b'+esc(w.slice(0,-1))+'[a-zà-ÿ]*','gi'),'?')}
+    if(t==='date'&&new RegExp(`\\b${a[0]}\\s+${MND[a[1]]}`).test(s))s=s.replace(new RegExp(`\\b${a[0]}\\s+${MND[a[1]]}`,'g'),'?');
+    if(t==='clock'){const c=`${Math.floor(a/60)}:${String(a%60).padStart(2,'0')}`;s=s.split(c).join('?')}
+    if(t==='time'){s=s.split(tm(a)).join('?')}
+    if(t==='frac')s=s.split(`⟦${a[0]}/${a[1]}⟧`).join('?');
+    if(t==='ratio')s=s.replace(new RegExp(`(^|[^\\d,.])${a[0]}\\s*(:|op|${p.sep?esc(p.sep):'op'})\\s*${a[1]}(?![\\d])`,'g'),'$1?');
+    // alles na het laatste = verbergen
+    const k=s.lastIndexOf('=');
+    const seg=k>=0?s.slice(0,k).split(/[:=,]| en | dus /).pop().trim():'',fact=k>=0&&/^\d[\d.,]*\s?[a-zA-Zµ²³]+$/.test(seg);
+    if(k>=0&&!fact){let tail=s.slice(k+1);tail=tail.replace(/⟦[^⟧]*⟧/g,'?').replace(/\d[\d.]*(,\d+)?/g,m=>{if(!KEEP.has(m))hide.add(m);return '?'});s=s.slice(0,k+1)+tail}
+    // eerder verborgen uitkomsten en het antwoord zelf ook verbergen
+    [...hide].sort((x,y)=>y.length-x.length).forEach(h=>{s=s.replace(new RegExp(`(^|[^\\d.,])${esc(h)}(?![\\d]|[.,]\\d)`,'g'),'$1?')});
+    s=s.replace(/⟦([^/⟧]*)\/([^⟧]*)⟧/g,(m,n,d)=>F(n,d)).replace(/€\s\?/g,'€ ?');
+    out.push(s);
+  }
+  if(!out.length)out.push('Lees de vraag nog eens rustig. Schrijf op wat je weet en wat je moet uitrekenen.');
+  return out;
+}
+const TIPPRIJS=2;
 function newEx(i){
   const p=genFor(i),ex=$('#ex'+i);cur[i]=p;let inp;
   if(p.type==='frac')inp=`<label for="in${i}">Jouw antwoord (breuk)</label><div class="frin"><input id="in${i}" inputmode="numeric" autocomplete="off" aria-label="Teller"><span></span><input id="in${i}b" inputmode="numeric" autocomplete="off" aria-label="Noemer"></div>`;
@@ -1277,11 +1428,14 @@ function newEx(i){
   else if(p.type==='choice')inp=`<label>Kies je antwoord</label><div class="row chs">${p.opts.map(o=>`<button class="pill" data-c="${o}" aria-pressed="false">${o}</button>`).join('')}</div>`;
   else{const pre=p.pre||(p.u==='€'?'€':''),post=p.u==='€'?'':p.u;inp=`<label for="in${i}">Jouw antwoord</label><div class="inrow">${pre}<input id="in${i}" inputmode="decimal" autocomplete="off">${post}</div>`}
   ex.innerHTML=`<div class="exq">${p.q}</div><div class="exa">${inp}
-  <div class="row" style="margin-top:12px"><button class="btn sm" data-a="chk">Controleer</button><button class="btn alt sm" data-a="uit">Uitwerking</button><button class="btn alt sm" data-a="new">Nieuwe opgave</button></div>
-  <div class="exf fb" hidden></div><ol class="steps" hidden>${p.s.map(x=>`<li>${x}</li>`).join('')}</ol></div>`;
+  <div class="row" style="margin-top:12px"><button class="btn sm" data-a="chk">Controleer</button><button class="btn alt sm" data-a="uit">Tip · ${TIPPRIJS} munten</button><button class="btn alt sm" data-a="new">Nieuwe opgave</button></div>
+  <div class="exf fb" hidden></div><ol class="steps tips" hidden>${makeTips(p).map(x=>`<li hidden>${x}</li>`).join('')}</ol></div>`;
   ex.querySelectorAll('.chs button').forEach(b=>b.onclick=()=>{ex.querySelectorAll('.chs button').forEach(x=>x.setAttribute('aria-pressed',x===b));p.pick=b.dataset.c});
   ex.querySelector('[data-a=chk]').onclick=()=>check(i);
-  ex.querySelector('[data-a=uit]').onclick=()=>{const o=ex.querySelector('.steps');o.hidden=!o.hidden};
+  ex.querySelector('[data-a=uit]').onclick=e=>{const bt=e.currentTarget,o=ex.querySelector('.steps'),li=[...o.children],nx=li.find(x=>x.hidden);if(!nx)return;const fb=ex.querySelector('.exf');
+    if(wallet()<TIPPRIJS){fb.hidden=false;fb.innerHTML=`<strong class="f">Niet genoeg munten</strong><p>Een tip kost ${TIPPRIJS} munten. Je hebt er ${fN(wallet())}. Probeer het eerst zelf, of verdien munten met een andere oefening.</p>`;return}
+    store.set('munten',wallet()-TIPPRIJS);store.set('tips-munten',(+store.get('tips-munten',0)||0)+TIPPRIJS);paintWallet(true);
+    o.hidden=false;nx.hidden=false;const shown=li.filter(x=>!x.hidden).length;bt.textContent=shown<li.length?`Nog een tip (${shown}/${li.length}) · ${TIPPRIJS} munten`:'Alle tips gezien';if(shown>=li.length)bt.disabled=true};
   ex.querySelector('[data-a=new]').onclick=()=>{newEx(i);const f=ex.querySelector('input,.chs button');if(f)f.focus()};
   ex.querySelectorAll('input').forEach(x=>x.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();check(i)}});
 }
@@ -1291,13 +1445,13 @@ function check(i){
   const say=(c,t,m)=>{const x=c==='g'?reward(i,p):'';fb.innerHTML=`<strong class="${c}">${t}</strong><p>${m}</p>${x}`};
   const goed=st[i]===3?'':'Kun je dit? Zet dit leerdoel op <b>Ik kan het!</b> en verdien 10 munten.';
   if(p.type==='choice'){if(!p.pick){say('f','Kies eerst een antwoord','');return}
-    return p.pick===p.ans?say('g','Goed!',`${p.ans} is het juiste antwoord. ${goed}`):say('f','Nog niet goed','Reken bij elke keuze uit wat je per stuk, per dag of per maand betaalt, of bekijk de uitwerking.')}
+    return p.pick===p.ans?say('g','Goed!',`${p.ans} is het juiste antwoord. ${goed}`):say('f','Nog niet goed','Reken bij elke keuze uit wat je per stuk, per dag of per maand betaalt, of koop een tip.')}
   if(p.type==='ratio'){const a=num($('#in'+i).value),b=num($('#in'+i+'b').value);
     if(isNaN(a)||isNaN(b)||!b){say('f','Vul allebei de getallen in','');return}
     if(a===p.ans[0]&&b===p.ans[1])return say('g','Goed!',`De verhouding is ${p.ans[0]} ${p.sep||'op'} ${p.ans[1]}. ${goed}`);
     if(a===p.ans[1]&&b===p.ans[0])return say('m','Bijna!','Je getallen kloppen, maar de volgorde niet. Kijk welke groep de vraag als eerste noemt.');
     if(Math.abs(a/b-p.ans[0]/p.ans[1])<1e-9)return say('m','Bijna!','Je verhouding klopt, maar je kunt hem nog verder vereenvoudigen.');
-    return say('f','Nog niet goed','Probeer het nog een keer, of bekijk de uitwerking.')}
+    return say('f','Nog niet goed','Probeer het nog een keer, of koop een tip.')}
   if(p.type==='date'){const d=num($('#in'+i).value),m=$('#in'+i+'b').value;
     if(isNaN(d)||m===''){say('f','Vul de dag in en kies de maand','');return}
     if(d===p.ans[0]&&+m===p.ans[1])return say('g','Goed!',`Het antwoord is ${p.ans[0]} ${MND[p.ans[1]]}. ${goed}`);
@@ -1312,18 +1466,18 @@ function check(i){
     if(Math.abs(h*60+m-p.ans)<=(p.tol||0))return say('g','Goed!',`Het antwoord is ${p.tol?'ongeveer ':''}${tm(p.ans)}. ${goed}`);
     if(p.trap&&h===p.trap[0]&&m===p.trap[1])return say('f','Let op!','Een uur heeft 60 minuten, geen 100. Reken het deel achter de komma keer 60.');
     if(h*60+m!==p.ans&&Math.abs(h*60+m-p.ans)<=2)return say('m','Bijna!','Je zit er heel dicht bij. Controleer je tussenstappen.');
-    return say('f','Nog niet goed','Probeer het nog een keer, of bekijk de uitwerking.')}
+    return say('f','Nog niet goed','Probeer het nog een keer, of koop een tip.')}
   if(p.type==='frac'){const a=num($('#in'+i).value),b=num($('#in'+i+'b').value);
     if(isNaN(a)||isNaN(b)||!b){say('f','Vul de teller en de noemer in','');return}
     if(a===p.ans[0]&&b===p.ans[1])return say('g','Goed!',`Het antwoord is ${F(p.ans[0],p.ans[1])}. ${goed}`);
     if(Math.abs(a/b-p.ans[0]/p.ans[1])<1e-9)return say('m','Bijna!','Je breuk klopt, maar je kunt hem nog verder vereenvoudigen.');
-    return say('f','Nog niet goed','Probeer het nog een keer, of bekijk de uitwerking.')}
+    return say('f','Nog niet goed','Probeer het nog een keer, of koop een tip.')}
   const raw=$('#in'+i).value.trim(),v=num(raw);
   if(raw===''||isNaN(v)){say('f','Vul eerst een getal in','');return}
   const unit=p.u==='€'?eu(p.ans):p.u==='%'?fN(p.ans,p.dec)+'%':fN(p.ans,p.dec)+' '+p.u;
   if(Math.abs(v-p.ans)<=(p.tol||1e-6))say('g','Goed!',`Het antwoord is ${unit}. ${goed}`);
   else if(Math.abs(v-p.ans)<=Math.max(10**-p.dec*1.01,Math.abs(p.ans)*.01))say('m','Bijna!',lvl===2?'Bijna goed! Kijk nog eens naar je som.':lvl===3?'Je bent er bijna. Kijk nog eens naar het afronden. Of kijk naar een tussenstap.':'Je zit er heel dicht bij. Controleer het afronden of een tussenstap.');
-  else say('f','Nog niet goed','Probeer het nog een keer. Of klik op Uitwerking.');
+  else say('f','Nog niet goed','Probeer het nog een keer. Of koop een tip.');
 }
 function lvlPct(l){const ds=DOMS.filter(([d])=>cfg(l,d));let tot=0,sc=0;ds.forEach(([d])=>{const s=getSt(l,d);tot+=s.length;s.forEach(x=>sc+=x===3?1:x===2?.5:0)});return tot?Math.round(sc/tot*100):0}
 let ovLvl=null;
@@ -1351,7 +1505,7 @@ function renderDoms(){
   $('#doms').innerHTML=DOMS.map(([d,n],k)=>{const C=cfg(lvl,d),pc=C?proofCount(lvl,d):0,p=C?Math.round(pc/C.goals.length*100):0;
     return `<a class="lvl" href="#n${lvl}-${d}"><span class="gn">${k+1}</span><div><h3>${n}</h3>${C?`<p>${C.goals.length} leerdoelen</p><div class="pbar"><i style="width:${p}%"></i></div><p class="note">${pc} bewezen · ${COIN(16)} ${earned(lvl,d)} munten</p>`:'<p>Leerdoelen <span class="ntb">n.t.b.</span></p>'}</div></a>`}).join('');
 }
-const nm=$('#nm');nm.value=store.get('pct4-naam','');nm.oninput=()=>store.set('pct4-naam',nm.value);
+const nm=$('#nm');nm.value=store.get('pct4-naam','');nm.oninput=()=>{store.set('pct4-naam',nm.value);paintTitle()};paintTitle();
 $('#dt').textContent='Datum: '+new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'});
 let wisArm=false;$('#wis').onclick=()=>{if(!wisArm){wisArm=true;$('#wis').textContent='Zeker weten? Klik nog een keer';setTimeout(()=>{wisArm=false;$('#wis').textContent='Alles wissen'},4000);return}
   wisArm=false;st=cfg().goals.map(()=>0);store.set(skey(lvl,dom),st);$('#wis').textContent='Alles wissen';paintSt()};
